@@ -29,21 +29,21 @@ cd Projetos-flutter-curso-Udemy
 
 1. Em cada pasta você encontrará arquivos de exemplo que podem ser executados no terminal. Os exemplos contêm blocos comentados - basta descomentar o bloco desejado para executá-lo (lembre-se de comentar o bloco anterior antes de testar um novo).
 
-* Como Executar os Exemplos
+## Como Executar os Exemplos
 
 - Certifique-se de ter o Dart SDK instalado
 - Abra o arquivo desejado
 - Remova os comentários do exemplo que deseja testar
 - Execute usando o comando dart run nome_do_arquivo.dart
 
-* Contribuições
+## Contribuições
 
-* Contribuições são bem-vindas! Sinta-se à vontade para:
+### Contribuições são bem-vindas! Sinta-se à vontade para:
 
 - Abrir issues reportando problemas
 - Enviar pull requests com melhorias
 - Sugerir novos exemplos
 
-* Licença
+### Licença
 
 - Este projeto está licenciado sob a Licença MIT.
