@@ -17,6 +17,9 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
    - Uso correto de valores nulos
    - Boas práticas com null safety
 
+4. **Ternário**
+   - uso da condição ternária
+
 ## Como Utilizar
 
 1. Clone o repositório:

@@ -1,5 +1,6 @@
 void main() {
-  // ternário
+  // Switch
+
   int age = 65;
   String resp = "";
   resp = age > 64 ? 'entrada permitida' : 'entrada proibida'; // ternário
