@@ -6,13 +6,13 @@ void main() {
 
   saudar(); // Chama a função saudar()
 
-  // Exemplo de função com retorno
-  int somar(int a, int b) {
-    return a + b;
-  }
+  // // Exemplo de função com retorno
+  // int somar(int a, int b) {
+  //   return a + b;
+  // }
 
-  int resultado = somar(3, 5);
-  print(resultado); // Saída: 8
+  // int resultado = somar(3, 5);
+  // print(resultado); // Saída: 8
 
 //   // Exemplo de função com parâmetros opcionais
 //   String saudacao(String nome, [String? sobrenome]) {
@@ -95,5 +95,5 @@ void main() {
 //     }
 //   };
 //   print(saudacaoLambda('Luciano')); // Saída: Olá, Luciano!
-// }
+//   print(saudacaoLambda('Luciano', 'Silva')); // Saída: Olá, Luciano Silva!}
 }

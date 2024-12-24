@@ -45,11 +45,30 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
    - Exemplo de laço while usando continue
    - Exemplo de laço while usando break
    - Exemplo 5: Laço for-each
-   
+
    **Explicação:**
 
-- A palavra reservada `continue` é usada para pular a iteração atual do laço e continuar com a próxima iteração. No exemplo, os números pares são pulados.
-- A palavra reservada `break` é usada para sair do laço completamente. No exemplo, o laço é interrompido quando o valor atinge 5.
+   - A palavra reservada `continue` é usada para pular a iteração atual do laço e continuar com a próxima iteração. No exemplo, os números pares são pulados.
+   - A palavra reservada `break` é usada para sair do laço completamente. No exemplo, o laço é interrompido quando o valor atinge 5.
+
+10. **funções em Dart**
+
+   - Exemplo de função simples
+   - Exemplo de função com retorno
+   - Exemplo de função com parâmetros opcionais
+   - Exemplo de função com parâmetros nomeados
+   - Exemplo de função anônima
+   - Exemplo de função de ordem superior
+   - Exemplo de função recursiva
+   - Exemplo de função de flecha
+   - Exemplo de função de flecha com múltiplas expressões
+   - Exemplo de função de flecha com chaveamento de método
+   - Exemplo de função de flecha com múltiplos parâmetros
+   - Exemplo de função lambda
+   - Exemplo de função lambda com múltiplas expressões
+   - Exemplo de função de lambda com chaveamento de método
+   - Exemplo de função lambda com múltiplos parâmetros
+   - Exemplo de função ambda com parâmetros opcionais
 
 ## Como Utilizar
 
