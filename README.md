@@ -33,11 +33,23 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 7. **Loop While**
    - O loop while continua executando enquanto a condição for verdadeira
 
-. **Loop Do While**
+8. **Loop Do While**
    - Exemplo 1: básico de do-while
    - Exemplo 2: intermediário de do-while com condição complexa
    - Exemplo avançado de do-while com entrada do usuário
    - Exemplo 4: avançado de do-while com múltiplas condições
+
+9. **laço For**
+   - Exemplo de laço for usando continue
+   - Exemplo de laço for usando break
+   - Exemplo de laço while usando continue
+   - Exemplo de laço while usando break
+   - Exemplo 5: Laço for-each
+   
+   **Explicação:**
+
+- A palavra reservada `continue` é usada para pular a iteração atual do laço e continuar com a próxima iteração. No exemplo, os números pares são pulados.
+- A palavra reservada `break` é usada para sair do laço completamente. No exemplo, o laço é interrompido quando o valor atinge 5.
 
 ## Como Utilizar
 
