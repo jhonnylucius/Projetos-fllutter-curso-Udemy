@@ -23,6 +23,13 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 5. **switch**
    - verificação de condições usando o switch, para identificar o dia da semana.
 
+6. **laço For**
+   - Exemplo 1: Laço for simples
+   - Exemplo 2: Laço for com decremento
+   - Exemplo 3: Laço for com incremento de 2
+   - Exemplo 4: Laço for com lista
+   - Exemplo 5: Laço for-each
+
 ## Como Utilizar
 
 1. Clone o repositório:
