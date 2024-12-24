@@ -8,4 +8,3 @@ void main() {
   }
 }
 // O loop while continua executando enquanto a condição for verdadeira
-// O valor de count é: 0
