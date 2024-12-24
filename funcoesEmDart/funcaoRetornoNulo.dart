@@ -7,5 +7,5 @@ void main() {
 
 String? getMelhorMusica() {
   // função que retorna nulo
-  return 'null';
+  return 'qualquer uma do AC/DC';
 }
