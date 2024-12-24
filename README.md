@@ -20,6 +20,9 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 4. **Ternário**
    - uso da condição ternária
 
+5. **switch**
+   - verificação de condições usando o switch, para identificar o dia da semana.
+
 ## Como Utilizar
 
 1. Clone o repositório:
