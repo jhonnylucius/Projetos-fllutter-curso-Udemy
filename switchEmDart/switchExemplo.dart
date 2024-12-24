@@ -1,11 +1,30 @@
 void main() {
-  // Switch
-
-  int age = 65;
-  String resp = "";
-  resp = age > 64 ? 'entrada permitida' : 'entrada proibida'; // ternário
-
-  print(resp);
+  int dia = 1;
+  // Switch to the day of the week
+  switch (dia) {
+    case 1:
+      print('Domingo');
+      break;
+    case 2:
+      print('Segunda-feira');
+      break;
+    case 3:
+      print('Terça-feira');
+      break;
+    case 4:
+      print('Quarta-feira');
+      break;
+    case 5:
+      print('Quinta-feira');
+      break;
+    case 6:
+      print('Sexta-feira');
+      break;
+    case 7:
+      print('Sábado');
+      break;
+    default:
+      print('Dia inválido');
+  }
 }
-// ternário para verificar se a idade é maior que 64 e se for verdadeiro, 
-// a resposta será 'entrada permitida', caso contrário, a resposta será 'entrada proibida'.
+// prints Domingo and Sexta-feira in the  console window
