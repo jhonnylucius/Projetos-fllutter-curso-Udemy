@@ -30,6 +30,15 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
    - Exemplo 4: Laço for com lista
    - Exemplo 5: Laço for-each
 
+7. **Loop While**
+   - O loop while continua executando enquanto a condição for verdadeira
+
+. **Loop Do While**
+   - Exemplo 1: básico de do-while
+   - Exemplo 2: intermediário de do-while com condição complexa
+   - Exemplo avançado de do-while com entrada do usuário
+   - Exemplo 4: avançado de do-while com múltiplas condições
+
 ## Como Utilizar
 
 1. Clone o repositório:
