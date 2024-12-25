@@ -58,10 +58,10 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
     - Exemplo de função anônima
     - Exemplo de função de ordem superior
     - Exemplo de função recursiva
-    - Exemplo de função de flecha
-    - Exemplo de função de flecha com múltiplas expressões
-    - Exemplo de função de flecha com chaveamento de método
-    - Exemplo de função de flecha com múltiplos parâmetros
+    - Exemplo de função arrow
+    - Exemplo de função arrow com múltiplas expressões
+    - Exemplo de função arrow com chaveamento de método
+    - Exemplo de função arrow com múltiplos parâmetros
     - Exemplo de função lambda
     - Exemplo de função lambda com múltiplas expressões
     - Exemplo de função de lambda com chaveamento de método
