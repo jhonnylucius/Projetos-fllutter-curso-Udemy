@@ -5,7 +5,8 @@ void main() {
   print(retornoNulo);
 }
 
-String? getMelhorMusica() {
+Future<String> getMelhorMusica() async {
+  // chamando a função de retorno nulo a função é assíncrona a função retorna uma string a função é chamada de getMelhorMusica a função retorna uma string.
   // função que retorna nulo
-  return 'qualquer uma do AC/DC';
+  return 'null'; // retorna nulo
 }

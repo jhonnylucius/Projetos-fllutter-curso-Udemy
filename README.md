@@ -69,6 +69,7 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
    - Exemplo de função de lambda com chaveamento de método
    - Exemplo de função lambda com múltiplos parâmetros
    - Exemplo de função ambda com parâmetros opcionais
+   - Exemplo de função de retorno null.
 
 ## Como Utilizar
 
