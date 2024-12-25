@@ -1,12 +1,10 @@
 void main() {
   final carro = Carro(); // Instanciando a classe Carro
 
-  print(carro.cor); // Carro Branco 
+  print(carro.cor); // Carro Branco
   carro.ligar(); // chamando o metodo ligar
   print(carro.estaLigado()); // true
-
 }
-
 
 class Carro {
   // variaveis = propriedades
@@ -14,11 +12,13 @@ class Carro {
   String cor = 'Branco';
   double tamanho = 4.5;
 
-  void ligar() { // metodo
+  void ligar() {
+    // metodo
     print('Carro ligado');
   }
 
-  bool estaLigado() { // metodo
+  bool estaLigado() {
+    // metodo
     return true;
   }
 }
