@@ -51,34 +51,36 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
    - A palavra reservada `break` é usada para sair do laço completamente. No exemplo, o laço é interrompido quando o valor atinge 5.
 
 10. **funções em Dart**
-   - Exemplo de função simples
-   - Exemplo de função com retorno
-   - Exemplo de função com parâmetros opcionais
-   - Exemplo de função com parâmetros nomeados
-   - Exemplo de função anônima
-   - Exemplo de função de ordem superior
-   - Exemplo de função recursiva
-   - Exemplo de função de flecha
-   - Exemplo de função de flecha com múltiplas expressões
-   - Exemplo de função de flecha com chaveamento de método
-   - Exemplo de função de flecha com múltiplos parâmetros
-   - Exemplo de função lambda
-   - Exemplo de função lambda com múltiplas expressões
-   - Exemplo de função de lambda com chaveamento de método
-   - Exemplo de função lambda com múltiplos parâmetros
-   - Exemplo de função ambda com parâmetros opcionais
-   - Exemplo de função de retorno null.
+    - Exemplo de função simples
+    - Exemplo de função com retorno
+    - Exemplo de função com parâmetros opcionais
+    - Exemplo de função com parâmetros nomeados
+    - Exemplo de função anônima
+    - Exemplo de função de ordem superior
+    - Exemplo de função recursiva
+    - Exemplo de função de flecha
+    - Exemplo de função de flecha com múltiplas expressões
+    - Exemplo de função de flecha com chaveamento de método
+    - Exemplo de função de flecha com múltiplos parâmetros
+    - Exemplo de função lambda
+    - Exemplo de função lambda com múltiplas expressões
+    - Exemplo de função de lambda com chaveamento de método
+    - Exemplo de função lambda com múltiplos parâmetros
+    - Exemplo de função ambda com parâmetros opcionais
+    - Exemplo de função de retorno null.
 
 11. **Parâmetros Posicionais E Variáveis Globais**
-   - Exemplo de função para mostrar como se usar uma variavel global, não é recomentado, sendo
+    - Exemplo de função para mostrar como se usar uma variavel global, não é recomentado, sendo
    que ter paramentros nomeados é melhor para seu codigo.
-   - Exemplo de função para mostrar como nomear parametros de função
+    - Exemplo de função para mostrar como nomear parametros de função
 
 ## Como Utilizar
 
 1. Clone o repositório:
-   ```bash
+
+   ```
    git clone https://github.com/seu-usuario/Projetos-flutter-curso-Udemy.git
+   ```
 
 2. Navegue até o diretório do projeto:
 
