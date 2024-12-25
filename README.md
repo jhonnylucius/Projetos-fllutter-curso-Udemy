@@ -47,12 +47,10 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
    - Exemplo 5: Laço for-each
 
    **Explicação:**
-
    - A palavra reservada `continue` é usada para pular a iteração atual do laço e continuar com a próxima iteração. No exemplo, os números pares são pulados.
    - A palavra reservada `break` é usada para sair do laço completamente. No exemplo, o laço é interrompido quando o valor atinge 5.
 
 10. **funções em Dart**
-
    - Exemplo de função simples
    - Exemplo de função com retorno
    - Exemplo de função com parâmetros opcionais
@@ -72,7 +70,6 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
    - Exemplo de função de retorno null.
 
 11. **Parâmetros Posicionais E Variáveis Globais**
-
    - Exemplo de função para mostrar como se usar uma variavel global, não é recomentado, sendo
    que ter paramentros nomeados é melhor para seu codigo.
    - Exemplo de função para mostrar como nomear parametros de função
