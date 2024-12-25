@@ -71,6 +71,12 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
    - Exemplo de função ambda com parâmetros opcionais
    - Exemplo de função de retorno null.
 
+11. **Parâmetros Posicionais E Variáveis Globais**
+
+   - Exemplo de função para mostrar como se usar uma variavel global, não é recomentado, sendo
+   que ter paramentros nomeados é melhor para seu codigo.
+   - Exemplo de função para mostrar como nomear parametros de função
+
 ## Como Utilizar
 
 1. Clone o repositório:
