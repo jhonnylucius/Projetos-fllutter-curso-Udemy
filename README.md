@@ -88,7 +88,7 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
    cd Projetos-flutter-curso-Udemy
    ```
 
-1. Em cada pasta você encontrará arquivos de exemplo que podem ser executados no terminal. Os exemplos contêm blocos comentados - basta descomentar o bloco desejado para executá-lo (lembre-se de comentar o bloco anterior antes de testar um novo).
+1. **Em cada pasta você encontrará arquivos de exemplo que podem ser executados no terminal. Os exemplos contêm blocos comentados - basta descomentar o bloco desejado para executá-lo (lembre-se de comentar o bloco anterior antes de testar um novo).**
 
 ## Como Executar os Exemplos
 
