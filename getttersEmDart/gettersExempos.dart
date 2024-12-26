@@ -27,10 +27,11 @@ class Carro {
       required this.tamanho}); // chamando o metodo construtor
 
   int retornaTamanho() {
+    // metodo privado
     return _altura *
         _largura; // chamando o metodo privado que é acessivel dentro do arquivo, mesmo
-    // sendo privado, mas são realmente privados quando tentados acessar fora do arquivo.
-  } // metodo privado
+    // sendo privado, mas são realmente privados quando tentados acessá-los fora do arquivo.
+  }
 
   void ligar() {
     // metodo ligar
@@ -38,7 +39,7 @@ class Carro {
   }
 
   bool estaLigado() {
-    // metodo
+    // metodo estaLigado booleano
     return true;
   }
 
