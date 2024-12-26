@@ -7,7 +7,8 @@ void main() {
   print(gol.retornaTamanho()); // 8
 
   print(gol.altura);
-  gol.modificaAltura(15);
+  gol.modificaAltura(
+      15); // chamando o metodo modificaAltura alterando a variavel
   print(gol.altura);
 }
 
