@@ -25,7 +25,7 @@ void main() {
   print('Nome: ${pessoa.nome}, Idade: ${pessoa.idade}');
 }
 
-// // Encapsulamento avançado em Dart (descomente este cloco e comente o anterior para testes)
+// // Encapsulamento avançado em Dart (descomente este bloco e comente o anterior para testes)
 
 // class ContaBancaria {
 //   // Atributos privados
