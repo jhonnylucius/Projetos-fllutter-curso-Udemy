@@ -13,6 +13,7 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 - Exemplos práticos de implementação
 - Uso de Classes abstratas
 - Exemplos de uso de Mixins
+- Exemplo de modificadores de classes
 
 ### [Herança e Interfaces](/heranca/)
 - Herança básica com veículos
