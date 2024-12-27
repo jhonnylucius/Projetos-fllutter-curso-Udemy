@@ -101,6 +101,12 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 - Formatação
 - Tipos de output
 
+### [POM em DART](/pomEmDart)
+- Abstração
+- Herença
+- Polimorfismo
+- ancapsulumaneto
+
 ## Como Utilizar
 
 1. Clone o repositório:
