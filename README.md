@@ -11,6 +11,7 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 - Variáveis privadas
 - Getters e Setters
 - Exemplos práticos de implementação
+- Uso de Classes abstratas
 
 ### [Herança e Interfaces](/heranca/)
 - Herança básica com veículos
