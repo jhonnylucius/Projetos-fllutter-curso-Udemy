@@ -4,75 +4,101 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 
 ## Exemplos Incluídos
 
-1. **Condições (if/else)**
-   - Exemplos de estruturas condicionais
-   - Operadores lógicos e comparações
+## Classes e Orientação a Objetos
+### [Classes Básicas](/classesEmDart/)
+- Construtores e inicialização
+- Classes com métodos e propriedades
+- Variáveis privadas
+- Getters e Setters
+- Exemplos práticos de implementação
 
-2. **Método Print**
-   - Diferentes formas de output
-   - Interpolação de strings
-   - Concatenação
+### [Herança e Interfaces](/heranca/)
+- Herança básica com veículos
+- Implementação de interfaces
+- Polimorfismo com veículos
+- Override de métodos
+- Exemplo avançado com múltiplas classes
 
-3. **Null Safety no Dart**
-   - Uso correto de valores nulos
-   - Boas práticas com null safety
+### [Variáveis Estáticas](/variaveisEstaticas/)
+- Constantes de classe
+- Métodos estáticos
+- Singleton pattern
+- Exemplos de uso
 
-4. **Ternário**
-   - uso da condição ternária
+## Estruturas de Controle
+### [Condições IF/ELSE](/condicoesIFExemplo/)
+- Operadores lógicos
+- Condições compostas
+- Operadores de comparação
+- Exemplos práticos de decisão
 
-5. **switch**
-   - verificação de condições usando o switch, para identificar o dia da semana.
+### [Switch](/switchEmDart/)
+- Verificação de dias da semana
+- Casos múltiplos
+- Break e default
+- Exemplos de uso
 
-6. **laço For**
-   - Exemplo 1: Laço for simples
-   - Exemplo 2: Laço for com decremento
-   - Exemplo 3: Laço for com incremento de 2
-   - Exemplo 4: Laço for com lista
-   - Exemplo 5: Laço for-each
+### [Operador Ternário](/condicoesTernarias/)
+- Sintaxe básica
+- Casos de uso
+- Exemplos práticos
 
-7. **Loop While**
-   - O loop while continua executando enquanto a condição for verdadeira
+## Loops e Iterações
+### [Laço For](/lacoFor/)
+- For simples e contadores
+- For com decremento
+- For com incremento personalizado
+- Iteração em listas
+- For-each em coleções
 
-8. **Loop Do While**
-   - Exemplo 1: básico de do-while
-   - Exemplo 2: intermediário de do-while com condição complexa
-   - Exemplo avançado de do-while com entrada do usuário
-   - Exemplo 4: avançado de do-while com múltiplas condições
+### [While](/loopWhile/)
+- Loop while básico
+- Condições de parada
+- Exemplo prático
 
-9. **laço For**
-   - Exemplo de laço for usando continue
-   - Exemplo de laço for usando break
-   - Exemplo de laço while usando continue
-   - Exemplo de laço while usando break
-   - Exemplo 5: Laço for-each
+### [Do-While](/loopDoWhile/)
+- Execução garantida
+- Condições complexas
+- Entrada do usuário
+- Múltiplas condições
 
-   **Explicação:**
-   - A palavra reservada `continue` é usada para pular a iteração atual do laço e continuar com a próxima iteração. No exemplo, os números pares são pulados.
-   - A palavra reservada `break` é usada para sair do laço completamente. No exemplo, o laço é interrompido quando o valor atinge 5.
+### [Continue e Break](/continueBreak/)
+- Controle de fluxo
+- Pular iterações
+- Interromper loops
+- Exemplos práticos
 
-10. **funções em Dart**
-    - Exemplo de função simples
-    - Exemplo de função com retorno
-    - Exemplo de função com parâmetros opcionais
-    - Exemplo de função com parâmetros nomeados
-    - Exemplo de função anônima
-    - Exemplo de função de ordem superior
-    - Exemplo de função recursiva
-    - Exemplo de função arrow
-    - Exemplo de função arrow com múltiplas expressões
-    - Exemplo de função arrow com chaveamento de método
-    - Exemplo de função arrow com múltiplos parâmetros
-    - Exemplo de função lambda
-    - Exemplo de função lambda com múltiplas expressões
-    - Exemplo de função de lambda com chaveamento de método
-    - Exemplo de função lambda com múltiplos parâmetros
-    - Exemplo de função lambda com parâmetros opcionais
-    - Exemplo de função de retorno null.
+## Funções e Parâmetros
+### [Funções](/funcoesEmDart/)
+- Funções simples
+- Retorno de valores
+- Funções anônimas
+- Arrow functions
+- Funções recursivas
+- Funções assíncronas
 
-11. **Parâmetros Posicionais E Variáveis Globais**
-    - Exemplo de função para mostrar como se usar uma variavel global, não é recomentado, sendo
-   que ter paramentros nomeados é melhor para seu codigo.
-    - Exemplo de função para mostrar como nomear parametros de função
+### [Parâmetros Nomeados](/parametrosNomeados/)
+- Parâmetros obrigatórios
+- Valores default
+- Exemplo prático
+
+### [Parâmetros Posicionais](/parametrosPosicionaisEVarGlobais/)
+- Parâmetros obrigatórios
+- Parâmetros opcionais
+- Variáveis globais
+- Boas práticas
+
+## Null Safety e Output
+### [Null Safety](/nullNoDartExemplo/)
+- Variáveis nullable
+- Operadores de null safety
+- Boas práticas
+
+### [Método Print](/metodoPrintExemplo/)
+- Interpolação de strings
+- Concatenação
+- Formatação
+- Tipos de output
 
 ## Como Utilizar
 
