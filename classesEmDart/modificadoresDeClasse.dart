@@ -40,6 +40,7 @@ mixin ProtectedMixin {
 }
 
 class DerivedClass with ProtectedMixin {
+  // Classe derivada com mixin protegido
   void accessProtectedMembers() {
     print(_protectedProperty);
     _protectedMethod();
