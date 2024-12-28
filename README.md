@@ -18,6 +18,7 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 - Exemplo de uso de tipo de Set e como manipular seus itens e a diferença entre List.
 - Exemplo de uso de tipo de Maps, seus usos e como manipular seus itens
 - Exemplo de transformação de maps e sets em lists e como manipular seus itens
+- Exemplo de uso de Unums, seus usos e como manipular
 
 ### [Herança e Interfaces](/heranca/)
 - Herança básica com veículos
