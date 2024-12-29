@@ -108,11 +108,19 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 - Formatação
 - Tipos de output
 
-### [POM em DART](/pomEmDart)
+### [POO em DART](/pomEmDart)
 - Abstração
 - Herença
 - Polimorfismo
 - ancapsulumaneto
+
+### [Tramamento de Exeções em Dart](/exemploExexoes)
+- Exemplo de tratamento de erro usando try-catch
+- Exemplo de tratamento de erro usando try-catch-finally
+- Exemplo de tratamento de erro usando on-catch
+- Exemplo de lançamento de exceção personalizada
+- Função que lança uma exceção personalizada
+- Exemplo de uso de Future e tratamento de erro assíncrono
 
 ## Como Utilizar
 

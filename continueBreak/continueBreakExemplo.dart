@@ -41,3 +41,4 @@ Explicação:
 - A palavra reservada `continue` é usada para pular a iteração atual do laço e continuar com a próxima iteração. No exemplo, os números pares são pulados.
 - A palavra reservada `break` é usada para sair do laço completamente. No exemplo, o laço é interrompido quando o valor atinge 5.
 */
+// Neste exemplo, demonstramos como usar as palavras-chave `continue` e `break` em laços for e while em Dart.
