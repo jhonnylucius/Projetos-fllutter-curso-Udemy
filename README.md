@@ -114,7 +114,7 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 - Polimorfismo
 - ancapsulumaneto
 
-### [Tramamento de Exeções em Dart](/exemploExexoes)
+### [Tramamento de Exeções em Dart](/exemploExecoes)
 - Exemplo de tratamento de erro usando try-catch
 - Exemplo de tratamento de erro usando try-catch-finally
 - Exemplo de tratamento de erro usando on-catch
