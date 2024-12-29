@@ -150,3 +150,22 @@ void main() {
 // //   desenvolvedor
 // //       .calcularBonus(); // Saída: O desenvolvedor Bob tem um bônus de R$ 850.
 // // }
+
+// // explicações
+// // A abstração é um conceito fundamental na programação orientada a
+// objetos que permite definir classes abstratas com métodos abstratos
+// que devem ser implementados pelas subclasses.
+// Em Dart, a abstração é implementada usando a palavra-chave abstract
+// para definir classes abstratas e métodos abstratos.
+// No exemplo básico, a classe abstrata Animal define um método abstrato
+// fazerSom que deve ser implementado pelas subclasses Cachorro e Gato.
+// As subclasses Cachorro e Gato implementam o método fazerSom com
+// comportamentos específicos para cada tipo de animal.
+// Na função main(), criamos instâncias das subclasses Cachorro e Gato
+// e chamamos o método fazerSom para cada instância.
+// A saída do programa mostra os sons emitidos por cada tipo de animal,
+// demonstrando como a abstração permite definir comportamentos genéricos
+// em classes abstratas e implementações específicas em subclasses.
+// A abstração é uma técnica poderosa na programação orientada a objetos
+// que promove a reutilização de código e a flexibilidade no design de
+// software.

@@ -35,9 +35,9 @@ class Professor {
   Professor(this.name, this.materia); // construtor
 
   void verificacao() {
-    // verificação
+    // método verificacao para imprimir o nome do professor, a matéria que ele leciona e o salário associado a essa matéria.
     print(
-        'Professor $name leciona ${materia.name} e recebe ${materia.salario}');
+        'Professor $name  leciona ${materia.name} e recebe ${materia.salario}');
   }
 }
 

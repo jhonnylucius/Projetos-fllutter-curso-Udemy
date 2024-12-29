@@ -5,3 +5,7 @@ void main() {
 
   print(nome);
 }
+
+// Neste exemplo, definimos um enum básico chamado Status com os valores pending, approved e rejected.
+// Em seguida, declaramos uma variável status do tipo Status e a inicializamos com o valor Status.pending.
+// Usamos uma instrução switch para verificar o valor da variável status e imprimir uma mensagem correspondente.

@@ -97,3 +97,8 @@ void main() {
 //   print(saudacaoLambda('Luciano')); // Saída: Olá, Luciano!
 //   print(saudacaoLambda('Luciano', 'Silva')); // Saída: Olá, Luciano Silva!}
 }
+
+// Neste exemplo, exploramos diferentes tipos de funções em Dart, incluindo
+// funções simples, funções com retorno, funções com parâmetros opcionais
+// e nomeados, funções anônimas, funções de ordem superior, funções recursivas,
+// funções de flecha, funções lambda e muito mais.

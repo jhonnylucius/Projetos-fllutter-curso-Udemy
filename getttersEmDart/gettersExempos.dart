@@ -49,3 +49,10 @@ class Carro {
     _altura = novaAltura;
   }
 }
+
+// Neste exemplo, criamos uma classe Carro com propriedades cor e tamanho,
+// e métodos ligar, estaLigado, retornaTamanho e modificaAltura.
+// A propriedade cor é uma variável final, o que significa que seu valor é definido
+// no construtor e não pode ser alterado posteriormente.
+// A propriedade tamanho é uma variável final também, que é definida no construtor.
+// A variável _altura é privada e só pode ser acessada dentro da classe Carro.

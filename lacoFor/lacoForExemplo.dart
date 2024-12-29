@@ -30,3 +30,18 @@ void main() {
     print('Exemplo 5 - Fruta: $fruta');
   }
 }
+
+// Neste exemplo, demonstramos vários exemplos de laços for em Dart.
+// Começamos com um laço for simples que imprime os números de 0 a 4.
+// Em seguida, mostramos um laço for com decremento que imprime os números de 5 a 1.
+// Depois, apresentamos um laço for com incremento de 2 que imprime os números pares de 0 a 8.
+// Em seguida, exploramos um laço for que percorre uma lista de strings e imprime cada elemento.
+// Por fim, mostramos um laço for-each que percorre a mesma lista de strings e imprime cada elemento.
+// Os laços for são úteis para iterar sobre uma sequência de elementos, como números ou elementos de uma lista.
+// Eles oferecem flexibilidade para controlar o início, a condição e o incremento/decremento do loop, permitindo
+// que você execute um bloco de código repetidamente com base em uma condição específica.
+// Os laços for-each são especialmente úteis para percorrer coleções de elementos, como listas, conjuntos e mapas,
+// sem a necessidade de controlar explicitamente o índice ou a chave de iteração.
+// Eles simplificam a iteração sobre os elementos de uma coleção e tornam o código mais legível e conciso.
+// Os laços for-each são especialmente úteis para percorrer coleções de elementos, como listas, conjuntos e mapas,
+// sem a necessidade de controlar explicitamente o índice ou a chave de iteração.
