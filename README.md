@@ -142,6 +142,17 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 - Variáveis estáticas
 - Singleton pattern
 
+### Records
+#### [Uso de Records](/recordsEmDart/)
+- Exemplo básico de um record em Dart
+- Criando um record com dois campos
+- Exemplo avançado de um record em Dart
+- riando um record com campos posicionais e nomeados
+- Acessando campos posicionais
+- Acessando campo nomeado
+- VDesestruturando um record
+- Acessando campos por posição
+
 ## Como Utilizar
 
 1. Clone o repositório:
