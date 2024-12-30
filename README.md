@@ -163,6 +163,11 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 - Uso de padrões com classes personalizadas.
 - Combinação de padrões com operadores lógicos.
 
+#### [Extensões](/exensoesEmDart/)
+- Definindo uma extensão básica em Dart
+- Definindo uma extensão intermediária em Dart
+- Definindo uma extensão avançada em Dart
+
 ## Como Utilizar
 
 1. Clone o repositório:

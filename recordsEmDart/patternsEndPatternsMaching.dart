@@ -16,7 +16,7 @@ void main() {
   }
 
   // Correspondência de padrões com switch-case
-  var shape = 'circle';
+  var shape = 'square';
   switch (shape) {
     case 'circle':
       print('It is a circle');
