@@ -153,6 +153,16 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 - VDesestruturando um record
 - Acessando campos por posição
 
+### Patterns
+#### [Uso de Patterns](/patternsEndPatternsMaching/)
+- Função principal que contém vários exemplos de pattern matching:
+- `if-case` básico para correspondência de padrões.
+- Desestruturação com correspondência de padrões.
+- Uso de padrões em loops `for`.
+- Correspondência de padrões avançada com padrões aninhados.
+- Uso de padrões com classes personalizadas.
+- Combinação de padrões com operadores lógicos.
+
 ## Como Utilizar
 
 1. Clone o repositório:
