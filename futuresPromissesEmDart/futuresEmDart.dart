@@ -1,10 +1,12 @@
 void main() {
 // Future(promisses JS) é um objeto que representa um valor que pode estar disponível agora, no futuro ou nunca.
-  Future myFuture = Future(() {
+  Future(() {
     print('Criando função do futuro'); // Criando função do futuro
     return 15;
-  })
-      .catchError((error) => print('Erro: $error')) // Tratamento de erro
+  }).catchError((error) {
+    print('Erro: $error');
+    return 0; // Return a default value
+  }) // Tratamento de erro
       .then(
           (val) => print('O valor do futuro é $val')); // Tratamento de sucesso
 
