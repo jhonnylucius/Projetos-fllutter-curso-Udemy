@@ -1,4 +1,4 @@
-# Estrutura Dart e suas ligações
+# Estrutura projeto Dart 
 
 **Cenário:** Imagine um aplicativo simples que lista produtos. Este exemplo será um bom ponto de partida para projetos mais complexos.
 
