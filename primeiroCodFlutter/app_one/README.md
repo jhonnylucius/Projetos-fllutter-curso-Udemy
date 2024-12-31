@@ -49,396 +49,361 @@
 
 **Explicação Detalhada de Cada Camada e Seus Arquivos:**
 
-**1. lib/core (Núcleo):**
+## Explicação Detalhada de Cada Camada e Seus Arquivos
 
-- **errors/failures.dart:**
-    - **Responsabilidade:** Define classes para erros genéricos (falhas) que podem ocorrer em todo o aplicativo, como falhas de rede, falhas de cache, etc.
-    - **Exemplo:**
-     ````
-        
-        `abstract class Failure {
-          final String message;
-        
-          Failure(this.message);
+### 1. `lib/core` (Núcleo)
+
+*   **`errors/failures.dart`**:
+    ```dart
+    abstract class Failure {
+      final String message;
+      Failure(this.message);
+    }
+    class ServerFailure extends Failure {
+      ServerFailure(String message) : super(message);
+    }
+    class CacheFailure extends Failure {
+      CacheFailure(String message) : super(message);
+    }
+    // outros failures
+    ```
+
+*   **`usecases/usecase.dart`**:
+    ```dart
+    import 'package:dartz/dartz.dart';
+    import '../errors/failures.dart';
+
+    abstract class UseCase<Type, Params> {
+      Future<Either<Failure, Type>> call(Params params);
+    }
+    ```
+
+*   **`network/network_info.dart`**:
+    ```dart
+    abstract class NetworkInfo {
+      Future<bool> get isConnected;
+    }
+    // Implementação para verificação de rede
+    ```
+
+### 2. `lib/features/product` (Feature: Produto)
+
+#### `data` (Camada de Dados)
+
+*   **`datasources/product_local_data_source.dart`**:
+    ```dart
+    import '../models/product_model.dart';
+
+    abstract class ProductLocalDataSource {
+      Future<List<ProductModel>> getCachedProducts();
+      Future<void> cacheProducts(List<ProductModel> products);
+    }
+    // Implementação com SharedPreferences, Hive, etc.
+    ```
+
+*   **`datasources/product_remote_data_source.dart`**:
+    ```dart
+    import '../models/product_model.dart';
+
+    abstract class ProductRemoteDataSource {
+      Future<List<ProductModel>> getProductsFromApi();
+    }
+    // Implementação com http package ou Dio
+    ```
+
+*   **`models/product_model.dart`**:
+    ```dart
+    class ProductModel {
+       final int id;
+       final String name;
+       final double price;
+
+       ProductModel({required this.id, required this.name, required this.price});
+
+       factory ProductModel.fromJson(Map<String, dynamic> json) {
+          return ProductModel(
+               id: json['id'] as int,
+               name: json['name'] as String,
+               price: (json['price'] as num).toDouble(),
+            );
+       }
+    }
+    ```
+
+*   **`repositories/product_repository_impl.dart`**:
+    ```dart
+    import 'package:dartz/dartz.dart';
+    import '../../domain/entities/product.dart';
+    import '../../domain/repositories/product_repository.dart';
+    import '../datasources/product_local_data_source.dart';
+    import '../datasources/product_remote_data_source.dart';
+    import '../models/product_model.dart';
+    import '../../../core/errors/failures.dart';
+
+    class ProductRepositoryImpl implements ProductRepository {
+       final ProductRemoteDataSource remoteDataSource;
+       final ProductLocalDataSource localDataSource;
+
+       ProductRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
+
+        @override
+        Future<Either<Failure, List<Product>>> getProducts() async {
+          try {
+            final remoteProducts = await remoteDataSource.getProductsFromApi();
+             localDataSource.cacheProducts(remoteProducts);
+            return Right(_productListModelToEntity(remoteProducts));
+          }  catch (e){
+            return  Left(ServerFailure("erro"));
+          }
         }
-        
-        class ServerFailure extends Failure {
-          ServerFailure(String message) : super(message);
+        List<Product> _productListModelToEntity(List<ProductModel> list){
+              return list.map((productModel) => Product(id: productModel.id, name: productModel.name, price: productModel.price)).toList();
+           }
+      }
+    ```
+
+*   **`repositories/product_repository.dart`**:
+    ```dart
+    import 'package:dartz/dartz.dart';
+    import '../../domain/entities/product.dart';
+    import '../../../core/errors/failures.dart';
+
+    abstract class ProductRepository {
+      Future<Either<Failure, List<Product>>> getProducts();
+    }
+    ```
+
+#### `domain` (Camada de Domínio)
+
+*   **`entities/product.dart`**:
+    ```dart
+    class Product {
+      final int id;
+      final String name;
+      final double price;
+
+      Product({required this.id, required this.name, required this.price});
+    }
+    ```
+
+*   **`usecases/get_products.dart`**:
+    ```dart
+    import 'package:dartz/dartz.dart';
+    import '../../../core/errors/failures.dart';
+    import '../../../core/usecases/usecase.dart';
+    import '../entities/product.dart';
+    import '../repositories/product_repository.dart';
+
+    class GetProducts implements UseCase<List<Product>, NoParams> {
+      final ProductRepository repository;
+      GetProducts(this.repository);
+
+      @override
+      Future<Either<Failure, List<Product>>> call(NoParams params) async {
+        return await repository.getProducts();
+      }
+    }
+
+    class NoParams {}
+    ```
+* **`repositories/product_repository.dart`**
+    ```dart
+      import 'package:dartz/dartz.dart';
+      import '../entities/product.dart';
+      import '../../../core/errors/failures.dart';
+
+      abstract class ProductRepository {
+          Future<Either<Failure, List<Product>>> getProducts();
+      }
+    ```
+
+#### `presentation` (Camada de Apresentação)
+
+*   **`blocs/product_bloc.dart`**:
+    ```dart
+    import 'package:flutter_bloc/flutter_bloc.dart';
+    import '../../domain/entities/product.dart';
+    import '../../domain/usecases/get_products.dart';
+    import 'product_event.dart';
+    import 'product_state.dart';
+
+    class ProductBloc extends Bloc<ProductEvent, ProductState> {
+      final GetProducts getProducts;
+
+      ProductBloc({required this.getProducts}) : super(ProductInitial()) {
+        on<FetchProducts>(_onFetchProducts);
+      }
+
+      void _onFetchProducts(FetchProducts event, Emitter<ProductState> emit) async {
+        emit(ProductLoading());
+        final failureOrProducts = await getProducts(NoParams());
+         failureOrProducts.fold(
+               (failure) => emit(ProductError(message: failure.message)),
+              (products) => emit(ProductLoaded(products: products)),
+         );
+      }
+    }
+    ```
+*   **`blocs/product_event.dart`**
+    ```dart
+       abstract class ProductEvent{}
+       class FetchProducts extends ProductEvent{}
+    ```
+*   **`blocs/product_state.dart`**
+    ```dart
+       import '../../domain/entities/product.dart';
+
+        abstract class ProductState{}
+        class ProductInitial extends ProductState{}
+        class ProductLoading extends ProductState{}
+        class ProductLoaded extends ProductState{
+         final List<Product> products;
+         ProductLoaded({required this.products});
+         }
+       class ProductError extends ProductState{
+       final String message;
+       ProductError({required this.message});
         }
-        
-        class CacheFailure extends Failure {
-          CacheFailure(String message) : super(message);
+    ```
+
+*   **`pages/product_page.dart`**:
+    ```dart
+    import 'package:flutter/material.dart';
+    import 'package:flutter_bloc/flutter_bloc.dart';
+
+    import '../blocs/product_bloc.dart';
+    import '../blocs/product_event.dart';
+    import '../blocs/product_state.dart';
+    import '../widgets/product_list.dart';
+
+    class ProductPage extends StatefulWidget {
+     const ProductPage({Key? key}) : super(key: key);
+
+      @override
+      State<ProductPage> createState() => _ProductPageState();
+    }
+
+    class _ProductPageState extends State<ProductPage> {
+    @override
+        void initState() {
+        super.initState();
+        context.read<ProductBloc>().add(FetchProducts());
+    }
+
+     @override
+      Widget build(BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(title: const Text('Products')),
+          body: BlocBuilder<ProductBloc, ProductState>(
+            builder: (context, state) {
+              if (state is ProductLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (state is ProductLoaded) {
+                return ProductList(products: state.products);
+              } else if(state is ProductError){
+                   return Center(child: Text(state.message),);
+              }
+                return const Center(child: Text("Ocorreu um erro"));
+            },
+          ),
+        );
+      }
+    }
+    ```
+
+*   **`widgets/product_list.dart`**:
+    ```dart
+    import 'package:flutter/material.dart';
+    import 'package:go_router/go_router.dart';
+    import '../../domain/entities/product.dart';
+    import '../../../navigation/routes.dart';
+
+    class ProductList extends StatelessWidget {
+      final List<Product> products;
+
+      ProductList({required this.products});
+
+      @override
+      Widget build(BuildContext context) {
+        return ListView.builder(
+          itemCount: products.length,
+          itemBuilder: (context, index) {
+            final product = products[index];
+            return ListTile(
+              title: Text(product.name),
+              subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
+            onTap: () => context.go('${AppRoutes.productDetail.replaceAll(':id', product.id.toString())}',),
+            );
+          },
+        );
+      }
+    }
+    ```
+  * **`pages/product_detail_page.dart`**
+    ```dart
+        import 'package:flutter/material.dart';
+
+        class ProductDetailPage extends StatelessWidget {
+            final String id;
+             const ProductDetailPage({super.key, required this.id});
+          @override
+            Widget build(BuildContext context) {
+            return Scaffold(
+              appBar: AppBar(
+                title: Text("Detalhes do produto"),
+              ),
+              body: Center(
+               child: Text("Produto id: $id"),
+              ),
+            );
+           }
         }
-        
-        // outros failures`
-        
-     ````
-     
-    - **Importância:** Permite padronizar o tratamento de erros em todo o aplicativo.
-- **usecases/usecase.dart:**
-    - **Responsabilidade:** Define uma interface genérica para casos de uso.
-    - **Exemplo:**
- 
-     ```
-        
-        `import 'package:dartz/dartz.dart';
-        
-        import '../errors/failures.dart';
-        
-        abstract class UseCase<Type, Params> {
-          Future<Either<Failure, Type>> call(Params params);
-        }`
-        
-    ```    
-        
-    - **Importância:** Garante uma estrutura consistente para casos de uso (a lógica principal do aplicativo) e separa a lógica da implementação.
-- **network/network_info.dart:**
-    - **Responsabilidade:** Abstrai a verificação de conectividade de rede.
-    - **Exemplo:**
- 
-        ```
-        `abstract class NetworkInfo {
-          Future<bool> get isConnected;
-        }
-        
-        // Implementação para verificação de rede`
-       ```
-        
-    - **Importância:** Isola a lógica de verificação da conexão, permitindo fácil mudança de implementação (ex: para testes).
+    ```
 
-**2. lib/features/product (Feature: Produto):**
+### 3. `lib/navigation` (Navegação)
 
-- **data (Camada de Dados):**
-    - **datasources (Fontes de Dados):**
-        - **product_local_data_source.dart:**
-            - **Responsabilidade:** Lida com a busca e armazenamento de dados de produtos em cache (local).
-            - **Exemplo:**
-                ```
-                `abstract class ProductLocalDataSource {
-                  Future<List<ProductModel>> getCachedProducts();
-                  Future<void> cacheProducts(List<ProductModel> products);
-                }
-                ```
-                
-                // Implementação com SharedPreferences, Hive, etc.`
-                
-             
-                
-            - **Importância:** Abstrai a implementação de cache de dados.
-        - **product_remote_data_source.dart:**
-            - **Responsabilidade:** Lida com a busca de dados de produtos de uma API (servidor).
-            - **Exemplo:**
-                ```
-                `import '../models/product_model.dart';
-                
-                abstract class ProductRemoteDataSource {
-                  Future<List<ProductModel>> getProductsFromApi();
-                }
-                // Implementação com http package ou Dio`
-               ``` 
-              
-                
-            - **Importância:** Abstrai a comunicação com a API.
-    - **models/product_model.dart:**
-        - **Responsabilidade:** Define um modelo de dados específico para a camada de dados (pode ser diferente da entidade de domínio).
-        - **Exemplo:**
-     
-            ````
-            `class ProductModel {
-              final int id;
-              final String name;
-              final double price;
-          
-            ```
-              ProductModel({required this.id, required this.name, required this.price});
-            
-              factory ProductModel.fromJson(Map<String, dynamic> json) {
-                 return ProductModel(
-                     id: json['id'] as int,
-                     name: json['name'] as String,
-                     price: (json['price'] as num).toDouble(),
-                  );
-              }
-            
-             // Implementação para converter do modelo para o domínio (Product)
-            }`
-            ```` 
-           
-            
-        - **Importância:** Garante a separação da camada de dados da camada de domínio.
-    - **repositories/product_repository_impl.dart:**
-        - **Responsabilidade:** Implementa a interface do repositório, orquestrando as fontes de dados.
-        - **Exemplo:**
-     
-            ````
-            `import 'package:dartz/dartz.dart';
-            
-            import '../../domain/entities/product.dart';
-            import '../../domain/repositories/product_repository.dart';
-            import '../datasources/product_local_data_source.dart';
-            import '../datasources/product_remote_data_source.dart';
-            import '../models/product_model.dart';
-            
-            import '../../../core/errors/failures.dart';
-            
-            class ProductRepositoryImpl implements ProductRepository {
-              final ProductRemoteDataSource remoteDataSource;
-              final ProductLocalDataSource localDataSource;
-            
-              ProductRepositoryImpl({required this.remoteDataSource, required this.localDataSource});
-            
-             @override
-              Future<Either<Failure, List<Product>>> getProducts() async {
-                try {
-                  final remoteProducts = await remoteDataSource.getProductsFromApi();
-                   localDataSource.cacheProducts(remoteProducts);
-                  return Right(_productListModelToEntity(remoteProducts));
-                }  catch (e){
-                  return  Left(ServerFailure("erro"));
-                }
-            
-              }
-              List<Product> _productListModelToEntity(List<ProductModel> list){
-                  return list.map((productModel) => Product(id: productModel.id, name: productModel.name, price: productModel.price)).toList();
-              }
-            }`
-              ````
-            
-        - **Importância:** Centraliza a lógica de obtenção de dados (da API ou cache).
-    - **repositories/product_repository.dart:**
-        - **Responsabilidade:** Define a interface do repositório, que será utilizada pela camada de domínio.
-        - **Exemplo:**
-            ````
-            `import 'package:dartz/dartz.dart';
-            
-            import '../../domain/entities/product.dart';
-            import '../../../core/errors/failures.dart';
-            abstract class ProductRepository {
-              Future<Either<Failure, List<Product>>> getProducts();
-            }`
-            
-           ```
-            
-        - **Importância:** Abstrai a implementação da obtenção de dados da camada de domínio.
-- **domain (Camada de Domínio):**
-    - **entities/product.dart:**
-        - **Responsabilidade:** Define a entidade de domínio (modelo de dados puro, sem dependências).
-        - **Exemplo:**
-            ````
-            `class Product {
-              final int id;
-              final String name;
-              final double price;
-            
-              Product({required this.id, required this.name, required this.price});
-            }`
-            
-            ```
-            
-        - **Importância:** Representa o objeto de negócio central da feature.
-    - **usecases/get_products.dart:**
-        - **Responsabilidade:** Implementa um caso de uso específico, que utiliza o repositório.
-        - **Exemplo:**
-     
-            ```
-            `import 'package:dartz/dartz.dart';
-            
-            import '../../../core/errors/failures.dart';
-            import '../../../core/usecases/usecase.dart';
-            import '../entities/product.dart';
-            import '../repositories/product_repository.dart';
-            
-            class GetProducts implements UseCase<List<Product>, NoParams> {
-              final ProductRepository repository;
-              GetProducts(this.repository);
-            
-              @override
-              Future<Either<Failure, List<Product>>> call(NoParams params) async {
-                return await repository.getProducts();
-              }
-            }
-            
-            class NoParams {}`
-            ````
-            
-        - **Importância:** Define a lógica de negócio (obter produtos) de forma independente.
-    - **repositories/product_repository.dart:** (Repetido aqui para manter a separação de responsabilidade)
-        - **Responsabilidade:** Define a interface do repositório na camada de domínio, o que garante que a camada de domínio não conheça a implementação da camada de dados.
-        - **Exemplo:**
-            
-            ```
-            
-            import 'package:dartz/dartz.dart';
-            
-            import '../entities/product.dart';
-            
-            import '../../../core/errors/failures.dart';
-            
-            `abstract class ProductRepository {
-                Future<Either<Failure, List<Product>>> getProducts();
-            }
-            ````
-            
-            
-            
-- **presentation (Camada de Apresentação):**
-    - **blocs/product_bloc.dart:**
-        - **Responsabilidade:** Lida com a lógica da apresentação, manipulando eventos e atualizando o estado da UI.
-        - **Exemplo:**
-     
-            ```
-            `import 'package:flutter_bloc/flutter_bloc.dart';
-            
-            import '../../domain/entities/product.dart';
-            import '../../domain/usecases/get_products.dart';
-            import 'product_event.dart';
-            import 'product_state.dart';
-            
-            class ProductBloc extends Bloc<ProductEvent, ProductState> {
-              final GetProducts getProducts;
-            
-              ProductBloc({required this.getProducts}) : super(ProductInitial()) {
-                on<FetchProducts>(_onFetchProducts);
-              }
-            
-              void _onFetchProducts(FetchProducts event, Emitter<ProductState> emit) async {
-                emit(ProductLoading());
-                final failureOrProducts = await getProducts(NoParams());
-                 failureOrProducts.fold(
-                       (failure) => emit(ProductError(message: failure.message)),
-                      (products) => emit(ProductLoaded(products: products)),
-                 );
-              }
-            }`
-            
-          ```
-            
-        - **Importância:** Separa a lógica da apresentação da UI, facilitando testes.
-        - **product_event.dart:**
-            - **Responsabilidade:** Define os eventos que o ProductBloc irá processar.
+*   **`app_router.dart`**:
+    ```dart
+    import 'package:flutter/material.dart';
+    import 'package:go_router/go_router.dart';
+    import '../features/product/presentation/pages/product_page.dart';
+        import '../features/product/presentation/pages/product_detail_page.dart';
+    import 'routes.dart'; // Importa as rotas definidas
 
-               ```
-                `abstract class ProductEvent{}
-                
-                 class FetchProducts extends ProductEvent{}`
-                
-                ```
-                
-        - **product_state.dart:**
-            - **Responsabilidade:** Define os estados que a UI pode assumir.
-            ```
-            `import '../../domain/entities/product.dart';
-            
-            abstract class ProductState{}
-            
-             class ProductInitial extends ProductState{}
-            
-             class ProductLoading extends ProductState{}
-            
-             class ProductLoaded extends ProductState{
-             final List<Product> products;
-             ProductLoaded({required this.products});
-             }
-            
-             class ProductError extends ProductState{
-             final String message;
-             ProductError({required this.message});
-             }`
-            
-            ```
-            
-    - **pages/product_page.dart:**
-        - **Responsabilidade:** Constrói a tela principal, conectando o bloc e exibindo widgets.
-        - **Exemplo:**
-      
-         ```
-            import 'package:flutter/material.dart';
-            import 'package:flutter_bloc/flutter_bloc.dart';
-            
-            import '../blocs/product_bloc.dart';
-            import '../blocs/product_event.dart';
-            import '../blocs/product_state.dart';
-            import '../widgets/product_list.dart';
-            
-            class ProductPage extends StatefulWidget {
-             const ProductPage({Key? key}) : super(key: key);
-            
-              @override
-              State<ProductPage> createState() => _ProductPageState();
-            }
-            
-            class _ProductPageState extends State<ProductPage> {
-            @override
-                void initState() {
-                super.initState();
-                context.read<ProductBloc>().add(FetchProducts());
-            }
-            
-             @override
-              Widget build(BuildContext context) {
-                return Scaffold(
-                  appBar: AppBar(title: const Text('Products')),
-                  body: BlocBuilder<ProductBloc, ProductState>(
-                    builder: (context, state) {
-                      if (state is ProductLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is ProductLoaded) {
-                        return ProductList(products: state.products);
-                      } else if(state is ProductError){
-                           return Center(child: Text(state.message),);
-                      }
-                        return const Center(child: Text("Ocorreu um erro"));
-                    },
-                  ),
-                );
-              }
-            }`
-         
-           ```
-            
-        - **Importância:** Responsável pela interface do usuário e a ligação com o bloc.
-            
-    - **widgets/product_list.dart:**
-        - **Responsabilidade:** Exibe uma lista de produtos.
-        - **Exemplo:**
-          
-            ````
-            `import 'package:flutter/material.dart';
-            
-            import '../../domain/entities/product.dart';
-            
-            class ProductList extends StatelessWidget {
-              final List<Product> products;
-            
-              ProductList({required this.products});
-            
-              @override
-              Widget build(BuildContext context) {
-                return ListView.builder(
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    final product = products[index];
-                    return ListTile(
-                      title: Text(product.name),
-                      subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
-                    );
-                  },
-                );
-              }
-            }`
-            
-            ```
-            
-        - **Importância:** Componente reutilizável para exibir produtos.
+    class AppRouter {
+       static final goRouter = GoRouter(
+         initialLocation: AppRoutes.product, // Rota inicial
+         routes: [
+             GoRoute(
+                 path: AppRoutes.product,
+                 builder: (context, state) => const ProductPage(),
+             ),
+             GoRoute(
+                 path: AppRoutes.productDetail,
+                 builder: (context, state) {
+                      final productId = state.pathParameters['id'] ?? '';
+                     return ProductDetailPage(id: productId);
+                 },
+             )
+         ]
+       );
+    }
+    ```
 
-**3. lib/main.dart (Ponto de Entrada):**
+*   **`routes.dart`**:
+    ```dart
+    class AppRoutes {
+      static const String product = '/products';
+      static const String productDetail = '/product/:id';
+    }
+    ```
 
-- **Responsabilidade:** Inicializa o aplicativo, configura dependências e define a tela inicial.
-- **Exemplo:**
+### 4. `lib/main.dart` (Ponto de Entrada)
 
- ```
-`import 'package:flutter/material.dart';
+```dart
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'core/network/network_info.dart';
 import 'features/product/data/datasources/product_local_data_source.dart';
@@ -447,7 +412,7 @@ import 'features/product/data/repositories/product_repository_impl.dart';
 import 'features/product/domain/repositories/product_repository.dart';
 import 'features/product/domain/usecases/get_products.dart';
 import 'features/product/presentation/blocs/product_bloc.dart';
-import 'features/product/presentation/pages/product_page.dart';
+import 'navigation/app_router.dart';
 
 void main() {
   runApp(MyApp());
@@ -464,16 +429,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Product App',
-        theme: ThemeData(primarySwatch: Colors.blue),
-       home:  BlocProvider(
+    return MaterialApp.router(
+         routerConfig: AppRouter.goRouter,
+       debugShowCheckedModeBanner: false,
+       theme: ThemeData(primarySwatch: Colors.blue),
+        builder: (context, child) {
+        return BlocProvider(
           create: (context) => ProductBloc(getProducts: getProductsUseCase),
-          child: const ProductPage(),
-        ),
-    );
+          child: child,
+        );
+        },
+      );
   }
-}`
+}
 
 ```
 
@@ -501,6 +469,7 @@ class MyApp extends StatelessWidget {
     - NetworkInfo: Responsável por verificar a conexão com a rede.
     - Failures: Responsável por tratar os erros e dar um feedback amigável ao usuário.
     - UseCase: Permite que a lógica da aplicação esteja desacoplada da UI.
+
 
 **Benefícios da Clean Architecture:**
 
