@@ -4,6 +4,7 @@
 
 **Estrutura do Projeto (Pastas):**
 
+```
 `meu_app/
 ├── lib/
 │   ├── core/
@@ -40,8 +41,8 @@
 │   │           └── widgets/
 │   │               └── product_list.dart
 │   └── main.dart`
+```
 
-**content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).
 
 **Explicação Detalhada de Cada Camada e Seus Arquivos:**
 
@@ -50,6 +51,7 @@
 - **errors/failures.dart:**
     - **Responsabilidade:** Define classes para erros genéricos (falhas) que podem ocorrer em todo o aplicativo, como falhas de rede, falhas de cache, etc.
     - **Exemplo:**
+     ````
         
         `abstract class Failure {
           final String message;
@@ -67,12 +69,14 @@
         
         // outros failures`
         
-        **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
-        
+     ````
+     
     - **Importância:** Permite padronizar o tratamento de erros em todo o aplicativo.
 - **usecases/usecase.dart:**
     - **Responsabilidade:** Define uma interface genérica para casos de uso.
     - **Exemplo:**
+ 
+     ```
         
         `import 'package:dartz/dartz.dart';
         
@@ -82,20 +86,20 @@
           Future<Either<Failure, Type>> call(Params params);
         }`
         
-        **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+    ```    
         
     - **Importância:** Garante uma estrutura consistente para casos de uso (a lógica principal do aplicativo) e separa a lógica da implementação.
 - **network/network_info.dart:**
     - **Responsabilidade:** Abstrai a verificação de conectividade de rede.
     - **Exemplo:**
-        
+ 
+        ```
         `abstract class NetworkInfo {
           Future<bool> get isConnected;
         }
         
         // Implementação para verificação de rede`
-        
-        **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+       ```
         
     - **Importância:** Isola a lógica de verificação da conexão, permitindo fácil mudança de implementação (ex: para testes).
 
@@ -106,39 +110,43 @@
         - **product_local_data_source.dart:**
             - **Responsabilidade:** Lida com a busca e armazenamento de dados de produtos em cache (local).
             - **Exemplo:**
-                
+                ```
                 `abstract class ProductLocalDataSource {
                   Future<List<ProductModel>> getCachedProducts();
                   Future<void> cacheProducts(List<ProductModel> products);
                 }
+                ```
+                
                 // Implementação com SharedPreferences, Hive, etc.`
                 
-                **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+             
                 
             - **Importância:** Abstrai a implementação de cache de dados.
         - **product_remote_data_source.dart:**
             - **Responsabilidade:** Lida com a busca de dados de produtos de uma API (servidor).
             - **Exemplo:**
-                
+                ```
                 `import '../models/product_model.dart';
                 
                 abstract class ProductRemoteDataSource {
                   Future<List<ProductModel>> getProductsFromApi();
                 }
                 // Implementação com http package ou Dio`
-                
-                **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+               ``` 
+              
                 
             - **Importância:** Abstrai a comunicação com a API.
     - **models/product_model.dart:**
         - **Responsabilidade:** Define um modelo de dados específico para a camada de dados (pode ser diferente da entidade de domínio).
         - **Exemplo:**
-            
+     
+            ````
             `class ProductModel {
               final int id;
               final String name;
               final double price;
-            
+          
+            ```
               ProductModel({required this.id, required this.name, required this.price});
             
               factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -151,14 +159,15 @@
             
              // Implementação para converter do modelo para o domínio (Product)
             }`
-            
-            **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+            ```` 
+           
             
         - **Importância:** Garante a separação da camada de dados da camada de domínio.
     - **repositories/product_repository_impl.dart:**
         - **Responsabilidade:** Implementa a interface do repositório, orquestrando as fontes de dados.
         - **Exemplo:**
-            
+     
+            ````
             `import 'package:dartz/dartz.dart';
             
             import '../../domain/entities/product.dart';
@@ -190,14 +199,13 @@
                   return list.map((productModel) => Product(id: productModel.id, name: productModel.name, price: productModel.price)).toList();
               }
             }`
-            
-            **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+              ````
             
         - **Importância:** Centraliza a lógica de obtenção de dados (da API ou cache).
     - **repositories/product_repository.dart:**
         - **Responsabilidade:** Define a interface do repositório, que será utilizada pela camada de domínio.
         - **Exemplo:**
-            
+            ````
             `import 'package:dartz/dartz.dart';
             
             import '../../domain/entities/product.dart';
@@ -206,14 +214,14 @@
               Future<Either<Failure, List<Product>>> getProducts();
             }`
             
-            **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+           ```
             
         - **Importância:** Abstrai a implementação da obtenção de dados da camada de domínio.
 - **domain (Camada de Domínio):**
     - **entities/product.dart:**
         - **Responsabilidade:** Define a entidade de domínio (modelo de dados puro, sem dependências).
         - **Exemplo:**
-            
+            ````
             `class Product {
               final int id;
               final String name;
@@ -222,13 +230,14 @@
               Product({required this.id, required this.name, required this.price});
             }`
             
-            **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+            ```
             
         - **Importância:** Representa o objeto de negócio central da feature.
     - **usecases/get_products.dart:**
         - **Responsabilidade:** Implementa um caso de uso específico, que utiliza o repositório.
         - **Exemplo:**
-            
+     
+            ```
             `import 'package:dartz/dartz.dart';
             
             import '../../../core/errors/failures.dart';
@@ -247,15 +256,14 @@
             }
             
             class NoParams {}`
-            
-            **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+            ````
             
         - **Importância:** Define a lógica de negócio (obter produtos) de forma independente.
     - **repositories/product_repository.dart:** (Repetido aqui para manter a separação de responsabilidade)
         - **Responsabilidade:** Define a interface do repositório na camada de domínio, o que garante que a camada de domínio não conheça a implementação da camada de dados.
         - **Exemplo:**
             
-            ```dart
+            ```
             
             import 'package:dartz/dartz.dart';
             
@@ -268,13 +276,14 @@
             }
             ````
             
-            **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).
+            
             
 - **presentation (Camada de Apresentação):**
     - **blocs/product_bloc.dart:**
         - **Responsabilidade:** Lida com a lógica da apresentação, manipulando eventos e atualizando o estado da UI.
         - **Exemplo:**
-            
+     
+            ```
             `import 'package:flutter_bloc/flutter_bloc.dart';
             
             import '../../domain/entities/product.dart';
@@ -299,21 +308,22 @@
               }
             }`
             
-            **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+          ```
             
         - **Importância:** Separa a lógica da apresentação da UI, facilitando testes.
         - **product_event.dart:**
             - **Responsabilidade:** Define os eventos que o ProductBloc irá processar.
-                
+
+               ```
                 `abstract class ProductEvent{}
                 
                  class FetchProducts extends ProductEvent{}`
                 
-                **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+                ```
                 
         - **product_state.dart:**
             - **Responsabilidade:** Define os estados que a UI pode assumir.
-            
+            ```
             `import '../../domain/entities/product.dart';
             
             abstract class ProductState{}
@@ -332,13 +342,14 @@
              ProductError({required this.message});
              }`
             
-            **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+            ```
             
     - **pages/product_page.dart:**
         - **Responsabilidade:** Constrói a tela principal, conectando o bloc e exibindo widgets.
         - **Exemplo:**
-            
-            `import 'package:flutter/material.dart';
+      
+         ```
+            import 'package:flutter/material.dart';
             import 'package:flutter_bloc/flutter_bloc.dart';
             
             import '../blocs/product_bloc.dart';
@@ -379,14 +390,16 @@
                 );
               }
             }`
-            
-            **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+         
+           ```
             
         - **Importância:** Responsável pela interface do usuário e a ligação com o bloc.
+            
     - **widgets/product_list.dart:**
         - **Responsabilidade:** Exibe uma lista de produtos.
         - **Exemplo:**
-            
+          
+            ````
             `import 'package:flutter/material.dart';
             
             import '../../domain/entities/product.dart';
@@ -411,7 +424,7 @@
               }
             }`
             
-            **content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+            ```
             
         - **Importância:** Componente reutilizável para exibir produtos.
 
@@ -420,6 +433,7 @@
 - **Responsabilidade:** Inicializa o aplicativo, configura dependências e define a tela inicial.
 - **Exemplo:**
 
+ ```
 `import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
@@ -458,7 +472,7 @@ class MyApp extends StatelessWidget {
   }
 }`
 
-**content_copydownload**Use code [**with caution**](https://support.google.com/legal/answer/13505487).Dart
+```
 
 **Explicação da Ligação e Responsabilidades:**
 
