@@ -48,7 +48,7 @@ class MyHomePage extends StatelessWidget {
               image: DecorationImage(
                 // Imagem de fundo
                 image: NetworkImage(
-                    'https://via.placeholder.com/800x600'), // Imagem
+                    'https://union.dev.br/assets/fundoVertical.jpeg'), // Imagem
                 fit: BoxFit.cover, // Ajuste
               ),
             ),
@@ -60,11 +60,15 @@ class MyHomePage extends StatelessWidget {
               // Coluna de widgets
               mainAxisAlignment: MainAxisAlignment.center, // Alinhamento
               children: [
+                Image.network(
+                  'https://union.dev.br/assets/fundoVertical.jpeg',
+                  scale: 1.0,
+                ),
                 // Lista de widgets
                 // Título estilizado
                 const Text(
                   // Texto
-                  'Bem-vindo ao Flutter', // Texto
+                  'Divertindo com Flutter', // Texto
                   style: TextStyle(
                     // Estilo do texto
                     fontSize: 32, // Tamanho da fonte
@@ -84,7 +88,9 @@ class MyHomePage extends StatelessWidget {
                 const SizedBox(height: 20), // Espaçamento
                 // Botões com ícones
                 ElevatedButton.icon(
-                  onPressed: () {}, // Função ao clicar
+                  onPressed: () {
+                    createElement();
+                  }, // Função ao clicar
                   icon: const Icon(Icons.thumb_up), // Ícone de curtir
                   label: const Text('Curtir'), // Texto do botão
                   style: ElevatedButton.styleFrom(
@@ -100,7 +106,9 @@ class MyHomePage extends StatelessWidget {
                 const SizedBox(height: 10), // Espaçamento
                 ElevatedButton.icon(
                   // Botão com ícone
-                  onPressed: () {}, // Função ao clicar
+                  onPressed: () {
+                    createElement().renderObjectAttachingChild;
+                  }, // Função ao clicar
                   icon: const Icon(Icons.share), // Ícone de compartilhar
                   label: const Text('Compartilhar'),
                   style: ElevatedButton.styleFrom(
