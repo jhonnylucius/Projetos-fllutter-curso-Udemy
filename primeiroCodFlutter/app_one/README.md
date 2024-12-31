@@ -40,7 +40,10 @@
 │   │           │   └── product_page.dart
 │   │           └── widgets/
 │   │               └── product_list.dart
-│   └── main.dart`
+│   ├── navigation/
+│   │    ├── app_router.dart
+│   │    └── routes.dart
+│   └── main.dart
 ```
 
 
@@ -513,4 +516,4 @@ class MyApp extends StatelessWidget {
 - Você pode escolher usar bloc, provider ou qualquer outra solução de gerenciamento de estado.
 - A estrutura das pastas pode variar um pouco, mas o importante é manter a separação de responsabilidades.
 
-Espero que esta explicação detalhada e este exemplo prático ajudem você a entender como aplicar a Clean Architecture em seus projetos Flutter com Dart. Se tiver alguma dúvida, é só perguntar!
+
