@@ -26,3 +26,6 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+pj1/pj1/android/app/google-services.json
+pj1/pj1/lib/firebase_options.dart
+pj1/pj1/firebase.json
