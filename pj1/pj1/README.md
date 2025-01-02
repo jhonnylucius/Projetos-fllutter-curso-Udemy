@@ -98,11 +98,11 @@ flutter create --platforms android,web .
 
 ### Funcionalidades Implementadas
 
-- ✅ Tela de Login com E-mail/Senha
-- ✅ Login com Google
-- ✅ Tela de Registro
-- ✅ Design Material 3
-- ✅ Autenticação Firebase
+- ✅ Tela de Login com E-mail/Senha - em desenvolvimento
+- ✅ Login com Google - em desenvolvimento
+- ✅ Tela de Registro - **Concluído e disponível**
+- ✅ Design Material 3 - **em uso**
+- ✅ Autenticação Firebase - **configurado e em uso**
 
 ### Estrutura do Projeto
 
