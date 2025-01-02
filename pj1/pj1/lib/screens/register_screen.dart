@@ -55,17 +55,38 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 16.0),
                     ElevatedButton(
-                        onPressed: () {
-                          if (_senhaController.text ==
-                              _confirmarSenhaController.text) {
-                            _authService.cadastrarUsuario(
-                              email: _emailController.text,
-                              senha: _senhaController.text,
-                              nome: _nomeController.text,
-                            );
-                          }
-                        },
-                        child: Text('Cadastrar')),
+                      onPressed: () {
+                        if (_senhaController.text ==
+                            _confirmarSenhaController.text) {
+                          _authService
+                              .cadastrarUsuario(
+                            email: _emailController.text,
+                            senha: _senhaController.text,
+                            nome: _nomeController.text,
+                          )
+                              .then((String? erro) {
+                            if (erro != null) {
+                              final snackBar = SnackBar(
+                                content: Text(erro),
+                                backgroundColor: Colors.red,
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            } else {
+                              Navigator.pop(context);
+                            }
+                          });
+                        } else {
+                          final snackBar = SnackBar(
+                            content: Text('Senhas não conferem.'),
+                            backgroundColor: Colors.red,
+                          );
+
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      },
+                      child: Text('Cadastrar'),
+                    ),
                     SizedBox(height: 16.0),
                     TextButton(
                       onPressed: () {
@@ -84,19 +105,30 @@ class RegisterScreen extends StatelessWidget {
   }
 }
 
-// EXPLICAÇÕES
-// Neste código, criamos a tela de cadastro de usuário. Para isso, criamos um
-// novo widget chamado RegisterScreen que é uma StatelessWidget. O widget
-// RegisterScreen é muito parecido com o widget LoginScreen, mas com algumas
-// diferenças. A primeira diferença é que o widget RegisterScreen possui mais
-// campos de texto para o usuário preencher. Além disso, o widget RegisterScreen
-// possui um botão para cadastrar o usuário e um botão para voltar para a tela
-// de login. Para isso, utilizamos o widget TextButton e a função Navigator.pop
-// para voltar para a tela anterior. Para navegar para a tela de cadastro,
-// utilizamos a função Navigator.push e a classe MaterialPageRoute. A função
-// Navigator.push recebe dois argumentos: o contexto e a rota para a próxima
-// tela. A rota para a próxima tela é criada com a classe MaterialPageRoute, que
-// recebe um argumento: o builder, que é uma função que retorna a próxima tela.
-// Neste caso, a próxima tela é a tela de cadastro, que é representada pelo
-// widget RegisterScreen. Assim, ao clicar no botão "Criar uma conta!", o
-// usuário é redirecionado para a tela de cadastro.
+// explicações
+//  - O código acima é a tela de cadastro de usuário. O usuário informa o
+// e-mail, a senha, a confirmação da senha e o nome. O botão "Cadastrar"
+// chama o método cadastrarUsuario do AuthService, que é responsável por
+// criar um novo usuário no Firebase Authentication.
+//  - O método cadastrarUsuario recebe o e-mail, a senha e o nome do usuário
+// e chama o método createUserWithEmailAndPassword do FirebaseAuth para
+// criar o usuário. Se ocorrer algum erro, o método retorna uma mensagem
+// de erro. Caso contrário, o método retorna null.
+//  - O método cadastrarUsuario é chamado quando o usuário clica no botão
+// "Cadastrar". Se as senhas informadas não conferirem, é exibida uma
+// mensagem de erro. Caso contrário, o método cadastrarUsuario é chamado.
+// Se ocorrer algum erro, é exibida uma mensagem de erro. Caso contrário,
+// o usuário é redirecionado para a tela de login.
+//  - O botão "Já tenho uma conta!" redireciona o usuário para a tela de
+// login.
+//  - O código acima é um exemplo de como criar um novo usuário no Firebase
+// Authentication. O Firebase Authentication é um serviço que permite
+// autenticar usuários em aplicativos móveis e web. Ele fornece métodos
+// para criar, autenticar, atualizar e excluir usuários, além de fornecer
+// métodos para redefinir a senha e enviar e-mails de verificação.
+//  - O Firebase Authentication é uma solução pronta para autenticação de
+// usuários, que permite autenticar usuários por e-mail e senha, telefone,
+// Google, Facebook, Twitter, GitHub e outros provedores de autenticação.
+// Ele fornece métodos para criar, autenticar, atualizar e excluir usuários,
+// além de fornecer métodos para redefinir a senha e enviar e-mails de
+// verificação.
