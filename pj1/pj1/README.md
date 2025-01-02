@@ -66,6 +66,10 @@ flutter pub add firebase_messaging
 flutter pub add http
 
 ```
+## erros conhecidos
+
+- ao rodar o flutter run e der um erro dizendo que você esta usando uma versão "21 do minSdk", basta passar para "minSdk = 23". 
+
 
 ## Configuração do Firebase
 
