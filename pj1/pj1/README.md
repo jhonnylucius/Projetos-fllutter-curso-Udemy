@@ -1,9 +1,9 @@
 # # Projeto Login com Flutter e Firebase 🚀
 
 <div style="display: flex; justify-content: space-between; margin-bottom: 30px">
-<img src="[https://storage.googleapis.com/cms-storage-bucket/6a07d8a62f4308d2b854.svg](https://storage.googleapis.com/cms-storage-bucket/6a07d8a62f4308d2b854.svg)" width="100">
-<img src="[https://firebase.google.com/static/images/brand-guidelines/logo-vertical.png](https://firebase.google.com/static/images/brand-guidelines/logo-vertical.png)" width="50">
-<img src="[https://dart.dev/assets/img/shared/dart/logo+text/horizontal/white.svg](https://dart.dev/assets/img/shared/dart/logo+text/horizontal/white.svg)" width="100">
+<img src="https://storage.googleapis.com/cms-storage-bucket/6a07d8a62f4308d2b854.svg" width="100" alt="Logo Flutter">
+<img src="https://firebase.google.com/static/images/brand-guidelines/logo-vertical.png" width="50" alt="Logo Firebase">
+<img src="https://dart.dev/assets/img/shared/dart/logo+text/horizontal/white.svg" width="100" alt="Logo Dart">
 </div>
 
 ## 📋 Índice
