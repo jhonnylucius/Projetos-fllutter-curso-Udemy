@@ -138,3 +138,73 @@ Este projeto está sob a licença MIT.
 
 ---
 
+# 🔥Como Utilizar o App
+
+## Pré-requisitos
+
+- Flutter SDK instalado
+- Git instalado
+- Node.js instalado
+- Android Studio (apenas para SDK e emulador) ou dispositivo físico
+- VS Code com extensões Flutter e Dart
+
+## Passo a Passo
+
+### 1. Clone o Repositório
+
+```bash
+git clone <https://github.com/seu-usuario/seu-repositorio.git>
+cd seu-repositorio
+
+```
+
+### 2. Instale as Dependências
+
+```bash
+flutter pub get
+
+```
+
+### 3. Configure o Firebase
+
+```bash
+# Certifique-se de ter o Firebase CLI instalado
+npm install -g firebase-tools
+
+# Faça login no Firebase
+firebase login
+
+# Configure o projeto
+flutterfire configure
+
+```
+
+### 4. Execute o App
+
+```bash
+# Para dispositivo físico Android conectado via USB
+flutter run
+
+# Para emulador
+flutter emulators --launch <emulator_id>
+flutter run
+
+```
+
+## Funcionalidades Disponíveis
+
+- 🔐 Login com e-mail/senha - em desenvolvimento
+- 🔑 Login com Google - em desenvolvimento
+- 📝 **Registro de nova conta - disponível**
+- 🎨 Interface Material Design 3  - em desenvolvimento
+
+
+## Troubleshooting
+
+- Certifique-se que o dispositivo está conectado (`flutter devices`)
+- Verifique se todas as dependências estão instaladas (`flutter doctor`)
+- Para problemas com Firebase, verifique se `google-services.json` está presente
+
+---
+
+⭐ Se este projeto ajudou você, considere dar uma estrela no repositório!
