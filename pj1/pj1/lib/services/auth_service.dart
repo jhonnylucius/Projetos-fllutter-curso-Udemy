@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
@@ -26,6 +28,7 @@ class AuthService {
     try {
       UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: senha);
+
       await userCredential.user!.updateDisplayName(nome);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -36,6 +39,41 @@ class AuthService {
         case 'auth/weak-password':
           return 'Dados Incorretos.';
       }
+      return e.code;
+    }
+    return null;
+  }
+
+  Future<String?> redefinicaoSenha({required String email}) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'auth/invalid-email':
+          return 'Email inválido.';
+        case 'auth/user-not-found':
+          return 'Usuário não encontrado.';
+      }
+      return e.code;
+    }
+    return null;
+  }
+
+  Future<String?> deslogar() async {
+    try {
+      await _firebaseAuth.signOut();
+    } on FirebaseAuthException catch (e) {
+      return e.code;
+    }
+    return null;
+  }
+
+  Future<String?> excluiConta({required senha}) async {
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: _firebaseAuth.currentUser!.email!, password: senha);
+      await _firebaseAuth.currentUser!.delete();
+    } on FirebaseAuthException catch (e) {
       return e.code;
     }
     return null;
