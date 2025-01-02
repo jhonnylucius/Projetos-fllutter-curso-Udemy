@@ -200,7 +200,7 @@ flutter run
 - 🔐 Login com e-mail/senha - em desenvolvimento
 - 🔑 Login com Google - em desenvolvimento
 - 📝 **Registro de nova conta - disponível**
-- 🎨 Interface Material Design 3  - em desenvolvimento
+- 🎨 Interface Material Design 3  - **Disponívvel**
 
 
 ## Troubleshooting
