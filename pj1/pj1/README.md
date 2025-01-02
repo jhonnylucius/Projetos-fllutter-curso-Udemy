@@ -69,7 +69,7 @@ flutter pub add http
 
 ## Configuração do Firebase
 
-### 1. Instalação do Firebase CLI
+### 1. Instalação do Firebase CLI - instale o node-js para usar os comandos npm
 
 ```bash
 npm install -g firebase-tools
