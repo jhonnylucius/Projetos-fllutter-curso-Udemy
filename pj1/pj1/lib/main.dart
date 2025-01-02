@@ -20,7 +20,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color.fromARGB(255, 85, 88, 240),
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: LoginScreen(),
