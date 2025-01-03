@@ -157,8 +157,8 @@ Este projeto está sob a licença MIT.
 ### 1. Clone o Repositório
 
 ```bash
-git clone <https://github.com/seu-usuario/seu-repositorio.git>
-cd seu-repositorio
+git clone <[https://github.com/jhonnylucius/pj1/pj1.git](https://github.com/jhonnylucius/Projetos-fllutter-curso-Udemy.git)>
+cd pj1
 
 ```
 
