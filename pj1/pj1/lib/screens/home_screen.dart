@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:js_interop';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -86,26 +87,59 @@ class _HomeScreenState extends State<HomeScreen> {
 showFormModal({Hour? model}) {
   String title = "Adicionar";
   String confirmationButton = 'Salvar';
-  String skippedButton = 'Cancelar';
+  String skipButton = 'Cancelar';
 
   TextEditingController dataController = TextEditingController();
   final dataMaskFormatter = MaskTextInputFormatter(mask: '##/##/####');
+  TextEditingController minutosController = TextEditingController();
   final minutosMaskFormatter = MaskTextInputFormatter(mask: '##:##');
-  final TextEditingController minutosController = TextEditingController();
-  final descricaoController = TextEditingController();
+  TextEditingController descricaoController = TextEditingController();
+  
 
   if(model != null){
     title = "Alterar";
+    dataController.text = model.data;
     minutosController.text = HourHelper.minutosToHours(model.minutos);
-    minutosMaskFormatter.formatEditUpdate(
-      TextEditingValue.empty,
-      TextEditingValue(text: minutosController.text),
-    );
-    minutosController.text = HourHelper.minutosToHours(model.minutos);
-    descricaoController.text = model.descricao!;
+      if(model.descricao != null){
+      descricaoController.text = model.descricao!;
+    }
   }
+    showModalBottomSheet(context: context, shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24),),),
+              builder: (context) {
+                return Container(
+                  height: MediaQuery.of(context).size.height,
+                  padding: EdgeInsets.all(32),
+                  child: ListView(
+                    children: [
+                      Text(title, style: Theme.of(context).textTheme.headlineSmall,)
+                      TextFormField(
+                        controller: dataController,
+                        keyboardType: TextInputType.datetime,
+                        decoration: InputDecoration(
+                          hintText: 'Data',
+                          labelText: 'Data',
+                        ),
+                        inputFormatters: [dataMaskFormatter],
+                      ),
+                          
+
+                    ]
+          
+          )
+                    ]
+
+                  )
+                    
+            
+            ,)
+          }
+        ),
+        isDismissible: true,
+    builder: builder)  
    
   }
+   
+  
 
   
 
