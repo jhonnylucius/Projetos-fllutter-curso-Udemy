@@ -52,10 +52,10 @@ class _HomeScreenState extends State<HomeScreen> {
               children: List.generate(listHours.length, (index) {
                 Hour model = listHours[index];
                 return Dismissible(
-                  key: ValueKey<Hour>(model),
+                  key: ValueKey<Hour>(model), direction: DismissDirection.endToStart,
                   background: Container(
                     alignment: Alignment.centerRight,
-                    padding: EdgeInsets.only(right: 12),
+                    padding: const EdgeInsets.only(right: 12),
                     color: Colors.red,
                     child: Icon(Icons.delete, color: Colors.white),
                   ),
@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: Text(
                               "Data: ${model.data} hora: ${HourHelper.minutosToHours((model.minutos))}"),
                           subtitle: Text(model.descricao!),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -82,70 +82,118 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
     );
   }
-}
 
-showFormModal({Hour? model}) {
-  String title = "Adicionar";
-  String confirmationButton = 'Salvar';
-  String skipButton = 'Cancelar';
+  showFormModal({Hour? model}) {
+    String title = "Adicionar";
+    String confirmationButton = "Salvar";
+    String SkioButton = "Cancelar";
 
-  TextEditingController dataController = TextEditingController();
-  final dataMaskFormatter = MaskTextInputFormatter(mask: '##/##/####');
-  TextEditingController minutosController = TextEditingController();
-  final minutosMaskFormatter = MaskTextInputFormatter(mask: '##:##');
-  TextEditingController descricaoController = TextEditingController();
-  
+    TextEditingController dataController = TextEditingController();
+    final dataMaskFormatter = MaskTextInputFormatter(mask: '##/##/####');  
+    TextEditingController minutoController = TextEditingController();
+    final minutoMaskFormatter = MaskTextInputFormatter(mask: '##:##');
+    TextEditingController descricaoController = TextEditingController();
 
-  if(model != null){
-    title = "Alterar";
-    dataController.text = model.data;
-    minutosController.text = HourHelper.minutosToHours(model.minutos);
-      if(model.descricao != null){
-      descricaoController.text = model.descricao!;
+    if (model != null) {
+      title = "Editar";
+      dataController.text = model.data!;
+      minutoController.text = HourHelper.minutosToHours(model.minutos);
+        if (model.descricao != null) {
+          descricaoController.text = model.descricao!;
+        }
     }
+
+    showModalBottomSheet(context: context, shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.vertical(top: Radius.circular(24),),),
+    builder: (context) {
+    return Container (
+      height: MediaQuery.of(context).size.height,
+      padding: const EdgeInsets.all(32),
+      child : ListView(
+        children: [
+          Text(title, style: Theme.of(context).textTheme.headlineSmall,)
+          TextFormField(
+            controller: dataController,
+            keyboardType: TextInputType.datetime,
+            decoration: InputDecoration(
+              hintText: '01/01/2024',
+              labelText: 'Data',
+              ),
+              inputFormatters: [dataMaskFormatter],
+          ),
+          SizedBox(height: 16,),
+          TextFormField(
+            controller: minutoController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              hintText: '08:00',
+              labelText: 'Hora Trabalhadas',
+              ),
+            inputFormatters: [minutoMaskFormatter],
+          ),
+          SizedBox(height: 16,),
+          Row (children: [
+            mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(SkipButton),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (model == null) {
+                      Hour newHour = Hour(
+                        data: dataController.text,
+                        minutos: HourHelper.hoursToMinutos(minutoController.text),
+                        descricao: descricaoController.text,
+                      );
+                      listHours.add(newHour);
+                    } else {
+                      model.data = dataController.text;
+                      model.minutos = HourHelper.hoursToMinutos(minutoController.text);
+                      model.descricao = descricaoController.text;
+                    }
+                    Navigator.pop(context);
+                  },
+                  child: Text(confirmationButton),
+                ),
+              ],
+
+          ],)
+          TextFormField(
+            controller: descricaoController,
+            decoration: InputDecoration(
+              hintText: 'Lembrete do que você fez', labelText: 'Descrição do trabalho',
+              ),
+        ]
+      )
+    );
+    };
   }
-    showModalBottomSheet(context: context, shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24),),),
-              builder: (context) {
-                return Container(
-                  height: MediaQuery.of(context).size.height,
-                  padding: EdgeInsets.all(32),
-                  child: ListView(
-                    children: [
-                      Text(title, style: Theme.of(context).textTheme.headlineSmall,)
-                      TextFormField(
-                        controller: dataController,
-                        keyboardType: TextInputType.datetime,
-                        decoration: InputDecoration(
-                          hintText: 'Data',
-                          labelText: 'Data',
-                        ),
-                        inputFormatters: [dataMaskFormatter],
-                      ),
-                          
 
-                    ]
-          
-          )
-                    ]
+} 
 
-                  )
-                    
-            
-            ,)
-          }
-        ),
-        isDismissible: true,
-    builder: builder)  
-   
+
+  Void remove(Hour model) {
+    setState(() {
+      listHours.remove(model);
+    });
   }
-   
-  
-
-  
-
-
-Void remove(Hour model) {}
-
-
 }
+
+
+          
+
+
+  
+
+  
+
+
+
+
+
+
 
