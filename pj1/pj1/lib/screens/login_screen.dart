@@ -9,7 +9,7 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController __senhaController = TextEditingController();
 
-  AuthService _authService = AuthService();
+  final AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
