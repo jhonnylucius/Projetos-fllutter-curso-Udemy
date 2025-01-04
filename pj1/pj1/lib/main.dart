@@ -55,7 +55,6 @@ class RoteadorTelas extends StatelessWidget {
           );
         } else if (snapshot.hasData) {
           return HomeScreen(
-            User: snapshot.data!,
             user: snapshot.data!,
           );
         } else {

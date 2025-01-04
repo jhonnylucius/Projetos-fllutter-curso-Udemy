@@ -5,7 +5,6 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // Im
 import 'package:pj1/components/menu.dart'; // Importa o componente de menu
 import 'package:pj1/helpers/hour_helpers.dart'; // Importa o helper de horas
 import 'package:pj1/models/hour.dart';
-import 'package:uuid/uuid.dart'; // Importa o modelo de hora
 
 class HomeScreen extends StatefulWidget {
   // Tela inicial do aplicativo
@@ -113,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (model != null) {
       // Se estiver editando, preenche os campos
-      title = "Editar";
+      title = "Editando";
       dataController.text = model.data;
       minutoController.text = HourHelper.minutosToHours(model.minutos);
       if (model.descricao != null) {
@@ -153,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: minutoController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  hintText: '00:00',
+                  hintText: '08:00',
                   labelText: 'Hora Trabalhadas',
                 ),
                 inputFormatters: [minutoMaskFormatter],
@@ -164,69 +163,41 @@ class _HomeScreenState extends State<HomeScreen> {
               TextFormField(
                 controller: descricaoController,
                 decoration: InputDecoration(
-                  hintText: 'Descrição do trabalho',
+                  hintText: 'Lembrete do que você fez',
                   labelText: 'Descrição',
                 ),
               ),
               SizedBox(
                 height: 16,
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(SkipButton),
+                  ),
+                  SizedBox(
+                    width: 16,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: Text(confirmationButton),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 180,
+              ),
             ],
           ),
         );
-          // Correção: O widget Row foi corrigido e agora utiliza 'children'
-           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(SkipButton),
-              ),
-              const SizedBox(width: 16),
-              ElevatedButton(
-                onPressed: () {
-                  Hour hour = Hour(
-                    id: const Uuid().v1(),
-                    data: dataController.text,
-                    minutos: HourHelper.hoursToMinutos(minutoController.text),
-                    descricao: descricaoController.text.isNotEmpty
-                        ? descricaoController.text
-                        : null,
-                  ); // Cria um novo objeto Hour
-
-                  if (descricaoController.text != '') {
-                    hour.descricao = descricaoController.text;
-                  } // Adiciona a descrição se houver
-
-                  if (model != null) {
-                    hour.id = model.id;
-                  } // Se estiver editando, mantém o ID
-
-                  firestore
-                      .collection(widget.user.uid)
-                      .doc(hour.id)
-                      .set(hour.toMap()); // Salva a hora no Firestore
-                 
-                  refresh(); // Atualiza a lista de horas - FALTA IMPLEMENTAR
-
-                  Navigator.pop(context); // Fecha o modal
-                },
-                child: Text(confirmationButton),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 180,
-          ),
-        ],
-      );
-  
-    }
+        // Correção: O widget Row foi corrigido e agora utiliza 'children'
+      },
+    );
+  }
 
   void remove(Hour model) {}
-  
-  void refresh() {}
-  // Método para remover uma hora (atualmente vazio)
 }
