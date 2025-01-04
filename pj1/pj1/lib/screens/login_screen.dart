@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:pj1/screens/register_screen.dart';
+import 'package:pj1/services/auth_service.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController __senhaController = TextEditingController();
+
+  AuthService _authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +39,33 @@ class LoginScreen extends StatelessWidget {
                     TextField(
                       obscureText: true,
                       controller: __senhaController,
-                      decoration: InputDecoration(labelText: 'Senha'),
+                      decoration: InputDecoration(hintText: 'Senha'),
                     ),
-                    SizedBox(height: 16.0),
-                    ElevatedButton(onPressed: () {}, child: Text('Entrar')),
+                    const SizedBox(height: 16.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        _authService
+                            .entrarUsuario(
+                                _emailController.text, __senhaController.text)
+                            .then(
+                          (String? erro) {
+                            if (erro != null) {
+                              final snackBar = SnackBar(
+                                content: Text(erro),
+                                backgroundColor: Colors.red,
+                              );
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }
+                          },
+                        );
+                      },
+                      child: const Text('Entrar'),
+                    ),
                     SizedBox(height: 16.0),
                     SignInButton(
                       Buttons.Google,
-                      text: "Entrar com Google",
                       onPressed: () {},
                     ),
                     SizedBox(height: 16.0),
