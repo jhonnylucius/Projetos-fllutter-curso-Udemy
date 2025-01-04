@@ -131,6 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
     showModalBottomSheet(
       // Exibe o modal na parte inferior da tela
       context: context,
+
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -198,6 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         minutos:
                             HourHelper.hoursToMinutos(minutoController.text),
                         descricao: descricaoController.text,
+                        nome: widget.user.displayName ?? 'Nome não informado',
                       );
                       if (descricaoController.text != "") {
                         hour.descricao = descricaoController.text;
