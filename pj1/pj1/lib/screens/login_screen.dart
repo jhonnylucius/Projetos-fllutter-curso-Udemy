@@ -51,7 +51,7 @@ class LoginScreen extends StatelessWidget {
                           (String? erro) {
                             if (erro != null) {
                               final snackBar = SnackBar(
-                                content: Text('dados inválidos'),
+                                content: Text('Dados Inválidos'),
                                 backgroundColor: Colors.red,
                               );
 
