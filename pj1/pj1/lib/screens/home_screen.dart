@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart'; // Importa o pacote do Firestore
 import 'package:firebase_auth/firebase_auth.dart'; // Importa o pacote de autenticação do Firebase
 import 'package:flutter/material.dart'; // Importa o pacote do Flutter para widgets
+import 'package:logger/logger.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // Importa o pacote para formatar inputs de texto
 import 'package:pj1/components/menu.dart'; // Importa o componente de menu
 import 'package:pj1/helpers/hour_helpers.dart'; // Importa o helper de horas
@@ -30,6 +31,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // Método chamado ao inicializar o estado
     super.initState();
+
+    refresh(null); // Atualiza a lista de horas
   }
 
   @override
@@ -80,7 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: [
                         ListTile(
-                          onLongPress: () {},
+                          onLongPress: () {
+                            showFormModal(model: model);
+                          },
                           onTap: () {},
                           leading: Icon(Icons.list_alt_rounded, size: 56),
                           title: Text(
@@ -204,9 +209,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       firestore.collection(widget.user.uid).doc(hour.id).set(
                             hour.toMap(),
                           );
-
-                      refresh();
-
                       Navigator.pop(context);
                     },
                     child: Text(confirmationButton),
@@ -226,8 +228,32 @@ class _HomeScreenState extends State<HomeScreen> {
   void remove(Hour model) {
     // Método para remover uma hora
     firestore.collection(widget.user.uid).doc(model.id).delete();
-    refresh(); // Atualiza a lista de horas
+    refresh(null); // Atualiza a lista de horas
   }
 
-  void refresh() {}
+  Future<void> refresh(dynamic snapshot) async {
+    try {
+      List<Hour> temp = [];
+
+      // Usar o querySnapshot obtido do Firestore
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await firestore.collection(widget.user.uid).get();
+
+      // Iterar sobre os documentos do querySnapshot
+      for (var doc in querySnapshot.docs) {
+        temp.add(Hour.fromMap(doc.data()));
+      }
+
+      // Atualizar o estado com a nova lista
+      setState(() {
+        listHours = temp;
+      });
+    } catch (e) {
+      Logger().e('Erro ao atualizar lista: $e');
+      // Opcional: Mostrar mensagem de erro para o usuário
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro ao atualizar lista')),
+      );
+    }
+  }
 }
