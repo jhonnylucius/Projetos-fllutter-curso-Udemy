@@ -219,7 +219,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         );
-        // Correção: O widget Row foi corrigido e agora utiliza 'children'
       },
     );
   }
