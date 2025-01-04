@@ -5,6 +5,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // Im
 import 'package:pj1/components/menu.dart'; // Importa o componente de menu
 import 'package:pj1/helpers/hour_helpers.dart'; // Importa o helper de horas
 import 'package:pj1/models/hour.dart';
+import 'package:uuid/uuid.dart';
 
 class HomeScreen extends StatefulWidget {
   // Tela inicial do aplicativo
@@ -40,7 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('AgendaPRO'), // Título da AppBar
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {}, // Ação do botão flutuante
+        onPressed: () {
+          showFormModal(); // Ação do botão flutuante
+        }, // Ação do botão flutuante
         child: Icon(Icons.add), // Ícone do botão flutuante
       ),
       body: listHours.isEmpty
@@ -183,7 +186,29 @@ class _HomeScreenState extends State<HomeScreen> {
                     width: 16,
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Hour hour = Hour(
+                        id: const Uuid().v1(),
+                        data: dataController.text,
+                        minutos:
+                            HourHelper.hoursToMinutos(minutoController.text),
+                        descricao: descricaoController.text,
+                      );
+                      if (descricaoController.text != "") {
+                        hour.descricao = descricaoController.text;
+                      }
+
+                      if (model != null) {
+                        hour.id = model.id;
+                      }
+                      firestore.collection(widget.user.uid).doc(hour.id).set(
+                            hour.toMap(),
+                          );
+
+                      refresh();
+
+                      Navigator.pop(context);
+                    },
                     child: Text(confirmationButton),
                   ),
                 ],
@@ -199,5 +224,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void remove(Hour model) {}
+  void remove(Hour model) {
+    // Método para remover uma hora
+    firestore.collection(widget.user.uid).doc(model.id).delete();
+    refresh(); // Atualiza a lista de horas
+  }
+
+  void refresh() {}
 }
