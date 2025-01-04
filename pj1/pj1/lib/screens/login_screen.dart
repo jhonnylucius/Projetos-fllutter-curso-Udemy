@@ -51,7 +51,7 @@ class LoginScreen extends StatelessWidget {
                           (String? erro) {
                             if (erro != null) {
                               final snackBar = SnackBar(
-                                content: Text(erro),
+                                content: Text('dados inválidos'),
                                 backgroundColor: Colors.red,
                               );
 
@@ -66,6 +66,7 @@ class LoginScreen extends StatelessWidget {
                     SizedBox(height: 16.0),
                     SignInButton(
                       Buttons.Google,
+                      text: 'Entrar com Google',
                       onPressed: () {},
                     ),
                     SizedBox(height: 16.0),

@@ -33,6 +33,11 @@ class RegisterScreen extends StatelessWidget {
                     FlutterLogo(size: 76.0),
                     SizedBox(height: 16.0),
                     TextField(
+                      controller: _nomeController,
+                      decoration: InputDecoration(labelText: 'Nome'),
+                    ),
+                    SizedBox(height: 16.0),
+                    TextField(
                       controller: _emailController,
                       decoration: InputDecoration(labelText: 'E-mail'),
                     ),
@@ -47,11 +52,6 @@ class RegisterScreen extends StatelessWidget {
                       obscureText: true,
                       controller: _confirmarSenhaController,
                       decoration: InputDecoration(labelText: 'Confirmar Senha'),
-                    ),
-                    SizedBox(height: 16.0),
-                    TextField(
-                      controller: _nomeController,
-                      decoration: InputDecoration(labelText: 'Nome'),
                     ),
                     SizedBox(height: 16.0),
                     ElevatedButton(
