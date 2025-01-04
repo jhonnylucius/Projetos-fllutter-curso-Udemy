@@ -20,9 +20,9 @@ class Hour {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'userId': data,
-      'date': minutos,
-      'hour': descricao,
+      'data': data,
+      'minutos': minutos,
+      'descricao': descricao,
     };
   }
 }
