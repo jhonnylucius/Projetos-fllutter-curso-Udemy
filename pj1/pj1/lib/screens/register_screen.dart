@@ -17,43 +17,43 @@ class RegisterScreen extends StatelessWidget {
     return Scaffold(
       body: Container(
         color: Colors.blue,
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(12.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16.0),
                 ),
                 child: Column(
                   children: [
-                    FlutterLogo(size: 76.0),
-                    SizedBox(height: 16.0),
+                    FlutterLogo(size: 55.0),
+                    SizedBox(height: 12.0),
                     TextField(
                       controller: _nomeController,
                       decoration: InputDecoration(labelText: 'Nome'),
                     ),
-                    SizedBox(height: 16.0),
+                    SizedBox(height: 12.0),
                     TextField(
                       controller: _emailController,
                       decoration: InputDecoration(labelText: 'E-mail'),
                     ),
-                    SizedBox(height: 16.0),
+                    SizedBox(height: 12.0),
                     TextField(
                       obscureText: true,
                       controller: _senhaController,
                       decoration: InputDecoration(labelText: 'Senha'),
                     ),
-                    SizedBox(height: 16.0),
+                    SizedBox(height: 12.0),
                     TextField(
                       obscureText: true,
                       controller: _confirmarSenhaController,
                       decoration: InputDecoration(labelText: 'Confirmar Senha'),
                     ),
-                    SizedBox(height: 16.0),
+                    SizedBox(height: 12.0),
                     ElevatedButton(
                       onPressed: () {
                         if (_senhaController.text ==
