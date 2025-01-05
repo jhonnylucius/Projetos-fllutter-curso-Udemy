@@ -166,98 +166,107 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     showModalBottomSheet(
-      // Exibe o modal na parte inferior da tela
       context: context,
-
+      isScrollControlled: true, // Permite que o modal ocupe toda a tela
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
-        return Container(
-          height: MediaQuery.of(context).size.height,
-          padding: const EdgeInsets.all(32),
-          child: ListView(
-            children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              TextFormField(
-                controller: dataController,
-                keyboardType: TextInputType.datetime,
-                decoration: InputDecoration(
-                  hintText: '01/01/2024',
-                  labelText: 'Data',
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context)
+                .viewInsets
+                .bottom, // Ajusta conforme o teclado
+            left: 32,
+            right: 32,
+            top: 32,
+          ),
+          child: Container(
+            // Removido height fixo para ajustar automaticamente
+            child: ListView(
+              shrinkWrap: true, // Ajusta o tamanho conforme conteúdo
+              children: [
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                inputFormatters: [dataMaskFormatter],
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                controller: minutoController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: '08:00',
-                  labelText: 'Hora Trabalhadas',
-                ),
-                inputFormatters: [minutoMaskFormatter],
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              TextFormField(
-                controller: descricaoController,
-                decoration: InputDecoration(
-                  hintText: 'Lembrete do que você fez',
-                  labelText: 'Descrição',
-                ),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(SkipButton),
+                TextFormField(
+                  controller: dataController,
+                  keyboardType: TextInputType.datetime,
+                  decoration: InputDecoration(
+                    hintText: '01/01/2024',
+                    labelText: 'Data',
                   ),
-                  SizedBox(
-                    width: 16,
+                  inputFormatters: [dataMaskFormatter],
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                TextFormField(
+                  controller: minutoController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: '08:00',
+                    labelText: 'Hora Trabalhadas',
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Hour hour = Hour(
-                        id: const Uuid().v1(),
-                        data: dataController.text,
-                        minutos:
-                            HourHelper.hoursToMinutos(minutoController.text),
-                        descricao: descricaoController.text,
-                        nome: widget.user.displayName ?? 'Nome não informado',
-                      );
-                      if (descricaoController.text != "") {
-                        hour.descricao = descricaoController.text;
-                      }
+                  inputFormatters: [minutoMaskFormatter],
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                TextFormField(
+                  controller: descricaoController,
+                  decoration: InputDecoration(
+                    hintText: 'Lembrete do que você fez',
+                    labelText: 'Descrição',
+                  ),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(SkipButton),
+                    ),
+                    SizedBox(
+                      width: 16,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Hour hour = Hour(
+                          id: const Uuid().v1(),
+                          data: dataController.text,
+                          minutos:
+                              HourHelper.hoursToMinutos(minutoController.text),
+                          descricao: descricaoController.text,
+                          nome: widget.user.displayName ?? 'Nome não informado',
+                        );
+                        if (descricaoController.text != "") {
+                          hour.descricao = descricaoController.text;
+                        }
 
-                      if (model != null) {
-                        hour.id = model.id;
-                      }
-                      firestore.collection(widget.user.uid).doc(hour.id).set(
-                            hour.toMap(),
-                          );
-                      Navigator.pop(context);
-                    },
-                    child: Text(confirmationButton),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 180,
-              ),
-            ],
+                        if (model != null) {
+                          hour.id = model.id;
+                        }
+                        firestore.collection(widget.user.uid).doc(hour.id).set(
+                              hour.toMap(),
+                            );
+                        Navigator.pop(context);
+                      },
+                      child: Text(confirmationButton),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 180,
+                ),
+              ],
+            ),
           ),
         );
       },
