@@ -4,6 +4,7 @@ import 'package:pj1/services/auth_service.dart';
 class ResetPasswordModal extends StatefulWidget {
   const ResetPasswordModal({super.key});
 
+  @override
   State<ResetPasswordModal> createState() => _ResetPasswordModalState();
 }
 
