@@ -4,7 +4,7 @@ import 'package:pj1/services/auth_service.dart';
 
 class Menu extends StatelessWidget {
   final User user;
-  final String senha = 'your_password'; // Replace with actual password logic
+  final String senha = 'Sua Senha'; // Replace with actual password logic
 
   const Menu({super.key, required this.user});
 
