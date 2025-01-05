@@ -200,10 +200,14 @@ flutter run
 
 ## Funcionalidades Disponíveis
 
-- 🔐 Login com e-mail/senha - em desenvolvimento
-- 🔑 Login com Google - em desenvolvimento
+- 🔐 Login com e-mail/senha -**disponível**
+- 🔑 Login com Google - **disponível**
 - 📝 Registro de nova conta - **disponível**
 - 🎨 Interface Material Design 3  - **Disponívvel**
+- ✅ Atualizar e salvar dados - **disponível**
+- ✅ Excluir dados - **Disponível**
+- ✅ Redefinir Senha - **Disponível**
+- ✅ Autenticação Firebase - **configurado e em uso**
 
 
 ## Troubleshooting
