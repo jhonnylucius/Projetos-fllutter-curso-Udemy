@@ -39,68 +39,102 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Método para construir a tela
     return Scaffold(
-      drawer: Menu(user: widget.user), // Menu lateral
-      appBar: AppBar(
-        title: Text('AgendaPRO'), // Título da AppBar
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showFormModal(); // Ação do botão flutuante
-        }, // Ação do botão flutuante
-        child: Icon(Icons.add), // Ícone do botão flutuante
-      ),
-      body: listHours.isEmpty
-          ? const Center(
-              child: Text(
-                'nada por aqui.\nVamos registrar um dia de trabalho?', // Mensagem caso não haja registros
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-            )
-          : ListView(
-              // ListView para exibir a lista de horas
-              padding: EdgeInsets.only(left: 4, right: 4),
-              children: List.generate(listHours.length, (index) {
-                // Gera os cards para cada hora
-                Hour model = listHours[index];
-                return Dismissible(
-                  // Widget que permite deslizar o card para remover
-                  key: ValueKey<Hour>(model),
-                  direction: DismissDirection.endToStart,
-                  background: Container(
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.only(right: 12),
-                    color: Colors.red,
-                    child: Icon(Icons.delete, color: Colors.white),
-                  ),
-                  onDismissed: (direction) {
-                    remove(model); // Remove a hora
-                  },
-                  child: Card(
-                    elevation: 2,
-                    child: Column(
-                      children: [
-                        ListTile(
-                          onLongPress: () {
-                            showFormModal(model: model);
-                          },
-                          onTap: () {},
-                          leading: Icon(Icons.list_alt_rounded, size: 56),
-                          title: Text(
-                              "Data: ${model.data} hora: ${HourHelper.minutosToHours((model.minutos))}"), // Exibe a data e hora formatada
-                          subtitle: Text(model.descricao!), // Exibe a descrição
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }),
+        drawer: Menu(user: widget.user),
+        appBar: AppBar(
+          title: Text('AgendaPRO'),
+          elevation: 2,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Colors.white,
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => showFormModal(),
+          icon: const Icon(Icons.add),
+          label: const Text('Adicionar'),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.blue.withOpacity(0.1),
+                Colors.white,
+              ],
             ),
-    );
+          ),
+          child: listHours.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.calendar_today_rounded,
+                        size: 80,
+                        color: Colors.blue.withOpacity(0.5),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Vamos começar?',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade700,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Registre suas horas trabalhadas',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : ListView(
+                  // ListView para exibir a lista de horas
+                  padding: EdgeInsets.only(left: 4, right: 4),
+                  children: List.generate(listHours.length, (index) {
+                    // Gera os cards para cada hora
+                    Hour model = listHours[index];
+                    return Dismissible(
+                      // Widget que permite deslizar o card para remover
+                      key: ValueKey<Hour>(model),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 12),
+                        color: Colors.red,
+                        child: Icon(Icons.delete, color: Colors.white),
+                      ),
+                      onDismissed: (direction) {
+                        remove(model); // Remove a hora
+                      },
+                      child: Card(
+                        elevation: 2,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              onLongPress: () {
+                                showFormModal(model: model);
+                              },
+                              onTap: () {},
+                              leading: Icon(Icons.list_alt_rounded, size: 56),
+                              title: Text(
+                                  "Data: ${model.data} hora: ${HourHelper.minutosToHours((model.minutos))}"), // Exibe a data e hora formatada
+                              subtitle:
+                                  Text(model.descricao!), // Exibe a descrição
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ),
+        ));
   }
 
   showFormModal({Hour? model}) {
