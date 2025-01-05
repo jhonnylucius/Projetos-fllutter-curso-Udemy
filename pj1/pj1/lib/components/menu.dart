@@ -32,7 +32,7 @@ class Menu extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.home),
+            leading: Icon(Icons.delete),
             title: const Text('Excluir Conta'),
             onTap: () {
               AuthService().excluiConta(senha: user.email!);

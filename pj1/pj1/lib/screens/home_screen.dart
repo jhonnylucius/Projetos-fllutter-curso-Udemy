@@ -128,6 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (model.descricao != null) {
         descricaoController.text = model.descricao!;
       }
+      confirmationButton = "Atualizar";
     }
 
     showModalBottomSheet(
