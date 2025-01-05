@@ -32,7 +32,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    FlutterLogo(size: 76.0),
+                    FlutterLogo(size: 36.0),
                     SizedBox(height: 16.0),
                     TextField(
                       controller: _emailController,
@@ -74,7 +74,7 @@ class LoginScreen extends StatelessWidget {
                         singinWithGoogle();
                       },
                     ),
-                    SizedBox(height: 16.0),
+                    SizedBox(height: 12.0),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -84,6 +84,7 @@ class LoginScreen extends StatelessWidget {
                       },
                       child: Text('Criar uma conta!'),
                     ),
+                    SizedBox(height: 12.0),
                     TextButton(
                       onPressed: () {
                         showDialog(
@@ -92,7 +93,7 @@ class LoginScreen extends StatelessWidget {
                               return ResetPasswordModal();
                             });
                       },
-                      child: Text('Esqueci minha senha'),
+                      child: Text('Esqueci minha senha!'),
                     ),
                   ],
                 ),
