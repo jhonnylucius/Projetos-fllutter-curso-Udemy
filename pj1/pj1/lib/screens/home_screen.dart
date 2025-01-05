@@ -278,6 +278,7 @@ void setupFCM() async {
     provisional: false,
     sound: true,
   );
+
   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
     print('User granted permission');
   } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
@@ -293,9 +294,5 @@ void setupFCM() async {
     if (message.notification != null) {
       print('Message also contained a notification: ${message.notification}');
     }
-  });
-
-  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    print(' ### A new onMessageOpenedApp event was published!');
   });
 }
