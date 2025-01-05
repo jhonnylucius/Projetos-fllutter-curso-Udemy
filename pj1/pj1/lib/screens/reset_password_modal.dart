@@ -25,7 +25,7 @@ class _ResetPasswordModalState extends State<ResetPasswordModal> {
           decoration: InputDecoration(labelText: 'Endereço de E-mail'),
           validator: (value) {
             if (value!.isEmpty) {
-              return 'Por favor, informe seu email';
+              return 'Por favor, informe um email válido';
             }
             return null;
           },
@@ -41,7 +41,25 @@ class _ResetPasswordModalState extends State<ResetPasswordModal> {
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState?.validate() ?? false) {
-              authService.redefinicaoSenha(email: _emailController.text);
+              authService
+                  .redefinicaoSenha(email: _emailController.text)
+                  .then((String? erro) {
+                if (erro != null) {
+                  final snackBar = SnackBar(
+                    content: Text(erro),
+                    backgroundColor: Colors.red,
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                } else {
+                  final snackBar = SnackBar(
+                    content: Text('E-mail enviado com sucesso.'),
+                    backgroundColor: Colors.green,
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
+              });
               Navigator.of(context).pop();
             }
           },
