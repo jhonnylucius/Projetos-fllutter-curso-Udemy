@@ -31,6 +31,15 @@ class Menu extends StatelessWidget {
               AuthService().deslogar();
             },
           ),
+          ListTile(
+            leading: Icon(Icons.home),
+            title: const Text('Excluir Conta'),
+            onTap: () {
+              AuthService().excluiConta(senha: user.email!);
+              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+          ),
         ],
       ),
     );
