@@ -36,7 +36,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 108, 164, 247),
+          seedColor: Colors.blue,
+          brightness: Brightness.light,
+        ),
+        cardTheme: CardTheme(
+          elevation: 4,
+          margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
