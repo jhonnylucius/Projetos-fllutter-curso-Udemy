@@ -296,6 +296,6 @@ void setupFCM() async {
   });
 
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    print('A new onMessageOpenedApp event was published!');
+    print(' ### A new onMessageOpenedApp event was published!');
   });
 }
