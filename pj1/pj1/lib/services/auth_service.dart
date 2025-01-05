@@ -78,4 +78,6 @@ class AuthService {
     }
     return null;
   }
+
+  void resetPassword(String text) {}
 }

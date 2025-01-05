@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:pj1/screens/register_screen.dart';
+import 'package:pj1/screens/reset_password_modal.dart';
 import 'package:pj1/services/auth_service.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -78,6 +79,16 @@ class LoginScreen extends StatelessWidget {
                                 builder: (context) => RegisterScreen()));
                       },
                       child: Text('Criar uma conta!'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ResetPasswordModal();
+                            });
+                      },
+                      child: Text('Esqueci minha senha'),
                     ),
                   ],
                 ),
