@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Colors.blue.withOpacity(0.1),
+                Colors.blue.withAlpha((0.1 * 255).toInt()),
                 Colors.white,
               ],
             ),
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Icon(
                         Icons.calendar_today_rounded,
                         size: 80,
-                        color: Colors.blue.withOpacity(0.5),
+                        color: Colors.blue.withAlpha((0.5 * 255).toInt()),
                       ),
                       const SizedBox(height: 16),
                       Text(
