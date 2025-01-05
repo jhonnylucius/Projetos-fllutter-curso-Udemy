@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart'; // Importa o pacote do Firestore
 import 'package:firebase_auth/firebase_auth.dart'; // Importa o pacote de autenticação do Firebase
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart'; // Importa o pacote do Flutter para widgets
 import 'package:logger/logger.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // Importa o pacote para formatar inputs de texto
@@ -32,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Método chamado ao inicializar o estado
     super.initState();
 
+    setupFCM(); // Configura o FCM
     refresh(null); // Atualiza a lista de horas
   }
 
@@ -258,4 +260,42 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
   }
+}
+
+void setupFCM() async {
+  // Configurar o Firebase Cloud Messaging (FCM)
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print('FCM Token: $fcmToken');
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print('User granted permission');
+  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+    print('User granted provisional permission');
+  } else {
+    print('User declined or has not accepted permission');
+  }
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Message also contained a notification: ${message.notification}');
+    print('Message data: ${message.data}');
+
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.notification}');
+    }
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print('A new onMessageOpenedApp event was published!');
+  });
 }
