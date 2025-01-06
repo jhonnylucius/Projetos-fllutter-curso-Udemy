@@ -4,7 +4,7 @@
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg" width="40px" alt="Flutter"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" width="40px" alt="Firebase"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dart/dart-original.svg" width="40px" alt="Dart"/>
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="40px" alt="gmail"/>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="35px" alt="gmail"/>
   
 </div>
 
