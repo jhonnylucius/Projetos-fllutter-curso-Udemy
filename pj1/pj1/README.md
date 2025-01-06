@@ -1,4 +1,4 @@
-# # Projeto Login com Flutter e Firebase 🚀
+# # Projeto Login email/senha e gmail com Flutter e Firebase 🚀
 
 <div style="display: flex; justify-content: space-between; margin-bottom: 30px">
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg" width="40px" alt="Flutter"/>
