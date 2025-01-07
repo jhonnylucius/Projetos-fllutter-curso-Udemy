@@ -59,7 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Colors.blue.withAlpha((0.1 * 255).toInt()),
+                const Color.fromARGB(255, 223, 169, 220)
+                    .withAlpha((0.1 * 255).toInt()),
                 Colors.white,
               ],
             ),
@@ -80,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue.shade700,
+                          color: const Color.fromARGB(255, 251, 251, 252),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -153,6 +154,11 @@ class _HomeScreenState extends State<HomeScreen> {
         mask: '##:##'); // Formatador para o campo de minutos
     TextEditingController descricaoController =
         TextEditingController(); // Controller para o campo de descrição
+    TextEditingController precoController =
+        TextEditingController(); // Controller para o campo de preço
+    final precoMaskFormatter = MaskTextInputFormatter(
+        mask: '',
+        filter: {"#": RegExp(r'[0-9]')}); // Formatador para o campo de preço
 
     if (model != null) {
       // Se estiver editando, preenche os campos
@@ -162,6 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (model.descricao != null) {
         descricaoController.text = model.descricao!;
       }
+      precoController.text = model.preco.toString();
       confirmationButton = "Atualizar";
     }
 
@@ -224,6 +231,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: 16,
                 ),
+                TextFormField(
+                  controller: precoController,
+                  decoration: InputDecoration(
+                    hintText: 'Valor recebido pelo trabalho',
+                    labelText: '100.00',
+                  ),
+                  inputFormatters: [precoMaskFormatter],
+                ),
+                SizedBox(
+                  height: 16,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -245,6 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               HourHelper.hoursToMinutos(minutoController.text),
                           descricao: descricaoController.text,
                           nome: widget.user.displayName ?? 'Nome não informado',
+                          preco: double.tryParse(precoController.text) ?? 0.0,
                         );
                         if (descricaoController.text != "") {
                           hour.descricao = descricaoController.text;
@@ -256,6 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         firestore.collection(widget.user.uid).doc(hour.id).set(
                               hour.toMap(),
                             );
+                        refresh(null); // Atualiza a lista de horas
                         Navigator.pop(context);
                       },
                       child: Text(confirmationButton),

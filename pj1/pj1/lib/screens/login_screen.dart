@@ -18,7 +18,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: const Color.fromARGB(255, 85, 88, 240),
+        color: const Color.fromARGB(255, 231, 53, 207),
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: Column(
@@ -46,23 +46,17 @@ class LoginScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16.0),
                     ElevatedButton(
-                      onPressed: () {
-                        _authService
-                            .entrarUsuario(
-                                _emailController.text, __senhaController.text)
-                            .then(
-                          (String? erro) {
-                            if (erro != null) {
-                              final snackBar = SnackBar(
-                                content: Text('Dados Inválidos'),
-                                backgroundColor: Colors.red,
-                              );
-
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                            }
-                          },
-                        );
+                      onPressed: () async {
+                        final scaffoldMessenger = ScaffoldMessenger.of(context);
+                        final erro = await _authService.entrarUsuario(
+                            _emailController.text, __senhaController.text);
+                        if (erro != null) {
+                          final snackBar = SnackBar(
+                            content: Text('Dados Inválidos'),
+                            backgroundColor: Colors.red,
+                          );
+                          scaffoldMessenger.showSnackBar(snackBar);
+                        }
                       },
                       child: const Text('Entrar'),
                     ),

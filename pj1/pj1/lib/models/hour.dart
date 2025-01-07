@@ -4,6 +4,7 @@ class Hour {
   int minutos;
   String? descricao;
   String nome;
+  double preco;
 
   Hour({
     required this.id,
@@ -11,6 +12,7 @@ class Hour {
     required this.minutos,
     required this.descricao,
     required this.nome,
+    required this.preco,
   });
 
   Hour.fromMap(Map<String, dynamic> map)
@@ -18,7 +20,8 @@ class Hour {
         data = map['data'],
         minutos = map['minutos'],
         descricao = map['descricao'],
-        nome = map['nome'];
+        nome = map['nome'],
+        preco = map['preco'].toDouble();
 
   Map<String, dynamic> toMap() {
     return {
@@ -27,6 +30,7 @@ class Hour {
       'minutos': minutos,
       'descricao': descricao,
       'nome': nome,
+      'preco': preco,
     };
   }
 }

@@ -16,7 +16,7 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.blue,
+        color: const Color.fromARGB(255, 226, 33, 243),
         padding: EdgeInsets.all(12.0),
         child: Center(
           child: Column(

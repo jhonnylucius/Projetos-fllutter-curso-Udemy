@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pj1/screens/dashBoard_screen.dart'; // Add this line
 import 'package:pj1/services/auth_service.dart';
 
 class Menu extends StatelessWidget {
@@ -57,7 +58,7 @@ class Menu extends StatelessWidget {
           UserAccountsDrawerHeader(
             accountEmail: Text(user.email!),
             currentAccountPicture: CircleAvatar(
-              backgroundColor: Colors.white,
+              backgroundColor: const Color.fromARGB(255, 201, 192, 228),
               child: user.photoURL != null
                   ? ClipOval(
                       child: Image.network(
@@ -75,6 +76,18 @@ class Menu extends StatelessWidget {
             accountName: Text(
               user.displayName != null ? user.displayName! : '',
             ),
+          ),
+          ListTile(
+            leading: Icon(Icons.dashboard),
+            title: const Text('Dashboard'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DashBoardScreen(userId: user.uid),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: Icon(Icons.logout),
