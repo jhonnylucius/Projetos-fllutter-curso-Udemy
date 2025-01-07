@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pj1/firebase_options.dart';
+import 'package:pj1/screens/dashBoard_screen.dart';
 import 'package:pj1/screens/home_screen.dart';
 import 'package:pj1/screens/login_screen.dart';
 
@@ -33,11 +34,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'AgendaPRO',
+      routes: {
+        '/': (context) => const RoteadorTelas(),
+        '/dashboard': (context) => DashBoardScreen(
+            userId: FirebaseAuth.instance.currentUser?.uid ?? ''),
+      },
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+          seedColor: const Color.fromARGB(255, 222, 143, 224),
           brightness: Brightness.light,
+          primary: Colors.deepPurple,
+          secondary: Colors.deepPurple.shade300,
+          surfaceContainerHighest: Colors.deepPurple.shade50,
+          surface: Colors.deepPurple.shade100,
         ),
         cardTheme: CardTheme(
           elevation: 4,
@@ -48,7 +58,6 @@ class MyApp extends StatelessWidget {
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const RoteadorTelas(),
     );
   }
 }
