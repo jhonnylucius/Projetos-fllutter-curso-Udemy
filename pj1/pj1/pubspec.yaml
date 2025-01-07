@@ -45,6 +45,7 @@ dependencies:
   uuid: ^4.5.1
   logger: ^2.5.0
   fl_chart: ^0.70.0
+  intl: ^0.20.1
 
 dev_dependencies:
   flutter_test:
