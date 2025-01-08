@@ -6,18 +6,18 @@ import 'package:pj1/components/menu.dart';
 import 'package:pj1/models/costs.dart';
 import 'package:uuid/uuid.dart';
 
-class CostsScreen extends StatefulWidget {
+class ExpensesScreen extends StatefulWidget {
   final User user;
-  const CostsScreen({
+  const ExpensesScreen({
     super.key,
     required this.user,
   });
 
   @override
-  State<CostsScreen> createState() => _CostsScreenState();
+  State<ExpensesScreen> createState() => _ExpensesScreenState();
 }
 
-class _CostsScreenState extends State<CostsScreen> {
+class _ExpensesScreenState extends State<ExpensesScreen> {
   List<Costs> listCosts = [];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -113,7 +113,7 @@ class _CostsScreenState extends State<CostsScreen> {
                             onTap: () {},
                             leading: Icon(Icons.list_alt_rounded, size: 56),
                             title: Text("Data: ${model.data}"),
-                            subtitle: Text(model.descricaoDaDespesa ?? ''),
+                            subtitle: Text(model.descricaoDaDespesa!),
                           ),
                         ],
                       ),

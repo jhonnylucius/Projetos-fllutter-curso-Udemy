@@ -9,7 +9,7 @@ class Costs {
     required this.id,
     required this.data,
     required this.preco,
-    this.descricaoDaDespesa,
+    required this.descricaoDaDespesa,
     required this.tipoDespesa,
   });
 
