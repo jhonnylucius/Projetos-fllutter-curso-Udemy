@@ -5,27 +5,26 @@ import 'package:flutter/material.dart'; // Importa o pacote do Flutter para widg
 import 'package:logger/logger.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // Importa o pacote para formatar inputs de texto
 import 'package:pj1/components/menu.dart'; // Importa o componente de menu
-import 'package:pj1/helpers/hour_helpers.dart'; // Importa o helper de horas
+import 'package:pj1/models/costs.dart';
 import 'package:pj1/models/hour.dart';
-import 'package:pj1/screens/costs_screen.dart';
 import 'package:uuid/uuid.dart';
 
-class HomeScreen extends StatefulWidget {
+class CostsScreen extends StatefulWidget {
   // Tela inicial do aplicativo
   final User user; // Usuário logado
-  const HomeScreen({
+  const CostsScreen({
     super.key,
     required this.user,
   }); // Construtor que recebe o usuário
 
   @override
-  State<HomeScreen> createState() =>
+  State<CostsScreen> createState() =>
       _HomeScreenState(); // Cria o estado da tela
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<CostsScreen> {
   // Estado da tela inicial
-  List<Hour> listHours = []; // Lista de horas registradas
+  List<Costs> listCosts = []; // Lista de custos registrados
   FirebaseFirestore firestore =
       FirebaseFirestore.instance; // Instância do Firestore
 
@@ -35,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     setupFCM(); // Configura o FCM
-    refresh(null); // Atualiza a lista de horas
+    refresh(null); // Atualiza a lista de custos
   }
 
   @override
@@ -48,34 +47,13 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
         ),
-        // Adicionar múltiplos FABs
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(left: 32),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              FloatingActionButton.extended(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CostsScreen(user: widget.user),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.attach_money),
-                label: const Text('Custos'),
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-              ),
-              FloatingActionButton.extended(
-                onPressed: () => showFormModal(),
-                icon: const Icon(Icons.add),
-                label: const Text('Horas'),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-              ),
-            ],
-          ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () => showFormModal(),
+          icon: const Icon(Icons.add),
+          label: const Text('Add Custos'),
+          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -88,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          child: listHours.isEmpty
+          child: listCosts.isEmpty
               ? Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -109,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Registre suas horas trabalhadas',
+                        'Registre suas Despesas',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.grey.shade600,
@@ -119,14 +97,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 )
               : ListView(
-                  // ListView para exibir a lista de horas
+                  // ListView para exibir a lista de custos
                   padding: EdgeInsets.only(left: 4, right: 4),
-                  children: List.generate(listHours.length, (index) {
-                    // Gera os cards para cada hora
-                    Hour model = listHours[index];
+                  children: List.generate(listCosts.length, (index) {
+                    // Gera os cards para cada despesa
+                    Costs model = listCosts[index];
                     return Dismissible(
                       // Widget que permite deslizar o card para remover
-                      key: ValueKey<Hour>(model),
+                      key: ValueKey<Costs>(model),
                       direction: DismissDirection.endToStart,
                       background: Container(
                         alignment: Alignment.centerRight,
@@ -135,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Icon(Icons.delete, color: Colors.white),
                       ),
                       onDismissed: (direction) {
-                        remove(model); // Remove a hora
+                        remove(model); // Remove a registro de despesa
                       },
                       child: Card(
                         elevation: 2,
@@ -148,9 +126,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTap: () {},
                               leading: Icon(Icons.list_alt_rounded, size: 56),
                               title: Text(
-                                  "Data: ${model.data} hora: ${HourHelper.minutosToHours((model.minutos))}"), // Exibe a data e hora formatada
-                              subtitle:
-                                  Text(model.descricao!), // Exibe a descrição
+                                  "Data: ${model.data}"), // Exibe a data e hora formatada
+                              subtitle: Text(model
+                                  .descricaoDaDespesa!), // Exibe a descrição
                             ),
                           ],
                         ),
@@ -161,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ));
   }
 
-  showFormModal({Hour? model}) {
+  showFormModal({Costs? model}) {
     // Método para exibir o modal de formulário
     String title = "Adicionar"; // Título do modal
     String confirmationButton = "Salvar"; // Texto do botão de confirmação
@@ -171,25 +149,34 @@ class _HomeScreenState extends State<HomeScreen> {
         TextEditingController(); // Controller para o campo de data
     final dataMaskFormatter = MaskTextInputFormatter(
         mask: '##/##/####'); // Formatador para o campo de data
-    TextEditingController minutoController =
-        TextEditingController(); // Controller para o campo de minutos
-    final minutoMaskFormatter = MaskTextInputFormatter(
-        mask: '##:##'); // Formatador para o campo de minutos
-    TextEditingController descricaoController =
-        TextEditingController(); // Controller para o campo de descrição
     TextEditingController precoController =
-        TextEditingController(); // Controller para o campo de preço
-    final precoMaskFormatter = MaskTextInputFormatter(
-        mask: '',
-        filter: {"#": RegExp(r'[0-9]')}); // Formatador para o campo de preço
+        TextEditingController(); // Controller para o campo de minutos
+    final precoMaskFormatter =
+        MaskTextInputFormatter(mask: '', filter: {"#": RegExp(r'[0-9]')});
+    TextEditingController descricaoDaDespesaController =
+        TextEditingController(); // Controller para o campo de descrição
+    TextEditingController tipoDespesaController =
+        TextEditingController(); // Controller para o campo de tipo de despesa
+    final tipoDespesaMaskFormatter = MaskTextInputFormatter(mask: '');
+    TextFormField(
+      controller: tipoDespesaController,
+      inputFormatters: [tipoDespesaMaskFormatter],
+      decoration: InputDecoration(
+        labelText: 'Tipo de Despesa',
+        hintText: 'Ex: Aluguel, Internet, Compras do mês',
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+    );
 
     if (model != null) {
       // Se estiver editando, preenche os campos
       title = "Editando";
       dataController.text = model.data;
-      minutoController.text = HourHelper.minutosToHours(model.minutos);
-      if (model.descricao != null) {
-        descricaoController.text = model.descricao!;
+      tipoDespesaController.text = model.tipoDespesa ?? '';
+      descricaoDaDespesaController.text = model.descricaoDaDespesa ?? '';
+      if (model.descricaoDaDespesa != null) {
+        descricaoDaDespesaController.text = model.descricaoDaDespesa!;
       }
       precoController.text = model.preco.toString();
       confirmationButton = "Atualizar";
@@ -233,21 +220,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 16,
                 ),
                 TextFormField(
-                  controller: minutoController,
+                  controller: precoController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    hintText: '08:00',
-                    labelText: 'Hora Trabalhadas',
+                    hintText: 'Valor da Despesa.',
+                    labelText: '100.00',
                   ),
-                  inputFormatters: [minutoMaskFormatter],
+                  inputFormatters: [precoMaskFormatter],
                 ),
                 SizedBox(
                   height: 16,
                 ),
                 TextFormField(
-                  controller: descricaoController,
+                  controller: descricaoDaDespesaController,
                   decoration: InputDecoration(
-                    hintText: 'Lembrete do que você fez',
+                    hintText: 'Qual a despesa que você pagou?',
                     labelText: 'Descrição',
                   ),
                 ),
@@ -255,12 +242,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 16,
                 ),
                 TextFormField(
-                  controller: precoController,
+                  controller: tipoDespesaController,
                   decoration: InputDecoration(
-                    hintText: 'Valor recebido pelo trabalho',
-                    labelText: '100.00',
+                    hintText: 'Essa despesa é mensal, anual ou exporádica?',
+                    labelText: 'Descrição',
                   ),
-                  inputFormatters: [precoMaskFormatter],
                 ),
                 SizedBox(
                   height: 16,
@@ -279,24 +265,24 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Hour hour = Hour(
+                        Costs costs = Costs(
                           id: const Uuid().v1(),
                           data: dataController.text,
-                          minutos:
-                              HourHelper.hoursToMinutos(minutoController.text),
-                          descricao: descricaoController.text,
-                          nome: widget.user.displayName ?? 'Nome não informado',
                           preco: double.tryParse(precoController.text) ?? 0.0,
+                          descricaoDaDespesa: descricaoDaDespesaController.text,
+                          tipoDespesa: tipoDespesaController.text,
                         );
-                        if (descricaoController.text != "") {
-                          hour.descricao = descricaoController.text;
+
+                        if (descricaoDaDespesaController.text != "") {
+                          costs.descricaoDaDespesa =
+                              descricaoDaDespesaController.text;
                         }
 
                         if (model != null) {
-                          hour.id = model.id;
+                          costs.id = model.id;
                         }
-                        firestore.collection(widget.user.uid).doc(hour.id).set(
-                              hour.toMap(),
+                        firestore.collection(widget.user.uid).doc(costs.id).set(
+                              costs.toMap(),
                             );
                         refresh(null); // Atualiza a lista de horas
                         Navigator.pop(context);
@@ -316,10 +302,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void remove(Hour model) {
-    // Método para remover uma hora
+  void remove(Costs model) {
+    // Método para remover uma despesa
     firestore.collection(widget.user.uid).doc(model.id).delete();
-    refresh(null); // Atualiza a lista de horas
+    refresh(null); // Atualiza a lista de despesas
   }
 
   Future<void> refresh(dynamic snapshot) async {
@@ -337,7 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       // Atualizar o estado com a nova lista
       setState(() {
-        listHours = temp;
+        listCosts = temp.cast<Costs>();
       });
     } catch (e) {
       Logger().e('Erro ao atualizar lista: $e');
