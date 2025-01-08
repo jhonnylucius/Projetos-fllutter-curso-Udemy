@@ -70,10 +70,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.calendar_today_rounded,
-                        size: 80,
-                        color: Colors.blue.withAlpha((0.5 * 255).toInt()),
+                      Image.asset(
+                        'assets/logo_512x512.png.png',
+                        width: 100,
+                        height: 100,
                       ),
                       const SizedBox(height: 16),
                       Text(

@@ -26,64 +26,85 @@ class LoginScreen extends StatelessWidget {
             fit: BoxFit.cover, // Adapta a imagem ao container
           ),
         ),
-        child: Column(
-          children: [
-            FlutterLogo(size: 36.0),
-            SizedBox(height: 16.0),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'E-mail'),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(
+                    255, 255, 255, 1), // Branco com 80% de opacidade
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.black12),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/Icon-192.png',
+                    width: 100,
+                    height: 100,
+                  ),
+                  SizedBox(height: 16.0),
+                  TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(labelText: 'E-mail'),
+                  ),
+                  SizedBox(height: 16.0),
+                  TextField(
+                    obscureText: true,
+                    controller: __senhaController,
+                    decoration: InputDecoration(hintText: 'Senha'),
+                  ),
+                  const SizedBox(height: 16.0),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final scaffoldMessenger = ScaffoldMessenger.of(context);
+                      final erro = await _authService.entrarUsuario(
+                          _emailController.text, __senhaController.text);
+                      if (erro != null) {
+                        final snackBar = SnackBar(
+                          content: Text('Dados Inválidos'),
+                          backgroundColor: Colors.red,
+                        );
+                        scaffoldMessenger.showSnackBar(snackBar);
+                      }
+                    },
+                    child: const Text('Entrar'),
+                  ),
+                  SizedBox(height: 16.0),
+                  SignInButton(
+                    Buttons.Google,
+                    text: 'Entrar com Google',
+                    onPressed: () {
+                      singinWithGoogle();
+                    },
+                  ),
+                  SizedBox(height: 12.0),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegisterScreen()));
+                    },
+                    child: Text('Criar uma conta!'),
+                  ),
+                  SizedBox(height: 12.0),
+                  TextButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return ResetPasswordModal();
+                          });
+                    },
+                    child: Text('Esqueci minha senha!'),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 16.0),
-            TextField(
-              obscureText: true,
-              controller: __senhaController,
-              decoration: InputDecoration(hintText: 'Senha'),
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () async {
-                final scaffoldMessenger = ScaffoldMessenger.of(context);
-                final erro = await _authService.entrarUsuario(
-                    _emailController.text, __senhaController.text);
-                if (erro != null) {
-                  final snackBar = SnackBar(
-                    content: Text('Dados Inválidos'),
-                    backgroundColor: Colors.red,
-                  );
-                  scaffoldMessenger.showSnackBar(snackBar);
-                }
-              },
-              child: const Text('Entrar'),
-            ),
-            SizedBox(height: 16.0),
-            SignInButton(
-              Buttons.Google,
-              text: 'Entrar com Google',
-              onPressed: () {
-                singinWithGoogle();
-              },
-            ),
-            SizedBox(height: 12.0),
-            TextButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => RegisterScreen()));
-              },
-              child: Text('Criar uma conta!'),
-            ),
-            SizedBox(height: 12.0),
-            TextButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return ResetPasswordModal();
-                    });
-              },
-              child: Text('Esqueci minha senha!'),
-            ),
-          ],
+          ),
         ),
       ),
     );
