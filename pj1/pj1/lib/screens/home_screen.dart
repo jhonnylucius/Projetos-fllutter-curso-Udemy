@@ -68,10 +68,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: listHours.isEmpty
               ? Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
-                        'assets/logo_512x512.png.png',
+                        'assets/logo_512x512.png',
                         width: 100,
                         height: 100,
                       ),
