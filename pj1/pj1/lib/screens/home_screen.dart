@@ -70,8 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
               FloatingActionButton.extended(
                 onPressed: () => showFormModal(),
                 icon: const Icon(Icons.add),
-                label: const Text('Horas'),
-                backgroundColor: Theme.of(context).colorScheme.primary,
+                label: const Text('Receitas'),
+                backgroundColor: Theme.of(context).colorScheme.secondary,
               ),
             ],
           ),
@@ -324,64 +324,55 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> refresh(dynamic snapshot) async {
     try {
-      List<Hour> temp = [];
-
-      // Usar o querySnapshot obtido do Firestore
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
           await firestore.collection(widget.user.uid).get();
 
-      // Iterar sobre os documentos do querySnapshot
-      for (var doc in querySnapshot.docs) {
-        temp.add(Hour.fromMap(doc.data()));
-      }
-
-      // Atualizar o estado com a nova lista
       setState(() {
-        listHours = temp;
+        listHours = querySnapshot.docs
+            .map((doc) => Hour.fromMap(doc.data()))
+            .where((hour) => hour != null) // Filtrar nulos
+            .toList();
       });
     } catch (e) {
-      Logger().e('Erro ao atualizar lista: $e');
-      // Opcional: Mostrar mensagem de erro para o usuário
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erro ao atualizar lista')),
-      );
+      print('Erro ao atualizar lista: $e');
     }
   }
-}
 
-void setupFCM() async {
-  // Configurar o Firebase Cloud Messaging (FCM)
-  final fcmToken = await FirebaseMessaging.instance.getToken();
-  Logger().e('FCM Token: $fcmToken');
+  void setupFCM() async {
+    // Configurar o Firebase Cloud Messaging (FCM)
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    Logger().e('FCM Token: $fcmToken');
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
 
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    Logger().e('User granted permission');
-  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-    Logger().e('User granted provisional permission');
-  } else {
-    Logger().e('User declined or has not accepted permission');
-  }
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      Logger().e('User granted permission');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      Logger().e('User granted provisional permission');
+    } else {
+      Logger().e('User declined or has not accepted permission');
+    }
 
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    Logger()
-        .e('Message also contained a notification: ${message.notification}');
-    Logger().e('Message data: ${message.data}');
-
-    if (message.notification != null) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       Logger()
           .e('Message also contained a notification: ${message.notification}');
-    }
-  });
+      Logger().e('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        Logger().e(
+            'Message also contained a notification: ${message.notification}');
+      }
+    });
+  }
 }

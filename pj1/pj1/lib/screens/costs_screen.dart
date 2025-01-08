@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart'; // Importa o pacote do Firestore
 import 'package:firebase_auth/firebase_auth.dart'; // Importa o pacote de autenticação do Firebase
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart'; // Importa o pacote do Flutter para widgets
-import 'package:logger/logger.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // Importa o pacote para formatar inputs de texto
 import 'package:pj1/components/menu.dart'; // Importa o componente de menu
 import 'package:pj1/models/costs.dart';
-import 'package:pj1/models/hour.dart';
 import 'package:uuid/uuid.dart';
 
 class CostsScreen extends StatefulWidget {
@@ -33,7 +30,7 @@ class _HomeScreenState extends State<CostsScreen> {
     // Método chamado ao inicializar o estado
     super.initState();
 
-    setupFCM(); // Configura o FCM
+    // Carrega os custos do Firestore
     refresh(null); // Atualiza a lista de custos
   }
 
@@ -263,8 +260,8 @@ class _HomeScreenState extends State<CostsScreen> {
                     SizedBox(
                       width: 16,
                     ),
-                    ElevatedButton(
-                      onPressed: () {
+                    TextButton(
+                      onPressed: () async {
                         Costs costs = Costs(
                           id: const Uuid().v1(),
                           data: dataController.text,
@@ -273,26 +270,21 @@ class _HomeScreenState extends State<CostsScreen> {
                           tipoDespesa: tipoDespesaController.text,
                         );
 
-                        if (descricaoDaDespesaController.text != "") {
-                          costs.descricaoDaDespesa =
-                              descricaoDaDespesaController.text;
-                        }
-
                         if (model != null) {
                           costs.id = model.id;
                         }
-                        firestore.collection(widget.user.uid).doc(costs.id).set(
-                              costs.toMap(),
-                            );
-                        refresh(null); // Atualiza a lista de horas
+
+                        await firestore
+                            .collection('${widget.user.uid}_costs')
+                            .doc(costs.id)
+                            .set(costs.toMap());
+
+                        await refresh();
                         Navigator.pop(context);
                       },
                       child: Text(confirmationButton),
                     ),
                   ],
-                ),
-                SizedBox(
-                  height: 180,
                 ),
               ],
             ),
@@ -302,72 +294,25 @@ class _HomeScreenState extends State<CostsScreen> {
     );
   }
 
-  void remove(Costs model) {
-    // Método para remover uma despesa
-    firestore.collection(widget.user.uid).doc(model.id).delete();
-    refresh(null); // Atualiza a lista de despesas
-  }
-
-  Future<void> refresh(dynamic snapshot) async {
+  Future<void> refresh([dynamic snapshot]) async {
     try {
-      List<Hour> temp = [];
-
-      // Usar o querySnapshot obtido do Firestore
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await firestore.collection(widget.user.uid).get();
+          await firestore.collection('${widget.user.uid}_costs').get();
 
-      // Iterar sobre os documentos do querySnapshot
-      for (var doc in querySnapshot.docs) {
-        temp.add(Hour.fromMap(doc.data()));
-      }
-
-      // Atualizar o estado com a nova lista
       setState(() {
-        listCosts = temp.cast<Costs>();
+        listCosts =
+            querySnapshot.docs.map((doc) => Costs.fromMap(doc.data())).toList();
       });
     } catch (e) {
-      Logger().e('Erro ao atualizar lista: $e');
-      // Opcional: Mostrar mensagem de erro para o usuário
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erro ao atualizar lista')),
-      );
+      print('Erro ao atualizar lista: $e');
     }
   }
-}
 
-void setupFCM() async {
-  // Configurar o Firebase Cloud Messaging (FCM)
-  final fcmToken = await FirebaseMessaging.instance.getToken();
-  Logger().e('FCM Token: $fcmToken');
-
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    Logger().e('User granted permission');
-  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-    Logger().e('User granted provisional permission');
-  } else {
-    Logger().e('User declined or has not accepted permission');
+  Future<void> remove(Costs costs) async {
+    await firestore
+        .collection('${widget.user.uid}_costs')
+        .doc(costs.id)
+        .delete();
+    refresh();
   }
-
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    Logger()
-        .e('Message also contained a notification: ${message.notification}');
-    Logger().e('Message data: ${message.data}');
-
-    if (message.notification != null) {
-      Logger()
-          .e('Message also contained a notification: ${message.notification}');
-    }
-  });
 }

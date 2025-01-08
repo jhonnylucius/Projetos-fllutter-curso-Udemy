@@ -16,9 +16,9 @@ class Costs {
   Costs.fromMap(Map<String, dynamic> map)
       : id = map['id'],
         data = map['data'],
-        preco = map['minutos'],
+        preco = map['preco'].toDouble(),
         descricaoDaDespesa = map['descricao'],
-        tipoDespesa = map['nome'];
+        tipoDespesa = map['tipoDespesa'];
 
   Map<String, dynamic> toMap() {
     return {
