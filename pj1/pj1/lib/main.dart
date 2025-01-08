@@ -2,8 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:pj1/firebase_options.dart';
+import 'package:pj1/screens/costs_screen.dart'; // Importar costs_screen
 import 'package:pj1/screens/dashBoard_screen.dart';
+import 'package:pj1/screens/expenses_screen.dart'; // Importar expenses_screen
 import 'package:pj1/screens/home_screen.dart';
 import 'package:pj1/screens/login_screen.dart';
 
@@ -23,7 +26,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  print('### Mensagem recebida em segundo plano: ${message.messageId}');
+  Logger().e('### Mensagem recebida em segundo plano: ${message.messageId}');
 }
 
 class MyApp extends StatelessWidget {
@@ -38,6 +41,12 @@ class MyApp extends StatelessWidget {
         '/': (context) => const RoteadorTelas(),
         '/dashboard': (context) => DashBoardScreen(
             userId: FirebaseAuth.instance.currentUser?.uid ?? ''),
+        '/costs': (context) => CostsScreen(
+            user: FirebaseAuth
+                .instance.currentUser!), // Adicionar rota para CostsScreen
+        '/expenses': (context) => ExpensesScreen(
+            user: FirebaseAuth
+                .instance.currentUser!), // Adicionar rota para ExpensesScreen
       },
       theme: ThemeData(
         useMaterial3: true,
@@ -46,8 +55,8 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
           primary: Colors.deepPurple,
           secondary: Colors.deepPurple.shade300,
-          surfaceContainerHighest: Colors.deepPurple.shade50,
-          surface: Colors.deepPurple.shade100,
+          surfaceContainerHighest: const Color.fromARGB(255, 222, 232, 245),
+          surface: const Color.fromARGB(255, 249, 249, 250),
         ),
         cardTheme: CardTheme(
           elevation: 4,
