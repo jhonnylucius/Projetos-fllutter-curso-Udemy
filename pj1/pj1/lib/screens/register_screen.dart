@@ -16,7 +16,12 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: const Color.fromARGB(255, 160, 12, 173),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/background_login.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
         padding: EdgeInsets.all(12.0),
         child: Center(
           child: Column(
@@ -30,7 +35,11 @@ class RegisterScreen extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    FlutterLogo(size: 55.0),
+                    Image.asset(
+                      'assets/Icon-192.png',
+                      width: 100,
+                      height: 100,
+                    ),
                     SizedBox(height: 12.0),
                     TextField(
                       controller: _nomeController,
