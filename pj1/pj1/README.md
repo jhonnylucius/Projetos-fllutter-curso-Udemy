@@ -69,6 +69,11 @@ flutter pub add google_sign_in
 flutter pub add cloud_firestore
 flutter pub add firebase_messaging
 flutter pub add http
+flutter pub add mask_text_input_formatter
+flutter pub add uuid
+flutter pub logger
+flutter pub fl_chart
+flutter pub intl
 
 ```
 ## erros conhecidos
