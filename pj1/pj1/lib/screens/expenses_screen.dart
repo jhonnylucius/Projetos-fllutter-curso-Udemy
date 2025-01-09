@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:pj1/components/menu.dart';
 import 'package:pj1/models/expenses.dart'; // Importar modelo Expenses
@@ -40,7 +41,10 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => showFormModal(),
         icon: const Icon(Icons.add),
-        label: const Text('Add Receitas'),
+        label: const Text(
+          'Add Custos',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
@@ -80,7 +84,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                       'Registre suas Receitas',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey.shade600,
+                        color: const Color.fromARGB(255, 129, 18, 151),
                       ),
                     ),
                   ],
@@ -147,12 +151,11 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     TextEditingController descricaoDaReceitaController =
         TextEditingController();
     TextEditingController tipoReceitaController = TextEditingController();
-    final tipoReceitaMaskFormatter = MaskTextInputFormatter(mask: '');
 
     if (model != null) {
       title = "Editando";
       dataController.text = model.data;
-      tipoReceitaController.text = model.tipoReceita ?? '';
+      tipoReceitaController.text = model.tipoReceita;
       descricaoDaReceitaController.text = model.descricaoDaReceita ?? '';
       precoController.text = model.preco.toString();
       confirmationButton = "Atualizar";
@@ -211,7 +214,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                 TextFormField(
                   controller: tipoReceitaController,
                   decoration: InputDecoration(
-                    hintText: 'Essa receita é mensal, anual ou exporádica?',
+                    hintText: 'Essa receita é mensal, anual ou esporádica?',
                     labelText: 'Tipo de Receita',
                   ),
                 ),
@@ -271,9 +274,10 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         listExpenses = querySnapshot.docs
             .map((doc) => Expenses.fromMap(doc.data()))
             .toList();
+        refresh();
       });
     } catch (e) {
-      print('Erro ao atualizar lista: $e');
+      Logger().e('Erro ao atualizar lista: $e');
     }
   }
 

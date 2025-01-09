@@ -22,13 +22,13 @@ class RegisterScreen extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        padding: EdgeInsets.all(12.0),
+        padding: EdgeInsets.all(8.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(12.0),
+                padding: EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16.0),
@@ -37,32 +37,32 @@ class RegisterScreen extends StatelessWidget {
                   children: [
                     Image.asset(
                       'assets/Icon-192.png',
-                      width: 100,
-                      height: 100,
+                      width: 90,
+                      height: 90,
                     ),
-                    SizedBox(height: 12.0),
+                    SizedBox(height: 8.0),
                     TextField(
                       controller: _nomeController,
                       decoration: InputDecoration(labelText: 'Nome'),
                     ),
-                    SizedBox(height: 12.0),
+                    SizedBox(height: 8.0),
                     TextField(
                       controller: _emailController,
                       decoration: InputDecoration(labelText: 'E-mail'),
                     ),
-                    SizedBox(height: 12.0),
+                    SizedBox(height: 8.0),
                     TextField(
                       obscureText: true,
                       controller: _senhaController,
                       decoration: InputDecoration(labelText: 'Senha'),
                     ),
-                    SizedBox(height: 12.0),
+                    SizedBox(height: 8.0),
                     TextField(
                       obscureText: true,
                       controller: _confirmarSenhaController,
                       decoration: InputDecoration(labelText: 'Confirmar Senha'),
                     ),
-                    SizedBox(height: 12.0),
+                    SizedBox(height: 8.0),
                     ElevatedButton(
                       onPressed: () {
                         if (_senhaController.text ==
@@ -96,7 +96,7 @@ class RegisterScreen extends StatelessWidget {
                       },
                       child: Text('Cadastrar'),
                     ),
-                    SizedBox(height: 16.0),
+                    SizedBox(height: 8.0),
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);

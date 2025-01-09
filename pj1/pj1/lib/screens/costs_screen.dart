@@ -40,7 +40,10 @@ class _CostsScreenState extends State<CostsScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => showFormModal(),
         icon: const Icon(Icons.add),
-        label: const Text('Add Custos'),
+        label: const Text(
+          'Add Custos',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
@@ -80,7 +83,7 @@ class _CostsScreenState extends State<CostsScreen> {
                       'Registre suas Despesas',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey.shade600,
+                        color: const Color.fromARGB(255, 129, 18, 151),
                       ),
                     ),
                   ],
