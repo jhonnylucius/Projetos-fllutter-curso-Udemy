@@ -4,11 +4,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:pj1/firebase_options.dart';
-import 'package:pj1/screens/costs_screen.dart'; // Importar costs_screen
+import 'package:pj1/screens/costs_screen.dart';
 import 'package:pj1/screens/dashBoard_screen.dart';
-import 'package:pj1/screens/expenses_screen.dart'; // Importar expenses_screen
+import 'package:pj1/screens/expenses_screen.dart';
 import 'package:pj1/screens/home_screen.dart';
 import 'package:pj1/screens/login_screen.dart';
+import 'package:pj1/widgets/terms_of_service_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,12 +43,10 @@ class MyApp extends StatelessWidget {
         '/': (context) => const RoteadorTelas(),
         '/dashboard': (context) => DashBoardScreen(
             userId: FirebaseAuth.instance.currentUser?.uid ?? ''),
-        '/costs': (context) => CostsScreen(
-            user: FirebaseAuth
-                .instance.currentUser!), // Adicionar rota para CostsScreen
-        '/expenses': (context) => ExpensesScreen(
-            user: FirebaseAuth
-                .instance.currentUser!), // Adicionar rota para ExpensesScreen
+        '/costs': (context) =>
+            CostsScreen(user: FirebaseAuth.instance.currentUser!),
+        '/expenses': (context) =>
+            ExpensesScreen(user: FirebaseAuth.instance.currentUser!),
       },
       theme: ThemeData(
         useMaterial3: true,
@@ -76,8 +76,8 @@ class RoteadorTelas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: FirebaseAuth.instance.authStateChanges(),
+    return FutureBuilder<bool>(
+      future: _checkTermsAccepted(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
@@ -91,14 +91,53 @@ class RoteadorTelas extends StatelessWidget {
               child: Text('Erro ao carregar dados.'),
             ),
           );
-        } else if (snapshot.hasData) {
-          return HomeScreen(
-            user: snapshot.data!,
-          );
+        } else if (snapshot.data == false) {
+          return TermsOfServiceScreen();
         } else {
-          return LoginScreen();
+          return StreamBuilder(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return const Scaffold(
+                  body: Center(
+                    child: Text('Erro ao carregar dados.'),
+                  ),
+                );
+              } else if (snapshot.hasData) {
+                return HomeScreen(
+                  user: snapshot.data!,
+                );
+              } else {
+                return LoginScreen();
+              }
+            },
+          );
         }
       },
+    );
+  }
+
+  Future<bool> _checkTermsAccepted() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('terms_accepted') ?? false;
+  }
+}
+
+class TermsOfServiceScreen extends StatelessWidget {
+  const TermsOfServiceScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: TermsOfServiceDialog(),
+      ),
     );
   }
 }
