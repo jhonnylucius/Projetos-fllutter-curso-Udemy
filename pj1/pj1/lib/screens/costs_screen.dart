@@ -163,88 +163,86 @@ class _CostsScreenState extends State<CostsScreen> {
             right: 32,
             top: 32,
           ),
-          child: Container(
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.headlineSmall,
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              TextFormField(
+                controller: dataController,
+                keyboardType: TextInputType.datetime,
+                decoration: InputDecoration(
+                  hintText: '01/01/2024',
+                  labelText: 'Data',
                 ),
-                TextFormField(
-                  controller: dataController,
-                  keyboardType: TextInputType.datetime,
-                  decoration: InputDecoration(
-                    hintText: '01/01/2024',
-                    labelText: 'Data',
+                inputFormatters: [dataMaskFormatter],
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: precoController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Valor da Despesa.',
+                  labelText: '100.00',
+                ),
+                inputFormatters: [precoMaskFormatter],
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: descricaoDaDespesaController,
+                decoration: InputDecoration(
+                  hintText: 'Qual a despesa que você pagou?',
+                  labelText: 'Descrição',
+                ),
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: tipoDespesaController,
+                decoration: InputDecoration(
+                  hintText: 'Essa despesa é mensal, anual ou esporádica?',
+                  labelText: 'Descrição',
+                ),
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(SkipButton),
                   ),
-                  inputFormatters: [dataMaskFormatter],
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: precoController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: 'Valor da Despesa.',
-                    labelText: '100.00',
-                  ),
-                  inputFormatters: [precoMaskFormatter],
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: descricaoDaDespesaController,
-                  decoration: InputDecoration(
-                    hintText: 'Qual a despesa que você pagou?',
-                    labelText: 'Descrição',
-                  ),
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: tipoDespesaController,
-                  decoration: InputDecoration(
-                    hintText: 'Essa despesa é mensal, anual ou exporádica?',
-                    labelText: 'Descrição',
-                  ),
-                ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(SkipButton),
-                    ),
-                    SizedBox(width: 16),
-                    TextButton(
-                      onPressed: () async {
-                        Costs costs = Costs(
-                          id: const Uuid().v1(),
-                          data: dataController.text,
-                          preco: double.tryParse(precoController.text) ?? 0.0,
-                          descricaoDaDespesa: descricaoDaDespesaController.text,
-                          tipoDespesa: tipoDespesaController.text,
-                        );
+                  SizedBox(width: 16),
+                  TextButton(
+                    onPressed: () async {
+                      Costs costs = Costs(
+                        id: const Uuid().v1(),
+                        data: dataController.text,
+                        preco: double.tryParse(precoController.text) ?? 0.0,
+                        descricaoDaDespesa: descricaoDaDespesaController.text,
+                        tipoDespesa: tipoDespesaController.text,
+                      );
 
-                        if (model != null) {
-                          costs.id = model.id;
-                        }
+                      if (model != null) {
+                        costs.id = model.id;
+                      }
 
-                        await firestore
-                            .collection('${widget.user.uid}_costs')
-                            .doc(costs.id)
-                            .set(costs.toMap());
+                      await firestore
+                          .collection('${widget.user.uid}_costs')
+                          .doc(costs.id)
+                          .set(costs.toMap());
 
-                        await refresh();
-                        Navigator.pop(context);
-                      },
-                      child: Text(confirmationButton),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                      await refresh();
+                      Navigator.pop(context);
+                    },
+                    child: Text(confirmationButton),
+                  ),
+                ],
+              ),
+            ],
           ),
         );
       },
