@@ -133,13 +133,75 @@ flutter create --platforms android,web .
 ### Estrutura do Projeto
 
 ```
-lib/
-  ├── screens/
-  │   ├── login_screen.dart
-  │   └── register_screen.dart
-  ├── services/
-  │   └── auth_service.dart
-  └── main.dart
+Directory structure:
+└── pj1/
+    ├── README.md
+    ├── analysis_options.yaml
+    ├── pubspec.yaml
+    ├── .gitignore
+    ├── .metadata
+    ├── android/
+    │   ├── gradle.properties
+    │   ├── .gitignore
+    │   ├── app/
+    │   │   └── src/
+    │   │       ├── debug/
+    │   │       │   └── AndroidManifest.xml
+    │   │       ├── main/
+    │   │       │   ├── AndroidManifest.xml
+    │   │       │   ├── kotlin/
+    │   │       │   │   └── com/
+    │   │       │   │       └── example/
+    │   │       │   │           └── pj1/
+    │   │       │   │               └── MainActivity.kt
+    │   │       │   └── res/
+    │   │       │       ├── drawable/
+    │   │       │       │   └── launch_background.xml
+    │   │       │       ├── drawable-v21/
+    │   │       │       │   └── launch_background.xml
+    │   │       │       ├── mipmap-hdpi/
+    │   │       │       ├── mipmap-mdpi/
+    │   │       │       ├── mipmap-xhdpi/
+    │   │       │       ├── mipmap-xxhdpi/
+    │   │       │       ├── mipmap-xxxhdpi/
+    │   │       │       ├── values/
+    │   │       │       │   └── styles.xml
+    │   │       │       └── values-night/
+    │   │       │           └── styles.xml
+    │   │       └── profile/
+    │   │           └── AndroidManifest.xml
+    │   └── gradle/
+    │       └── wrapper/
+    │           └── gradle-wrapper.properties
+    ├── assets/
+    ├── lib/
+    │   ├── main.dart
+    │   ├── components/
+    │   │   └── menu.dart
+    │   ├── helpers/
+    │   │   └── hour_helpers.dart
+    │   ├── models/
+    │   │   ├── costs.dart
+    │   │   └── expenses.dart
+    │   ├── screens/
+    │   │   ├── costs_screen.dart
+    │   │   ├── dashBoard_screen.dart
+    │   │   ├── expenses_screen.dart
+    │   │   ├── home_screen.dart
+    │   │   ├── login_screen.dart
+    │   │   ├── register_screen.dart
+    │   │   └── reset_password_modal.dart
+    │   └── services/
+    │       └── auth_service.dart
+    ├── test/
+    │   └── widget_test.dart
+    ├── web/
+    │   ├── index.html
+    │   ├── manifest.json
+    │   └── icons/
+    └── .vscode/
+        └── settings.json
+
 
 ```
 
@@ -147,12 +209,6 @@ lib/
 
 [Adicionar screenshots quando disponíveis]
 
-### Próximos Passos
-
-- [ ]  Recuperação de senha
-- [ ]  Perfil do usuário
-- [ ]  Testes unitários
-- [ ]  CI/CD
 
 ## 🤝 Como Contribuir
 
@@ -221,16 +277,41 @@ flutter run
 
 ```
 
-## Funcionalidades Disponíveis
+# Funcionalidades Disponíveis no Aplicativo
 
-- 🔐 Login com e-mail/senha -**disponível**
-- 🔑 Login com Google - **disponível**
-- 📝 Registro de nova conta - **disponível**
-- 🎨 Interface Material Design 3  - **Disponívvel**
-- ✅ Atualizar e salvar dados - **disponível**
-- ✅ Excluir dados - **Disponível**
-- ✅ Redefinir Senha - **Disponível**
-- ✅ Autenticação Firebase - **configurado e em uso**
+## Autenticação
+- 🔐 **Login com E-mail/Senha**: Permite que os usuários façam login usando suas credenciais de e-mail e senha.
+- 🔑 **Login com Google**: Integração com o Google Sign-In para permitir que os usuários façam login usando suas contas do Google.
+- 📝 **Registro de Nova Conta**: Permite que novos usuários se registrem no aplicativo criando uma conta com e-mail e senha.
+- 🔄 **Redefinir Senha**: Funcionalidade para os usuários redefinirem suas senhas caso as esqueçam.
+
+## Gerenciamento de Dados
+- ✅ **Atualizar e Salvar Dados**: Permite que os usuários atualizem e salvem informações no banco de dados.
+- ❌ **Excluir Dados**: Funcionalidade para excluir dados armazenados no banco de dados.
+- 🗑️ **Excluir Conta**: Permite que os usuários excluam suas contas do aplicativo.
+
+## Interface do Usuário
+- 🎨 **Design Material 3**: Utiliza o Material Design 3 para uma interface moderna e intuitiva.
+- 📊 **Dashboard**: Tela de dashboard que exibe informações resumidas e gráficos sobre despesas e receitas.
+- 📅 **Gerenciamento de Despesas**: Tela para registrar, atualizar e excluir despesas.
+- 💰 **Gerenciamento de Receitas**: Tela para registrar, atualizar e excluir receitas.
+
+## Notificações
+- 📬 **Firebase Messaging**: Integração com o Firebase Cloud Messaging para envio de notificações push.
+
+## Configurações
+- ⚙️ **Configurações do Usuário**: Tela de configurações onde os usuários podem acessar termos de serviço, política de privacidade e política de exclusão de dados.
+
+## Segurança e Privacidade
+- 🔒 **Termos de Serviço e Política de Privacidade**: Links para termos de serviço e política de privacidade.
+- 🗑️ **Política de Exclusão de Dados**: Link para a política de exclusão de dados.
+- ✅ **Aceitação do Usuário**: Diálogo de aceitação dos termos de serviço e política de privacidade na primeira execução do aplicativo.
+
+## Outros
+- 🌐 **Suporte Multiplataforma**: Suporte para Android e Web.
+- 📈 **Gráficos**: Utilização da biblioteca `fl_chart` para exibição de gráficos no dashboard.
+
+---
 
 
 ## Troubleshooting
