@@ -299,13 +299,6 @@ flutter run
 ## Notificações
 - 📬 **Firebase Messaging**: Integração com o Firebase Cloud Messaging para envio de notificações push.
 
-## Configurações
-- ⚙️ **Configurações do Usuário**: Tela de configurações onde os usuários podem acessar termos de serviço, política de privacidade e política de exclusão de dados.
-
-## Segurança e Privacidade
-- 🔒 **Termos de Serviço e Política de Privacidade**: Links para termos de serviço e política de privacidade.
-- 🗑️ **Política de Exclusão de Dados**: Link para a política de exclusão de dados.
-- ✅ **Aceitação do Usuário**: Diálogo de aceitação dos termos de serviço e política de privacidade na primeira execução do aplicativo.
 
 ## Outros
 - 🌐 **Suporte Multiplataforma**: Suporte para Android e Web.
