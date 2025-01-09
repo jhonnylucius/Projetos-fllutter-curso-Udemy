@@ -122,8 +122,6 @@ flutter create --platforms android,web .
 ## Notificações
 - 📬 **Firebase Messaging**: Integração com o Firebase Cloud Messaging para envio de notificações push.
 
-## Configurações
-- ⚙️ **Configurações do Usuário**: Tela de configurações onde os usuários podem acessar termos de serviço, política de privacidade e política de exclusão de dados.
 
 ## Outros
 - 🌐 **Suporte Multiplataforma**: Suporte para Android e Web.
