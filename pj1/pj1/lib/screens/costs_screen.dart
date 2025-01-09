@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:pj1/components/menu.dart';
 import 'package:pj1/models/costs.dart';
@@ -272,7 +273,7 @@ class _CostsScreenState extends State<CostsScreen> {
             querySnapshot.docs.map((doc) => Costs.fromMap(doc.data())).toList();
       });
     } catch (e) {
-      print('Erro ao atualizar lista: $e');
+      Logger().e('Erro ao atualizar lista: $e');
     }
   }
 

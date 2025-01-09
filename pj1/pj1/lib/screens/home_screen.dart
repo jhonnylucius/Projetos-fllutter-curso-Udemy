@@ -53,7 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       Navigator.pushNamed(context, '/costs');
                     },
-                    icon: const Icon(Icons.attach_money, color: Colors.white),
+                    icon: const Icon(Icons.add, 
+                    color: Colors.white),
                     label: const Text('Despesas',
                         style: TextStyle(color: Colors.white)),
                     backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -63,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       Navigator.pushNamed(context, '/expenses');
                     },
-                    icon: const Icon(Icons.attach_money_sharp,
+                    icon: const Icon(Icons.add,
                         color: Colors.white),
                     label: const Text('Receitas',
                         style: TextStyle(color: Colors.white)),
