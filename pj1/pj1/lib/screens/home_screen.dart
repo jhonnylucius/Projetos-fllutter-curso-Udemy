@@ -31,7 +31,12 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Text(
+                'Bem-vindo, ${widget.user.displayName}!',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
               FloatingActionButton.extended(
                 onPressed: () {
                   Navigator.pushNamed(context, '/costs');
@@ -47,6 +52,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 icon: const Icon(Icons.attach_money_sharp),
                 label: const Text('Receitas'),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+              ),
+              SizedBox(height: 16),
+              FloatingActionButton.extended(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/dashboard');
+                },
+                icon: const Icon(Icons.dashboard),
+                label: const Text('Dashboard'),
                 backgroundColor: Theme.of(context).colorScheme.primary,
               ),
             ],
