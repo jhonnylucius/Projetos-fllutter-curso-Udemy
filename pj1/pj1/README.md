@@ -8,6 +8,8 @@
   
 </div>
 
+🎥 [Clique aqui para assistir ao vídeo de demonstração](assets/appTerminado.mp4)
+
 ## 📋 Índice
 
 1. Configuração do Ambiente
