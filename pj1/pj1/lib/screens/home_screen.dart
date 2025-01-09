@@ -24,47 +24,55 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/background_login.jpg'),
+            image: AssetImage('assets/background_home_screen.png'),
             fit: BoxFit.cover,
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'Bem-vindo, ${widget.user.displayName}!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 20,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Text(
+                  'Bem-vindo, ${widget.user.displayName}!',
+                  style: TextStyle(
+                      fontSize: 24,
+                      color: const Color.fromARGB(255, 123, 21, 141),
+                      fontWeight: FontWeight.w700),
+                ),
               ),
-              FloatingActionButton.extended(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/costs');
-                },
-                icon: const Icon(Icons.attach_money),
-                label: const Text('Despesas'),
-                backgroundColor: Theme.of(context).colorScheme.secondary,
+            ),
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  FloatingActionButton.extended(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/costs');
+                    },
+                    icon: const Icon(Icons.attach_money, color: Colors.white),
+                    label: const Text('Despesas',
+                        style: TextStyle(color: Colors.white)),
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                  ),
+                  SizedBox(height: 16),
+                  FloatingActionButton.extended(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/expenses');
+                    },
+                    icon: const Icon(Icons.attach_money_sharp,
+                        color: Colors.white),
+                    label: const Text('Receitas',
+                        style: TextStyle(color: Colors.white)),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                  ),
+                ],
               ),
-              SizedBox(height: 16),
-              FloatingActionButton.extended(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/expenses');
-                },
-                icon: const Icon(Icons.attach_money_sharp),
-                label: const Text('Receitas'),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-              ),
-              SizedBox(height: 16),
-              FloatingActionButton.extended(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/dashboard');
-                },
-                icon: const Icon(Icons.dashboard),
-                label: const Text('Dashboard'),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

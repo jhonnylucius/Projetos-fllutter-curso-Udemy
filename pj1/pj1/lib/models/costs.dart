@@ -17,7 +17,7 @@ class Costs {
       : id = map['id'],
         data = map['data'],
         preco = map['preco'].toDouble(),
-        descricaoDaDespesa = map['descricao'],
+        descricaoDaDespesa = map['descricaoDaDespesa'],
         tipoDespesa = map['tipoDespesa'];
 
   Map<String, dynamic> toMap() {

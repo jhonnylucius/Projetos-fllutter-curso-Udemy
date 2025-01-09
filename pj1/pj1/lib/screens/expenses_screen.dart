@@ -119,7 +119,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                                 Text(
                                     "Preço: ${model.preco.toStringAsFixed(2)}"),
                                 Text(
-                                    "Descrição: ${model.descricaoDaReceita ?? ''}"),
+                                  "Descrição: ${model.descricaoDaReceita != null && model.descricaoDaReceita!.isNotEmpty ? model.descricaoDaReceita : 'Sem descrição'}",
+                                ),
                               ],
                             ),
                           ),
@@ -146,6 +147,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     TextEditingController descricaoDaReceitaController =
         TextEditingController();
     TextEditingController tipoReceitaController = TextEditingController();
+    final tipoReceitaMaskFormatter = MaskTextInputFormatter(mask: '');
 
     if (model != null) {
       title = "Editando";
@@ -209,7 +211,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                 TextFormField(
                   controller: tipoReceitaController,
                   decoration: InputDecoration(
-                    hintText: 'Essa receita é mensal, anual ou esporádica?',
+                    hintText: 'Essa receita é mensal, anual ou exporádica?',
                     labelText: 'Tipo de Receita',
                   ),
                 ),

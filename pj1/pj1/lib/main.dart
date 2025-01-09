@@ -51,10 +51,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 222, 143, 224),
+          seedColor: const Color.fromARGB(255, 123, 21, 141),
           brightness: Brightness.light,
           primary: Colors.deepPurple,
-          secondary: Colors.deepPurple.shade300,
+          secondary: Colors.deepPurple,
           surfaceContainerHighest: const Color.fromARGB(255, 222, 232, 245),
           surface: const Color.fromARGB(255, 249, 249, 250),
         ),
