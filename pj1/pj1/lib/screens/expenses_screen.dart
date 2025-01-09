@@ -113,7 +113,15 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                             onTap: () {},
                             leading: Icon(Icons.list_alt_rounded, size: 56),
                             title: Text("Data: ${model.data}"),
-                            subtitle: Text(model.descricaoDaReceita ?? ''),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    "Preço: ${model.preco.toStringAsFixed(2)}"),
+                                Text(
+                                    "Descrição: ${model.descricaoDaReceita ?? ''}"),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -138,7 +146,6 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     TextEditingController descricaoDaReceitaController =
         TextEditingController();
     TextEditingController tipoReceitaController = TextEditingController();
-    final tipoReceitaMaskFormatter = MaskTextInputFormatter(mask: '');
 
     if (model != null) {
       title = "Editando";
