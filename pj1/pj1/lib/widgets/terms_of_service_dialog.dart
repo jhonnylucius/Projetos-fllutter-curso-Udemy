@@ -43,8 +43,8 @@ class TermsOfServiceDialog extends StatelessWidget {
   }
 
   void _launchURL(String url) async {
-    if (await url_launcher.canLaunch(url)) {
-      await url_launcher.launch(url);
+    if (await url_launcher.canLaunchUrl(Uri.parse(url))) {
+      await url_launcher.launchUrl(Uri.parse(url));
     } else {
       throw 'Could not launch $url';
     }
