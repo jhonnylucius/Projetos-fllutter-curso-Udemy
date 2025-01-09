@@ -282,36 +282,6 @@ flutter run
 
 ```
 
-# Funcionalidades Disponíveis no Aplicativo
-
-## Autenticação
-- 🔐 **Login com E-mail/Senha**: Permite que os usuários façam login usando suas credenciais de e-mail e senha.
-- 🔑 **Login com Google**: Integração com o Google Sign-In para permitir que os usuários façam login usando suas contas do Google.
-- 📝 **Registro de Nova Conta**: Permite que novos usuários se registrem no aplicativo criando uma conta com e-mail e senha.
-- 🔄 **Redefinir Senha**: Funcionalidade para os usuários redefinirem suas senhas caso as esqueçam.
-
-## Gerenciamento de Dados
-- ✅ **Atualizar e Salvar Dados**: Permite que os usuários atualizem e salvem informações no banco de dados.
-- ❌ **Excluir Dados**: Funcionalidade para excluir dados armazenados no banco de dados.
-- 🗑️ **Excluir Conta**: Permite que os usuários excluam suas contas do aplicativo.
-
-## Interface do Usuário
-- 🎨 **Design Material 3**: Utiliza o Material Design 3 para uma interface moderna e intuitiva.
-- 📊 **Dashboard**: Tela de dashboard que exibe informações resumidas e gráficos sobre despesas e receitas.
-- 📅 **Gerenciamento de Despesas**: Tela para registrar, atualizar e excluir despesas.
-- 💰 **Gerenciamento de Receitas**: Tela para registrar, atualizar e excluir receitas.
-
-## Notificações
-- 📬 **Firebase Messaging**: Integração com o Firebase Cloud Messaging para envio de notificações push.
-
-
-## Outros
-- 🌐 **Suporte Multiplataforma**: Suporte para Android e Web.
-- 📈 **Gráficos**: Utilização da biblioteca `fl_chart` para exibição de gráficos no dashboard.
-
----
-
-
 ## Troubleshooting
 
 - Certifique-se que o dispositivo está conectado (`flutter devices`)
