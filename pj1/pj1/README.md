@@ -210,25 +210,6 @@ Directory structure:
 
 ```
 
-### Screenshots
-
-[Adicionar screenshots quando disponíveis]
-
-
-## 🤝 Como Contribuir
-
-1. Fork o projeto
-2. Crie sua branch (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📝 Licença
-
-Este projeto está sob a licença MIT.
-
----
-
 # 🔥Como Utilizar o App
 
 ## Pré-requisitos
@@ -287,6 +268,20 @@ flutter run
 - Certifique-se que o dispositivo está conectado (`flutter devices`)
 - Verifique se todas as dependências estão instaladas (`flutter doctor`)
 - Para problemas com Firebase, verifique se `google-services.json` está presente
+
+---
+
+## 🤝 Como Contribuir
+
+1. Fork o projeto
+2. Crie sua branch (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT.
 
 ---
 
