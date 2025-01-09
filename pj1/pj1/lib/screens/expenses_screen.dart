@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:pj1/components/menu.dart';
-import 'package:pj1/models/costs.dart';
+import 'package:pj1/models/expenses.dart'; // Importar modelo Expenses
 import 'package:uuid/uuid.dart';
 
 class ExpensesScreen extends StatefulWidget {
@@ -18,7 +18,7 @@ class ExpensesScreen extends StatefulWidget {
 }
 
 class _ExpensesScreenState extends State<ExpensesScreen> {
-  List<Costs> listCosts = [];
+  List<Expenses> listExpenses = [];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
@@ -40,7 +40,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => showFormModal(),
         icon: const Icon(Icons.add),
-        label: const Text('Add Custos'),
+        label: const Text('Add Receitas'),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
@@ -56,7 +56,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             ],
           ),
         ),
-        child: listCosts.isEmpty
+        child: listExpenses.isEmpty
             ? Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -77,7 +77,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Registre suas Despesas',
+                      'Registre suas Receitas',
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey.shade600,
@@ -88,10 +88,10 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
               )
             : ListView(
                 padding: EdgeInsets.only(left: 4, right: 4),
-                children: List.generate(listCosts.length, (index) {
-                  Costs model = listCosts[index];
+                children: List.generate(listExpenses.length, (index) {
+                  Expenses model = listExpenses[index];
                   return Dismissible(
-                    key: ValueKey<Costs>(model),
+                    key: ValueKey<Expenses>(model),
                     direction: DismissDirection.endToStart,
                     background: Container(
                       alignment: Alignment.centerRight,
@@ -113,7 +113,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                             onTap: () {},
                             leading: Icon(Icons.list_alt_rounded, size: 56),
                             title: Text("Data: ${model.data}"),
-                            subtitle: Text(model.descricaoDaDespesa!),
+                            subtitle: Text(model.descricaoDaReceita ?? ''),
                           ),
                         ],
                       ),
@@ -125,7 +125,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     );
   }
 
-  showFormModal({Costs? model}) {
+  showFormModal({Expenses? model}) {
     String title = "Adicionar";
     String confirmationButton = "Salvar";
     String SkipButton = "Cancelar";
@@ -135,16 +135,16 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     TextEditingController precoController = TextEditingController();
     final precoMaskFormatter =
         MaskTextInputFormatter(mask: '', filter: {"#": RegExp(r'[0-9]')});
-    TextEditingController descricaoDaDespesaController =
+    TextEditingController descricaoDaReceitaController =
         TextEditingController();
-    TextEditingController tipoDespesaController = TextEditingController();
-    final tipoDespesaMaskFormatter = MaskTextInputFormatter(mask: '');
+    TextEditingController tipoReceitaController = TextEditingController();
+    final tipoReceitaMaskFormatter = MaskTextInputFormatter(mask: '');
 
     if (model != null) {
       title = "Editando";
       dataController.text = model.data;
-      tipoDespesaController.text = model.tipoDespesa ?? '';
-      descricaoDaDespesaController.text = model.descricaoDaDespesa ?? '';
+      tipoReceitaController.text = model.tipoReceita ?? '';
+      descricaoDaReceitaController.text = model.descricaoDaReceita ?? '';
       precoController.text = model.preco.toString();
       confirmationButton = "Atualizar";
     }
@@ -185,25 +185,25 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                   controller: precoController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    hintText: 'Valor da Despesa.',
+                    hintText: 'Valor da Receita.',
                     labelText: '100.00',
                   ),
                   inputFormatters: [precoMaskFormatter],
                 ),
                 SizedBox(height: 16),
                 TextFormField(
-                  controller: descricaoDaDespesaController,
+                  controller: descricaoDaReceitaController,
                   decoration: InputDecoration(
-                    hintText: 'Qual a despesa que você pagou?',
+                    hintText: 'Qual a receita que você recebeu?',
                     labelText: 'Descrição',
                   ),
                 ),
                 SizedBox(height: 16),
                 TextFormField(
-                  controller: tipoDespesaController,
+                  controller: tipoReceitaController,
                   decoration: InputDecoration(
-                    hintText: 'Essa despesa é mensal, anual ou exporádica?',
-                    labelText: 'Descrição',
+                    hintText: 'Essa receita é mensal, anual ou esporádica?',
+                    labelText: 'Tipo de Receita',
                   ),
                 ),
                 SizedBox(height: 16),
@@ -219,25 +219,27 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                     SizedBox(width: 16),
                     TextButton(
                       onPressed: () async {
-                        Costs costs = Costs(
+                        Expenses expenses = Expenses(
                           id: const Uuid().v1(),
                           data: dataController.text,
                           preco: double.tryParse(precoController.text) ?? 0.0,
-                          descricaoDaDespesa: descricaoDaDespesaController.text,
-                          tipoDespesa: tipoDespesaController.text,
+                          descricaoDaReceita: descricaoDaReceitaController.text,
+                          tipoReceita: tipoReceitaController.text,
                         );
 
                         if (model != null) {
-                          costs.id = model.id;
+                          expenses.id = model.id;
                         }
 
                         await firestore
-                            .collection('${widget.user.uid}_costs')
-                            .doc(costs.id)
-                            .set(costs.toMap());
+                            .collection('${widget.user.uid}_expenses')
+                            .doc(expenses.id)
+                            .set(expenses.toMap());
 
-                        await refresh();
-                        Navigator.pop(context);
+                        if (mounted) {
+                          await refresh();
+                          Navigator.pop(context);
+                        }
                       },
                       child: Text(confirmationButton),
                     ),
@@ -254,21 +256,22 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   Future<void> refresh([dynamic snapshot]) async {
     try {
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await firestore.collection('${widget.user.uid}_costs').get();
+          await firestore.collection('${widget.user.uid}_expenses').get();
 
       setState(() {
-        listCosts =
-            querySnapshot.docs.map((doc) => Costs.fromMap(doc.data())).toList();
+        listExpenses = querySnapshot.docs
+            .map((doc) => Expenses.fromMap(doc.data()))
+            .toList();
       });
     } catch (e) {
       print('Erro ao atualizar lista: $e');
     }
   }
 
-  Future<void> remove(Costs costs) async {
+  Future<void> remove(Expenses expenses) async {
     await firestore
-        .collection('${widget.user.uid}_costs')
-        .doc(costs.id)
+        .collection('${widget.user.uid}_expenses')
+        .doc(expenses.id)
         .delete();
     refresh();
   }
