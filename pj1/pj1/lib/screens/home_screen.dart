@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
               right: 0,
               child: Center(
                 child: Text(
-                  'Bem-vindo, ${widget.user.displayName}!',
+                  'Bem-vindo, ${widget.user.displayName}',
                   style: TextStyle(
                       fontSize: 24,
                       color: const Color.fromARGB(255, 123, 21, 141),

@@ -11,7 +11,7 @@ class AuthService {
           email: email, password: senha);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
-        case 'uner-not-found':
+        case 'user-not-found':
           return 'Usuário não encontrado.';
         case 'wrong-password':
           return 'Falha no login.';
@@ -32,11 +32,11 @@ class AuthService {
       await userCredential.user!.updateDisplayName(nome);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
-        case 'auth/email-already-in-use':
+        case 'email-already-in-use':
           return 'Email já está em uso.';
-        case 'auth/invalid-email':
+        case 'invalid-email':
           return 'Dados incorretos.';
-        case 'auth/weak-password':
+        case 'weak-password':
           return 'Dados Incorretos.';
       }
       return e.code;
@@ -51,7 +51,7 @@ class AuthService {
       switch (e.code) {
         case 'auth/invalid-email':
           return 'Email inválido.';
-        case 'auth/user-not-found':
+        case 'user-not-found':
           return 'Usuário não encontrado.';
       }
       return e.code;
