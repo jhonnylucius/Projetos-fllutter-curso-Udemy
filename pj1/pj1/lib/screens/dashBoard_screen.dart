@@ -15,147 +15,126 @@ class DashBoardScreen extends StatefulWidget {
 
 class DashBoardScreenState extends State<DashBoardScreen> {
   List<Costs> listCosts = [];
-  List<Expenses> listHours = [];
+  List<Expenses> listExpenses = [];
   double totalCosts = 0.0;
-  double totalHours = 0.0;
+  double totalExpenses = 0.0;
   double averageCosts = 0.0;
-  double averageHours = 0.0;
+  double averageExpenses = 0.0;
   double surplus = 0.0;
   double deficit = 0.0;
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    loadData();
   }
 
-  Future<void> fetchData() async {
+  Future<void> loadData() async {
     try {
-      // Pega os dados de custos do Firestore
       QuerySnapshot<Map<String, dynamic>> costsSnapshot =
           await FirebaseFirestore.instance
               .collection('${widget.userId}_costs')
               .get();
-      listCosts =
-          costsSnapshot.docs.map((doc) => Costs.fromMap(doc.data())).toList();
+      QuerySnapshot<Map<String, dynamic>> expensesSnapshot =
+          await FirebaseFirestore.instance
+              .collection('${widget.userId}_expenses')
+              .get();
 
-      // Pega os dados de horas do Firestore
-      QuerySnapshot<Map<String, dynamic>> hoursSnapshot =
-          await FirebaseFirestore.instance.collection(widget.userId).get();
-      listHours = hoursSnapshot.docs
-          .map((doc) => Expenses.fromMap(doc.data()))
-          .toList();
+      setState(() {
+        listCosts =
+            costsSnapshot.docs.map((doc) => Costs.fromMap(doc.data())).toList();
+        listExpenses = expensesSnapshot.docs
+            .map((doc) => Expenses.fromMap(doc.data()))
+            .toList();
 
-      // Calcula os totais, médias, superavit e deficit
-      totalCosts = listCosts.fold(0.0, (sum, item) => sum + item.preco);
-      totalHours = listHours.fold(0.0, (sum, item) => sum + item.preco);
-      averageCosts = totalCosts / listCosts.length;
-      averageHours = totalHours / listHours.length;
-      surplus = totalHours - totalCosts;
-      deficit = totalCosts - totalHours;
+        totalCosts = listCosts.fold(0.0, (sum, item) => sum + item.preco);
+        totalExpenses = listExpenses.fold(0.0, (sum, item) => sum + item.preco);
 
-      setState(() {});
+        averageCosts =
+            listCosts.isNotEmpty ? totalCosts / listCosts.length : 0.0;
+        averageExpenses =
+            listExpenses.isNotEmpty ? totalExpenses / listExpenses.length : 0.0;
+
+        surplus = totalExpenses - totalCosts;
+        deficit = totalCosts - totalExpenses;
+      });
     } catch (e) {
-      print('Erro ao buscar dados: $e');
+      print('Erro ao carregar dados: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/background_login.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Center(
-          child: Container(
-            padding: EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.white.withAlpha((0.92 * 255).toInt()),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Dashboard Financeiro',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 16),
-                Text('Total de Receitas: R\$ $totalHours'),
-                Text('Total de Despesas: R\$ $totalCosts'),
-                Text('Média de Receitas: R\$ $averageHours'),
-                Text('Média de Despesas: R\$ $averageCosts'),
-                Text('Superavit: R\$ $surplus'),
-                Text('Deficit: R\$ $deficit'),
-                SizedBox(height: 16),
-                Container(
-                  height: 300,
-                  child: LineChart(
-                    _createData(),
-                  ),
-                ),
-              ],
-            ),
-          ),
+      appBar: AppBar(
+        title: Text('Dashboard'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildInfoCard(),
+            _buildBarChart('Despesas por Dia', listCosts),
+            _buildBarChart('Receitas por Dia', listExpenses),
+          ],
         ),
       ),
     );
   }
 
-  LineChartData _createData() {
-    // Cria os dados para o gráfico
-    List<FlSpot> costsData = listCosts.map((cost) {
-      DateTime date = DateTime.parse(cost.data);
-      return FlSpot(date.millisecondsSinceEpoch.toDouble(), cost.preco);
-    }).toList();
-
-    List<FlSpot> hoursData = listHours.map((hour) {
-      DateTime date = DateTime.parse(hour.data);
-      return FlSpot(date.millisecondsSinceEpoch.toDouble(), hour.preco);
-    }).toList();
-
-    return LineChartData(
-      lineBarsData: [
-        LineChartBarData(
-          spots: costsData,
-          isCurved: true,
-          color: Colors.red,
-          barWidth: 2,
-          isStrokeCapRound: true,
-          belowBarData: BarAreaData(show: false),
-        ),
-        LineChartBarData(
-          spots: hoursData,
-          isCurved: true,
-          color: Colors.green,
-          barWidth: 2,
-          isStrokeCapRound: true,
-          belowBarData: BarAreaData(show: false),
-        ),
-      ],
-      titlesData: FlTitlesData(
-        leftTitles: AxisTitles(
-          sideTitles: SideTitles(showTitles: true),
-        ),
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            getTitlesWidget: (value, meta) {
-              DateTime date =
-                  DateTime.fromMillisecondsSinceEpoch(value.toInt());
-              return Text('${date.day}/${date.month}');
-            },
-          ),
+  Widget _buildInfoCard() {
+    return Card(
+      margin: EdgeInsets.all(16),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Total de Despesas: \$${totalCosts.toStringAsFixed(2)}'),
+            Text('Total de Receitas: \$${totalExpenses.toStringAsFixed(2)}'),
+            Text('Média de Despesas: \$${averageCosts.toStringAsFixed(2)}'),
+            Text('Média de Receitas: \$${averageExpenses.toStringAsFixed(2)}'),
+            Text('Superávit: \$${surplus.toStringAsFixed(2)}'),
+            Text('Déficit: \$${deficit.toStringAsFixed(2)}'),
+          ],
         ),
       ),
-      borderData: FlBorderData(show: true),
+    );
+  }
+
+  Widget _buildBarChart(String title, List<dynamic> data) {
+    return Card(
+      margin: EdgeInsets.all(16),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            SizedBox(height: 16),
+            SizedBox(
+              height: 200,
+              child: BarChart(
+                BarChartData(
+                  barGroups: data.map((item) {
+                    return BarChartGroupData(
+                      x: data.indexOf(item),
+                      barRods: [
+                        BarChartRodData(
+                          toY: item.preco,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
