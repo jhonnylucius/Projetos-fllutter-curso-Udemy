@@ -22,6 +22,12 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   List<Expenses> listExpenses = [];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  final List<String> _tiposReceita = [
+    'Anual',
+    'Mensal',
+    'Esporádica',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -127,6 +133,9 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                                   Text(
                                     "Descrição: ${model.descricaoDaReceita != null && model.descricaoDaReceita!.isNotEmpty ? model.descricaoDaReceita : 'Sem descrição'}",
                                   ),
+                                  Text(
+                                    "tipo da Receita: ${model.tipoReceita != null && model.tipoReceita!.isNotEmpty ? model.tipoReceita : 'Sem descrição'}",
+                                  ),
                                 ],
                               ),
                             ),
@@ -226,12 +235,25 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                 ),
               ),
               SizedBox(height: 16),
-              TextFormField(
-                controller: tipoReceitaController,
+              DropdownButtonFormField<String>(
+                value: tipoReceitaController.text.isEmpty
+                    ? _tiposReceita[0]
+                    : tipoReceitaController.text,
                 decoration: InputDecoration(
-                  hintText: 'Essa receita é mensal, anual ou esporádica?',
-                  labelText: 'Tipo de Receita',
+                  labelText: 'Tipo da Receita',
+                  border: OutlineInputBorder(),
                 ),
+                items: _tiposReceita.map((String tipo) {
+                  return DropdownMenuItem<String>(
+                    value: tipo,
+                    child: Text(tipo),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    tipoReceitaController.text = newValue!;
+                  });
+                },
               ),
               SizedBox(height: 16),
               Row(

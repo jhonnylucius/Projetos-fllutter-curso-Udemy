@@ -23,6 +23,13 @@ class _CostsScreenState extends State<CostsScreen> {
   FirebaseFirestore firestore =
       FirebaseFirestore.instance; // Instância do Firestore
 
+  final List<String> _tiposDespesa = [
+    'Obrigatória Anual',
+    'Obrigatória Mensal',
+    'Imprevisto',
+    'Avulsa/Desnecessária'
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -119,6 +126,7 @@ class _CostsScreenState extends State<CostsScreen> {
                               onLongPress: () {
                                 showFormModal(model: model); // Edita a despesa
                               },
+                              onTap: () {},
                               leading: Icon(Icons.list_alt_rounded, size: 56),
                               title: Text("Data: ${model.data}"),
                               subtitle: Column(
@@ -128,6 +136,9 @@ class _CostsScreenState extends State<CostsScreen> {
                                       "Preço: ${model.preco.toStringAsFixed(2)}"),
                                   Text(
                                     "Descrição: ${model.descricaoDaDespesa != null && model.descricaoDaDespesa!.isNotEmpty ? model.descricaoDaDespesa : 'Sem descrição'}",
+                                  ),
+                                  Text(
+                                    "tipo da Desepsa: ${model.tipoDespesa != null && model.tipoDespesa!.isNotEmpty ? model.tipoDespesa : 'Sem descrição'}",
                                   ),
                                 ],
                               ),
@@ -166,6 +177,8 @@ class _CostsScreenState extends State<CostsScreen> {
 
     TextEditingController dataController = TextEditingController();
     TextEditingController precoController = TextEditingController();
+    final precoMaskFormatter =
+        MaskTextInputFormatter(mask: '', filter: {"#": RegExp(r'[0-9]')});
     TextEditingController descricaoDaDespesaController =
         TextEditingController();
     TextEditingController tipoDespesaController = TextEditingController();
@@ -184,7 +197,7 @@ class _CostsScreenState extends State<CostsScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (BuildContext context) {
+      builder: (context) {
         return Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
@@ -225,12 +238,25 @@ class _CostsScreenState extends State<CostsScreen> {
                 ),
               ),
               SizedBox(height: 16),
-              TextFormField(
-                controller: tipoDespesaController,
+              DropdownButtonFormField<String>(
+                value: tipoDespesaController.text.isEmpty
+                    ? _tiposDespesa[0]
+                    : tipoDespesaController.text,
                 decoration: InputDecoration(
-                  hintText: 'Essa despesa é mensal, anual ou esporádica?',
                   labelText: 'Tipo da Despesa',
+                  border: OutlineInputBorder(),
                 ),
+                items: _tiposDespesa.map((String tipo) {
+                  return DropdownMenuItem<String>(
+                    value: tipo,
+                    child: Text(tipo),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    tipoDespesaController.text = newValue!;
+                  });
+                },
               ),
               SizedBox(height: 16),
               Row(
