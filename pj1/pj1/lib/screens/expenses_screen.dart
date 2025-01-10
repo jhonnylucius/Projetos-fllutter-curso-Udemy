@@ -92,47 +92,50 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
               )
             : ListView(
                 padding: EdgeInsets.only(left: 4, right: 4),
-                children: List.generate(listExpenses.length, (index) {
-                  Expenses model = listExpenses[index];
-                  return Dismissible(
-                    key: ValueKey<Expenses>(model),
-                    direction: DismissDirection.endToStart,
-                    background: Container(
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.only(right: 12),
-                      color: Colors.red,
-                      child: Icon(Icons.delete, color: Colors.white),
-                    ),
-                    onDismissed: (direction) {
-                      remove(model);
-                    },
-                    child: Card(
-                      elevation: 2,
-                      child: Column(
-                        children: [
-                          ListTile(
-                            onLongPress: () {
-                              showFormModal(model: model);
-                            },
-                            onTap: () {},
-                            leading: Icon(Icons.list_alt_rounded, size: 56),
-                            title: Text("Data: ${model.data}"),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                    "Preço: ${model.preco.toStringAsFixed(2)}"),
-                                Text(
-                                  "Descrição: ${model.descricaoDaReceita != null && model.descricaoDaReceita!.isNotEmpty ? model.descricaoDaReceita : 'Sem descrição'}",
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                children: List.generate(
+                  listExpenses.length,
+                  (index) {
+                    Expenses model = listExpenses[index];
+                    return Dismissible(
+                      key: ValueKey<Expenses>(model),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 12),
+                        color: Colors.red,
+                        child: Icon(Icons.delete, color: Colors.white),
                       ),
-                    ),
-                  );
-                }),
+                      onDismissed: (direction) {
+                        remove(model);
+                      },
+                      child: Card(
+                        elevation: 2,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              onLongPress: () {
+                                showFormModal(model: model);
+                              },
+                              onTap: () {},
+                              leading: Icon(Icons.list_alt_rounded, size: 56),
+                              title: Text("Data: ${model.data}"),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      "Preço: ${model.preco.toStringAsFixed(2)}"),
+                                  Text(
+                                    "Descrição: ${model.descricaoDaReceita != null && model.descricaoDaReceita!.isNotEmpty ? model.descricaoDaReceita : 'Sem descrição'}",
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
       ),
     );
@@ -175,90 +178,88 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             right: 32,
             top: 32,
           ),
-          child: Container(
-            child: ListView(
-              shrinkWrap: true,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.headlineSmall,
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              TextFormField(
+                controller: dataController,
+                keyboardType: TextInputType.datetime,
+                decoration: InputDecoration(
+                  hintText: '01/01/2024',
+                  labelText: 'Data',
                 ),
-                TextFormField(
-                  controller: dataController,
-                  keyboardType: TextInputType.datetime,
-                  decoration: InputDecoration(
-                    hintText: '01/01/2024',
-                    labelText: 'Data',
+                inputFormatters: [dataMaskFormatter],
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: precoController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Valor da Receita.',
+                  labelText: '100.00',
+                ),
+                inputFormatters: [precoMaskFormatter],
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: descricaoDaReceitaController,
+                decoration: InputDecoration(
+                  hintText: 'Qual a receita que você recebeu?',
+                  labelText: 'Descrição',
+                ),
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: tipoReceitaController,
+                decoration: InputDecoration(
+                  hintText: 'Essa receita é mensal, anual ou esporádica?',
+                  labelText: 'Tipo de Receita',
+                ),
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text(SkipButton),
                   ),
-                  inputFormatters: [dataMaskFormatter],
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: precoController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: 'Valor da Receita.',
-                    labelText: '100.00',
-                  ),
-                  inputFormatters: [precoMaskFormatter],
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: descricaoDaReceitaController,
-                  decoration: InputDecoration(
-                    hintText: 'Qual a receita que você recebeu?',
-                    labelText: 'Descrição',
-                  ),
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: tipoReceitaController,
-                  decoration: InputDecoration(
-                    hintText: 'Essa receita é mensal, anual ou esporádica?',
-                    labelText: 'Tipo de Receita',
-                  ),
-                ),
-                SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
+                  SizedBox(width: 16),
+                  TextButton(
+                    onPressed: () async {
+                      Expenses expenses = Expenses(
+                        id: const Uuid().v1(),
+                        data: dataController.text,
+                        preco: double.tryParse(precoController.text) ?? 0.0,
+                        descricaoDaReceita: descricaoDaReceitaController.text,
+                        tipoReceita: tipoReceitaController.text,
+                      );
+
+                      if (model != null) {
+                        expenses.id = model.id;
+                      }
+
+                      await firestore
+                          .collection('${widget.user.uid}_expenses')
+                          .doc(expenses.id)
+                          .set(expenses.toMap());
+
+                      if (mounted) {
+                        await refresh();
                         Navigator.pop(context);
-                      },
-                      child: Text(SkipButton),
-                    ),
-                    SizedBox(width: 16),
-                    TextButton(
-                      onPressed: () async {
-                        Expenses expenses = Expenses(
-                          id: const Uuid().v1(),
-                          data: dataController.text,
-                          preco: double.tryParse(precoController.text) ?? 0.0,
-                          descricaoDaReceita: descricaoDaReceitaController.text,
-                          tipoReceita: tipoReceitaController.text,
-                        );
-
-                        if (model != null) {
-                          expenses.id = model.id;
-                        }
-
-                        await firestore
-                            .collection('${widget.user.uid}_expenses')
-                            .doc(expenses.id)
-                            .set(expenses.toMap());
-
-                        if (mounted) {
-                          await refresh();
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: Text(confirmationButton),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                      }
+                    },
+                    child: Text(confirmationButton),
+                  ),
+                ],
+              ),
+            ],
           ),
         );
       },
@@ -274,7 +275,6 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         listExpenses = querySnapshot.docs
             .map((doc) => Expenses.fromMap(doc.data()))
             .toList();
-        refresh();
       });
     } catch (e) {
       Logger().e('Erro ao atualizar lista: $e');

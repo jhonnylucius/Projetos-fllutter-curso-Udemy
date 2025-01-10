@@ -97,42 +97,43 @@ class _CostsScreenState extends State<CostsScreen> {
                   (index) {
                     Costs model = listCosts[index];
                     return Dismissible(
-                        key: ValueKey<Costs>(model),
-                        direction: DismissDirection.endToStart,
-                        background: Container(
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 12),
-                          color: Colors.red,
-                          child: Icon(Icons.delete, color: Colors.white),
-                        ),
-                        onDismissed: (direction) {
-                          remove(model);
-                        },
-                        child: Card(
-                          elevation: 2,
-                          child: Column(
-                            children: [
-                              ListTile(
-                                onLongPress: () {
-                                  showFormModal(model: model);
-                                },
-                                onTap: () {},
-                                leading: Icon(Icons.list_alt_rounded, size: 56),
-                                title: Text("Data: ${model.data}"),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        "Preço: ${model.preco.toStringAsFixed(2)}"),
-                                    Text(
-                                      "Descrição: ${model.descricaoDaDespesa != null && model.descricaoDaDespesa!.isNotEmpty ? model.descricaoDaDespesa : 'Sem descrição'}",
-                                    ),
-                                  ],
-                                ),
+                      key: ValueKey<Costs>(model),
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 12),
+                        color: Colors.red,
+                        child: Icon(Icons.delete, color: Colors.white),
+                      ),
+                      onDismissed: (direction) {
+                        remove(model);
+                      },
+                      child: Card(
+                        elevation: 2,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              onLongPress: () {
+                                showFormModal(model: model);
+                              },
+                              onTap: () {},
+                              leading: Icon(Icons.list_alt_rounded, size: 56),
+                              title: Text("Data: ${model.data}"),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      "Preço: ${model.preco.toStringAsFixed(2)}"),
+                                  Text(
+                                    "Descrição: ${model.descricaoDaDespesa != null && model.descricaoDaDespesa!.isNotEmpty ? model.descricaoDaDespesa : 'Sem descrição'}",
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ));
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),
