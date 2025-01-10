@@ -33,7 +33,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     return Scaffold(
       drawer: Menu(user: widget.user),
       appBar: AppBar(
-        title: Text('AgendaPRO'),
+        title: Text('GestorFinanceiro'),
         elevation: 2,
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,

@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       drawer: Menu(user: widget.user),
       appBar: AppBar(
-        title: Text('AgendaPRO'),
+        title: Text('GestorFinanceiro'),
         elevation: 2,
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
@@ -53,8 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       Navigator.pushNamed(context, '/costs');
                     },
-                    icon: const Icon(Icons.add, 
-                    color: Colors.white),
+                    icon: const Icon(Icons.add, color: Colors.white),
                     label: const Text('Despesas',
                         style: TextStyle(color: Colors.white)),
                     backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -64,8 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: () {
                       Navigator.pushNamed(context, '/expenses');
                     },
-                    icon: const Icon(Icons.add,
-                        color: Colors.white),
+                    icon: const Icon(Icons.add, color: Colors.white),
                     label: const Text('Receitas',
                         style: TextStyle(color: Colors.white)),
                     backgroundColor: Theme.of(context).colorScheme.primary,
