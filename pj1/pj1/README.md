@@ -1,4 +1,5 @@
-# # Projeto Login email/senha e gmail com Flutter, Dart e Firebase 🚀
+## Projeto Login email/senha e gmail com Flutter, Dart e Firebase 🚀
+### GestorFinanceiro é um app para te ajudar a controlar suas finanças e pode identificar erros no controle de seu 💸💵💴💶💷💰 !! 
 
 <div style="display: flex; justify-content: space-between; margin-bottom: 30px">
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg" width="40px" alt="Flutter"/>
