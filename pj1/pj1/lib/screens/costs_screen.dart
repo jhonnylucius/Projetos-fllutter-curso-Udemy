@@ -33,7 +33,7 @@ class _CostsScreenState extends State<CostsScreen> {
     return Scaffold(
       drawer: Menu(user: widget.user),
       appBar: AppBar(
-        title: Text('AgendaPRO'),
+        title: Text('GestorFinanceiro'),
         elevation: 2,
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
@@ -42,7 +42,7 @@ class _CostsScreenState extends State<CostsScreen> {
         onPressed: () => showFormModal(),
         icon: const Icon(Icons.add),
         label: const Text(
-          'Add Custos',
+          'Add Despesas',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,

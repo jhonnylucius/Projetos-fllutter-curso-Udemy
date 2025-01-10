@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart' as url_launcher;
+import 'package:url_launcher/url_launcher.dart';
 
 class TermsOfServiceDialog extends StatelessWidget {
-  const TermsOfServiceDialog({super.key});
+  final VoidCallback onAccepted;
+  final VoidCallback onDeclined;
+
+  const TermsOfServiceDialog(
+      {super.key, required this.onAccepted, required this.onDeclined});
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +33,13 @@ class TermsOfServiceDialog extends StatelessWidget {
         TextButton(
           child: Text('Aceitar'),
           onPressed: () {
-            Navigator.of(context).pop(true);
+            onAccepted();
           },
         ),
         TextButton(
           child: Text('Recusar'),
           onPressed: () {
-            Navigator.of(context).pop(false);
+            onDeclined();
           },
         ),
       ],
@@ -43,8 +47,8 @@ class TermsOfServiceDialog extends StatelessWidget {
   }
 
   void _launchURL(String url) async {
-    if (await url_launcher.canLaunchUrl(Uri.parse(url))) {
-      await url_launcher.launchUrl(Uri.parse(url));
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     } else {
       throw 'Could not launch $url';
     }

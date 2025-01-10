@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'AgendaPRO',
+      title: 'GestorFinanceiro',
       routes: {
         '/': (context) => const RoteadorTelas(),
         '/dashboard': (context) => DashBoardScreen(
@@ -105,10 +105,9 @@ class RoteadorTelas extends StatelessWidget {
                 );
               } else if (snapshot.hasError) {
                 return const Scaffold(
-                  body: Center(
-                    child: Text('Erro ao carregar dados.'),
-                  ),
-                );
+                    body: Center(
+                  child: Text('Erro ao carregar dados.'),
+                ));
               } else if (snapshot.hasData) {
                 return HomeScreen(
                   user: snapshot.data!,
@@ -136,7 +135,17 @@ class TermsOfServiceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: TermsOfServiceDialog(),
+        child: TermsOfServiceDialog(
+          onAccepted: () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setBool('terms_accepted', true);
+            Navigator.of(context).pushReplacementNamed('/');
+          },
+          onDeclined: () {
+            // Fechar o aplicativo ou redirecionar para outra tela
+            Navigator.of(context).pushReplacementNamed('/login');
+          },
+        ),
       ),
     );
   }
