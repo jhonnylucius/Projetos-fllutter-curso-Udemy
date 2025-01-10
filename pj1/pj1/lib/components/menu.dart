@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pj1/screens/dashBoard_screen.dart'; // Add this line
+import 'package:pj1/screens/report_screen.dart';
 import 'package:pj1/services/auth_service.dart';
 
 class Menu extends StatelessWidget {
@@ -85,6 +86,19 @@ class Menu extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => DashBoardScreen(userId: user.uid),
+                ),
+              );
+            },
+          ),
+          // Adicionar no Menu
+          ListTile(
+            leading: Icon(Icons.description),
+            title: const Text('Relatórios'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ReportScreen(user: user),
                 ),
               );
             },
