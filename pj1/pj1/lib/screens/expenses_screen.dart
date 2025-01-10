@@ -141,13 +141,28 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     );
   }
 
+  Future<void> _selectDate(
+      BuildContext context, TextEditingController controller) async {
+    final DateTime now = DateTime.now();
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: DateTime(2025),
+      lastDate: DateTime(2026, 12),
+      locale: const Locale('pt', 'BR'),
+    );
+    if (picked != null) {
+      String formattedDate =
+          "${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}";
+      controller.text = formattedDate;
+    }
+  }
+
   showFormModal({Expenses? model}) {
-    String title = "Adicionar";
     String confirmationButton = "Salvar";
     String SkipButton = "Cancelar";
 
     TextEditingController dataController = TextEditingController();
-    final dataMaskFormatter = MaskTextInputFormatter(mask: '##/##/####');
     TextEditingController precoController = TextEditingController();
     final precoMaskFormatter =
         MaskTextInputFormatter(mask: '', filter: {"#": RegExp(r'[0-9]')});
@@ -156,7 +171,6 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     TextEditingController tipoReceitaController = TextEditingController();
 
     if (model != null) {
-      title = "Editando";
       dataController.text = model.data;
       tipoReceitaController.text = model.tipoReceita;
       descricaoDaReceitaController.text = model.descricaoDaReceita ?? '';
@@ -174,25 +188,24 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         return Padding(
           padding: EdgeInsets.only(
             bottom: MediaQuery.of(context).viewInsets.bottom,
-            left: 32,
-            right: 32,
-            top: 32,
+            left: 16,
+            right: 16,
+            top: 16,
           ),
-          child: ListView(
-            shrinkWrap: true,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                title,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
               TextFormField(
                 controller: dataController,
-                keyboardType: TextInputType.datetime,
                 decoration: InputDecoration(
-                  hintText: '01/01/2024',
+                  hintText: '01/01/2025',
                   labelText: 'Data',
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.calendar_today),
+                    onPressed: () => _selectDate(context, dataController),
+                  ),
                 ),
-                inputFormatters: [dataMaskFormatter],
+                readOnly: true,
               ),
               SizedBox(height: 16),
               TextFormField(
@@ -250,10 +263,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                           .doc(expenses.id)
                           .set(expenses.toMap());
 
-                      if (mounted) {
-                        await refresh();
-                        Navigator.pop(context);
-                      }
+                      await refresh();
+                      Navigator.pop(context);
                     },
                     child: Text(confirmationButton),
                   ),
