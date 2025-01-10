@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:pj1/models/costs.dart';
 import 'package:pj1/models/expenses.dart';
 
@@ -59,7 +60,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
         deficit = totalCosts - totalExpenses;
       });
     } catch (e) {
-      print('Erro ao carregar dados: $e');
+      Logger().e('Erro ao carregar dados: $e');
     }
   }
 
@@ -71,13 +72,25 @@ class DashBoardScreenState extends State<DashBoardScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildInfoCard(),
-            _buildBarChart('Despesas por Dia', listCosts),
-            _buildBarChart('Receitas por Dia', listExpenses),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/background_login.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                _buildInfoCard(),
+                _buildBarChart('Despesas por Dia', listCosts),
+                _buildBarChart('Receitas por Dia', listExpenses),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -85,9 +98,9 @@ class DashBoardScreenState extends State<DashBoardScreen> {
 
   Widget _buildInfoCard() {
     return Card(
-      margin: EdgeInsets.all(16),
+      margin: EdgeInsets.all(14),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -105,17 +118,17 @@ class DashBoardScreenState extends State<DashBoardScreen> {
 
   Widget _buildBarChart(String title, List<dynamic> data) {
     return Card(
-      margin: EdgeInsets.all(16),
+      margin: EdgeInsets.all(14),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             SizedBox(height: 16),
             SizedBox(
-              height: 200,
+              height: 160,
               child: BarChart(
                 BarChartData(
                   barGroups: data.map((item) {
