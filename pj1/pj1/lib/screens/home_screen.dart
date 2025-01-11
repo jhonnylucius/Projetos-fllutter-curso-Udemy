@@ -11,6 +11,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String displayName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserDisplayName();
+  }
+
+  Future<void> _loadUserDisplayName() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    setState(() {
+      displayName = user?.displayName ?? 'Usuário';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
               right: 0,
               child: Center(
                 child: Text(
-                  'Bem-vindo, ${widget.user.displayName}',
+                  'Bem-vindo, $displayName',
                   style: TextStyle(
                       fontSize: 24,
                       color: const Color.fromARGB(255, 123, 21, 141),
