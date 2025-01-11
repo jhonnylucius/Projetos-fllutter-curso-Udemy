@@ -35,3 +35,5 @@ pj1/pj1/remoteconfig.template.json
 pj1/pj1/.vscode/settings.json
 pj1/pj1/.vscode/settings.json
 pj1/pj1/firestore.indexes.json
+pj1/pj1/functions/package-lock.json
+pj1/pj1/functions/package.json
