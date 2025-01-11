@@ -138,7 +138,7 @@ class _CostsScreenState extends State<CostsScreen> {
                                     "Descrição: ${model.descricaoDaDespesa != null && model.descricaoDaDespesa!.isNotEmpty ? model.descricaoDaDespesa : 'Sem descrição'}",
                                   ),
                                   Text(
-                                    "tipo da Desepsa: ${model.tipoDespesa != null && model.tipoDespesa!.isNotEmpty ? model.tipoDespesa : 'Sem descrição'}",
+                                    "tipo da Desepsa: ${model.tipoDespesa.isNotEmpty ? model.tipoDespesa : 'Sem descrição'}",
                                   ),
                                 ],
                               ),

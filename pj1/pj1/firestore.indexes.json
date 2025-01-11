@@ -27,6 +27,34 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "Xvkuq6ynhzOs6rVDoqyzM324bgu1_costs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "tipoDespesa",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "data",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Xvkuq6ynhzOs6rVDoqyzM324bgu1_expenses",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "tipoReceita",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "data",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": []

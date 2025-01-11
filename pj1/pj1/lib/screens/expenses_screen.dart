@@ -134,7 +134,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                                     "Descrição: ${model.descricaoDaReceita != null && model.descricaoDaReceita!.isNotEmpty ? model.descricaoDaReceita : 'Sem descrição'}",
                                   ),
                                   Text(
-                                    "tipo da Receita: ${model.tipoReceita != null && model.tipoReceita!.isNotEmpty ? model.tipoReceita : 'Sem descrição'}",
+                                    "tipo da Receita: ${model.tipoReceita.isNotEmpty ? model.tipoReceita : 'Sem descrição'}",
                                   ),
                                 ],
                               ),
