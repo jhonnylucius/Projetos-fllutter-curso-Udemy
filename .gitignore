@@ -34,3 +34,4 @@ pj1/pj1/firestore.rules
 pj1/pj1/remoteconfig.template.json
 pj1/pj1/.vscode/settings.json
 pj1/pj1/.vscode/settings.json
+pj1/pj1/firestore.indexes.json
