@@ -74,9 +74,8 @@ class Menu extends StatelessWidget {
                       size: 48,
                     ),
             ),
-            accountName: Text(
-              user.displayName != null ? user.displayName! : 'Usuário',
-            ),
+            accountName:
+                Text(user.displayName != null ? user.displayName! : ''),
           ),
           ListTile(
             leading: Icon(Icons.dashboard),
