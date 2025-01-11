@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class ReportScreen extends StatefulWidget {
   final User user;
@@ -11,10 +12,50 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  String selectedType = 'expenses'; // 'expenses' ou 'costs'
+  String selectedType = 'expenses';
   String selectedMonth = '01/2025';
+  String? selectedExpenseType;
+  String? selectedIncomeType;
   List<dynamic> reportData = [];
-  List<Map<String, dynamic>> savedReports = [];
+  double totalValue = 0.0;
+
+  final List<String> _tiposDespesa = [
+    'Todas',
+    'Obrigatória Anual',
+    'Obrigatória Mensal',
+    'Imprevisto',
+    'Avulsa/Desnecessária'
+  ];
+
+  final List<String> _tiposReceita = ['Todas', 'Mensal', 'Anual', 'Esporádica'];
+
+  final List<String> _meses = [
+    'Todas',
+    '01/2025',
+    '02/2025',
+    '03/2025',
+    '04/2025',
+    '05/2025',
+    '06/2025',
+    '07/2025',
+    '08/2025',
+    '09/2025',
+    '10/2025',
+    '11/2025',
+    '12/2025',
+    '01/2026',
+    '02/2026',
+    '03/2026',
+    '04/2026',
+    '05/2026',
+    '06/2026',
+    '07/2026',
+    '08/2026',
+    '09/2026',
+    '10/2026',
+    '11/2026',
+    '12/2026'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -22,113 +63,136 @@ class _ReportScreenState extends State<ReportScreen> {
       appBar: AppBar(
         title: Text('Relatórios'),
         backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
+        foregroundColor: const Color.fromARGB(255, 245, 160, 245),
       ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/fundoRelatorio.jpg'),
+            image: AssetImage('assets/background_login.jpg'),
             fit: BoxFit.cover,
           ),
         ),
         child: Column(
           children: [
-            // Filtros
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  // Dropdown tipo
-                  DropdownButton<String>(
-                    value: selectedType,
-                    items: [
-                      DropdownMenuItem(
-                          value: 'expenses', child: Text('Receitas')),
-                      DropdownMenuItem(value: 'costs', child: Text('Despesas')),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        selectedType = value!;
-                      });
-                    },
-                  ),
-                  SizedBox(width: 16),
-                  // Dropdown mês
-                  DropdownButton<String>(
-                    value: selectedMonth,
-                    items: [
-                      '01/2025',
-                      '02/2025',
-                      '03/2025',
-                      '04/2025',
-                      '05/2025',
-                      '06/2025',
-                      '07/2025',
-                      '08/2025',
-                      '09/2025',
-                      '10/2025',
-                      '11/2025',
-                      '12/2025',
-                      '01/2026',
-                      '02/2026',
-                      '03/2026',
-                      '04/2026',
-                      '05/2026',
-                      '06/2026',
-                      '07/2026',
-                      '08/2026',
-                      '09/2026',
-                      '10/2026',
-                      '11/2026',
-                      '12/2026',
-                      // Adicione mais meses conforme necessário
-                    ].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedMonth = value!;
-                      });
-                    },
-                  ),
-                  // Botão Gerar Relatório
-                  ElevatedButton(
-                    onPressed: () => generateReport(),
-                    child: Text('Gerar Relatório'),
-                  ),
-                ],
+            Card(
+              margin: EdgeInsets.all(8),
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    DropdownButtonFormField<String>(
+                      value: selectedType,
+                      decoration: InputDecoration(
+                        labelText: 'Tipo de Relatório',
+                        border: OutlineInputBorder(),
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                            value: 'expenses', child: Text('Receitas')),
+                        DropdownMenuItem(
+                            value: 'costs', child: Text('Despesas')),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          selectedType = value!;
+                          selectedExpenseType = null;
+                          selectedIncomeType = null;
+                        });
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    if (selectedType == 'costs')
+                      DropdownButtonFormField<String>(
+                        value: selectedExpenseType ?? _tiposDespesa[0],
+                        decoration: InputDecoration(
+                          labelText: 'Tipo de Despesa',
+                          border: OutlineInputBorder(),
+                        ),
+                        items: _tiposDespesa.map((tipo) {
+                          return DropdownMenuItem(
+                              value: tipo, child: Text(tipo));
+                        }).toList(),
+                        onChanged: (value) =>
+                            setState(() => selectedExpenseType = value),
+                      ),
+                    if (selectedType == 'expenses')
+                      DropdownButtonFormField<String>(
+                        value: selectedIncomeType ?? _tiposReceita[0],
+                        decoration: InputDecoration(
+                          labelText: 'Tipo de Receita',
+                          border: OutlineInputBorder(),
+                        ),
+                        items: _tiposReceita.map((tipo) {
+                          return DropdownMenuItem(
+                              value: tipo, child: Text(tipo));
+                        }).toList(),
+                        onChanged: (value) =>
+                            setState(() => selectedIncomeType = value),
+                      ),
+                    SizedBox(height: 16),
+                    DropdownButtonFormField<String>(
+                      value: selectedMonth,
+                      decoration: InputDecoration(
+                        labelText: 'Mês',
+                        border: OutlineInputBorder(),
+                      ),
+                      items: _meses.map((mes) {
+                        return DropdownMenuItem(value: mes, child: Text(mes));
+                      }).toList(),
+                      onChanged: (value) =>
+                          setState(() => selectedMonth = value!),
+                    ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => generateReport(),
+                      child: Text('Gerar Relatório'),
+                    ),
+                  ],
+                ),
               ),
             ),
-            // Lista de Relatórios
             Expanded(
-              child: ListView.builder(
-                itemCount: reportData.length,
-                itemBuilder: (context, index) {
-                  final item = reportData[index];
-                  return Card(
-                    child: ListTile(
-                      title: Text('Data: ${item['data']}'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              'Valor: R\$ ${item['preco'].toStringAsFixed(2)}'),
-                          if (selectedType == 'expenses')
-                            Text('Descrição: ${item['descricaoDaReceita']}'),
-                          if (selectedType == 'costs')
-                            Text('Descrição: ${item['descricaoDaDespesa']}'),
-                        ],
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () => deleteReport(index),
+              child: Card(
+                margin: EdgeInsets.all(8),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        'Relatório de ${selectedType == "expenses" ? "Receitas" : "Despesas"}\n'
+                        '${selectedType == "costs" ? "Tipo: ${selectedExpenseType ?? 'Todas'}" : "Tipo: ${selectedIncomeType ?? 'Todas'}"}\n'
+                        'Período: $selectedMonth',
+                        style: Theme.of(context).textTheme.titleLarge,
+                        textAlign: TextAlign.center,
                       ),
                     ),
-                  );
-                },
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: reportData.length,
+                        itemBuilder: (context, index) {
+                          final item = reportData[index];
+                          return ListTile(
+                            leading: CircleAvatar(
+                              child: Text('${index + 1}'),
+                            ),
+                            title: Text(
+                                '${item['data']} - R\$ ${item['preco'].toStringAsFixed(2)}'),
+                            subtitle: Text(selectedType == 'expenses'
+                                ? '${item['descricaoDaReceita'] ?? ''} (${item['tipoReceita'] ?? ''})'
+                                : '${item['descricaoDaDespesa'] ?? ''} (${item['tipoDespesa'] ?? ''})'),
+                          );
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        'Total: R\$ ${totalValue.toStringAsFixed(2)}',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -143,49 +207,61 @@ class _ReportScreenState extends State<ReportScreen> {
         : '${widget.user.uid}_costs';
 
     try {
-      QuerySnapshot<
-          Map<String,
-              dynamic>> querySnapshot = await FirebaseFirestore.instance
-          .collection(collection)
-          .where('data', isGreaterThanOrEqualTo: selectedMonth)
-          .where('data',
-              isLessThan:
-                  '${int.parse(selectedMonth.split('/')[0]) + 1}/${selectedMonth.split('/')[1]}')
-          .orderBy('data')
-          .get();
+      Query query = FirebaseFirestore.instance.collection(collection);
+
+      if (selectedType == 'costs' &&
+          selectedExpenseType != null &&
+          selectedExpenseType != 'Todas') {
+        query = query.where('tipoDespesa', isEqualTo: selectedExpenseType);
+      }
+
+      if (selectedType == 'expenses' &&
+          selectedIncomeType != null &&
+          selectedIncomeType != 'Todas') {
+        query = query.where('tipoReceita', isEqualTo: selectedIncomeType);
+      }
+
+      QuerySnapshot querySnapshot = await query.orderBy('data').get();
+
+      double total = 0.0;
+      final data = querySnapshot.docs.where((doc) {
+        if (selectedMonth == 'Todas') return true;
+
+        String docData = (doc.data() as Map<String, dynamic>)['data'] as String;
+        String monthYear = docData.substring(3); // Pega mm/yyyy
+        return monthYear == selectedMonth;
+      }).map((doc) {
+        Map<String, dynamic> docData = doc.data() as Map<String, dynamic>;
+        total += (docData['preco'] ?? 0.0);
+        return docData;
+      }).toList();
+
+      Logger().i('Documentos encontrados: ${data.length}');
+      Logger().i('Total calculado: $total');
 
       setState(() {
-        reportData = querySnapshot.docs.map((doc) => doc.data()).toList();
-      });
-
-      // Salvar relatório
-      final reportRef = FirebaseFirestore.instance
-          .collection('${widget.user.uid}_reports')
-          .doc();
-
-      await reportRef.set({
-        'type': selectedType,
-        'month': selectedMonth,
-        'data': reportData,
-        'createdAt': DateTime.now(),
+        reportData = data;
+        totalValue = total;
       });
     } catch (e) {
-      print('Erro ao gerar relatório: $e');
+      Logger().e('Erro ao gerar relatório: $e');
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Erro ao gerar relatório: $e')));
     }
   }
 
-  void deleteReport(int index) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('${widget.user.uid}_reports')
-          .doc(reportData[index]['id'])
-          .delete();
+  String _getNextMonth(String currentMonth) {
+    final parts = currentMonth.split('/');
+    int month = int.parse(parts[0]);
+    int year = int.parse(parts[1]);
 
-      setState(() {
-        reportData.removeAt(index);
-      });
-    } catch (e) {
-      print('Erro ao excluir relatório: $e');
+    if (month == 12) {
+      month = 1;
+      year++;
+    } else {
+      month++;
     }
+
+    return '${month.toString().padLeft(2, '0')}/$year';
   }
 }

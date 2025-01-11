@@ -30,3 +30,7 @@ pj1/pj1/android/app/google-services.json
 pj1/pj1/lib/firebase_options.dart
 pj1/pj1/firebase.json
 pj1/pj1/storage.rules
+pj1/pj1/firestore.rules
+pj1/pj1/remoteconfig.template.json
+pj1/pj1/.vscode/settings.json
+pj1/pj1/.vscode/settings.json

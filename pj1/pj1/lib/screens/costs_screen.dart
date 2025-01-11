@@ -183,11 +183,13 @@ class _CostsScreenState extends State<CostsScreen> {
         TextEditingController();
     TextEditingController tipoDespesaController = TextEditingController();
 
+    String label = "Adicionando";
     if (model != null) {
+      label = "Editando";
       dataController.text = model.data;
-      tipoDespesaController.text = model.tipoDespesa;
-      descricaoDaDespesaController.text = model.descricaoDaDespesa ?? '';
       precoController.text = model.preco.toString();
+      descricaoDaDespesaController.text = model.descricaoDaDespesa ?? '';
+      tipoDespesaController.text = model.tipoDespesa;
       confirmationButton = "Atualizar";
     }
 

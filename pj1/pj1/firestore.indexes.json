@@ -1,0 +1,33 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "Collection%3A%20%24%7BuserId%7D_costs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "data",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "tipoDespesa",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Collection%3A%20%24%7BuserId%7D_expenses",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "data",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "tipoReceita",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
