@@ -4,14 +4,14 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'pj1/**'
+      - 'pj1/pj1/**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./pj1
+        working-directory: ./pj1/pj1
 
     steps:
       - uses: actions/checkout@v3
@@ -21,15 +21,6 @@ jobs:
         with:
           flutter-version: '3.x'
           channel: 'stable'
-
-      - name: Cache Flutter dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.pub-cache
-          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-flutter-
 
       - name: Get dependencies
         run: flutter pub get
@@ -41,4 +32,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./pj1/build/web
+          publish_dir: ./pj1/pj1/build/web
