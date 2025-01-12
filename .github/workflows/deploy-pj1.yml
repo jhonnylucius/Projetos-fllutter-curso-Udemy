@@ -29,7 +29,8 @@ jobs:
         run: flutter build web --base-href "/pj1/"
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: firebase/firebase-tools@v9
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./pj1/pj1/build/web
+          args: deploy --only hosting
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
