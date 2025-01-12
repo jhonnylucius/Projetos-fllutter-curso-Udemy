@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadUserDisplayName() async {
     User? user = FirebaseAuth.instance.currentUser;
     setState(() {
-      displayName = user?.displayName ?? 'Usuário';
+      displayName = user!.displayName!;
     });
   }
 
