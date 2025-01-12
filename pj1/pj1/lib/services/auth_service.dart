@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
@@ -29,7 +30,19 @@ class AuthService {
       UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: senha);
 
+      // Atualizar o nome do usuário
       await userCredential.user!.updateDisplayName(nome);
+      await userCredential.user!.reload();
+      // userCredential.user = _firebaseAuth.currentUser;
+
+      // Salvar outras informações no Firestore, se necessário
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user?.uid)
+          .set({
+        'displayName': nome,
+        'email': email,
+      });
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':
