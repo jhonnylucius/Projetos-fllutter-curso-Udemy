@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pj1/components/menu.dart';
+import 'package:pj1/models/user_model.dart';
 
 class HomeScreen extends StatefulWidget {
   final User user;
@@ -21,9 +23,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadUserDisplayName() async {
     User? user = FirebaseAuth.instance.currentUser;
-    setState(() {
-      displayName = user!.displayName!;
-    });
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      UserModel userModel =
+          UserModel.fromDocument(userDoc.data() as Map<String, dynamic>);
+      setState(() {
+        displayName = userModel.displayName;
+      });
+    }
   }
 
   @override
