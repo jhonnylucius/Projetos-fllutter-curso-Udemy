@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:pj1/models/user_model.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -33,16 +34,19 @@ class AuthService {
       // Atualizar o nome do usuário
       await userCredential.user!.updateDisplayName(nome);
       await userCredential.user!.reload();
-      // userCredential.user = _firebaseAuth.currentUser;
 
-      // Salvar outras informações no Firestore, se necessário
+      // Criar um objeto UserModel
+      UserModel newUser = UserModel(
+        uid: userCredential.user!.uid,
+        displayName: nome,
+        email: email,
+      );
+
+      // Salvar no Firestore
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userCredential.user?.uid)
-          .set({
-        'displayName': nome,
-        'email': email,
-      });
+          .doc(newUser.uid)
+          .set(newUser.toMap());
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':
