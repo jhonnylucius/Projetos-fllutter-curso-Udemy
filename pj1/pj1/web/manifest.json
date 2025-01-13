@@ -1,12 +1,12 @@
 {
-    "name": "pj1",
-    "short_name": "pj1",
+    "name": "GestorFinanceiro",
+    "short_name": "GestorFinanceiro",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
     "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "orientation": "portrait",
     "prefer_related_applications": false,
     "icons": [
         {
