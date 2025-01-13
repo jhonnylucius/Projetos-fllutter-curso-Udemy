@@ -177,15 +177,21 @@ class _CostsScreenState extends State<CostsScreen> {
 
     TextEditingController dataController = TextEditingController();
     TextEditingController precoController = TextEditingController();
-    final precoMaskFormatter =
-        MaskTextInputFormatter(mask: '', filter: {"#": RegExp(r'[0-9]')});
     TextEditingController descricaoDaDespesaController =
         TextEditingController();
+    var precoMaskFormatter = MaskTextInputFormatter(
+      mask: '#######.##',
+      filter: {"#": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy,
+    );
+
+    precoController.addListener(() {
+      precoMaskFormatter.updateMask();
+    });
+    TextEditingController();
     TextEditingController tipoDespesaController = TextEditingController();
 
-    String label = "Adicionando";
     if (model != null) {
-      label = "Editando";
       dataController.text = model.data;
       precoController.text = model.preco.toString();
       descricaoDaDespesaController.text = model.descricaoDaDespesa ?? '';
@@ -266,7 +272,9 @@ class _CostsScreenState extends State<CostsScreen> {
                 children: [
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
                     },
                     child: Text(skipButton),
                   ),
@@ -291,7 +299,11 @@ class _CostsScreenState extends State<CostsScreen> {
                           .set(costs.toMap());
 
                       await refresh();
-                      Navigator.pop(context);
+                      if (mounted) {
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
+                      }
                     },
                     child: Text(confirmationButton),
                   ),
