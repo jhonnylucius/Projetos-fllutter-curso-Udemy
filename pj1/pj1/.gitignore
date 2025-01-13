@@ -47,3 +47,6 @@ app.*.map.json
 pj1/pj1/android/app/google-services.json
 pj1/pj1/lib/firebase_options.dart
 pj1/pj1/firebase.json
+
+# Firebase cache
+.firebase/
