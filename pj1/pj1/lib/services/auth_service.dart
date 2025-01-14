@@ -38,6 +38,9 @@ class AuthService {
       // Atualizar displayName e aguardar
       await userCredential.user!.updateDisplayName(nome);
 
+      // Enviar email de verificação
+      await userCredential.user!.sendEmailVerification();
+
       // Forçar reload para garantir atualização
       await userCredential.user!.reload();
 
@@ -60,6 +63,28 @@ class AuthService {
           return 'Dados incorretos.';
         case 'weak-password':
           return 'Dados Incorretos.';
+      }
+      return e.code;
+    }
+    return null;
+  }
+
+  Future<String?> entrarUsuarioComVerificao(String email, String senha) async {
+    try {
+      UserCredential userCredential = await _firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: senha);
+
+      // Verificar se o email foi confirmado
+      if (!userCredential.user!.emailVerified) {
+        await _firebaseAuth.signOut();
+        return 'Por favor, verifique seu email antes de fazer login.';
+      }
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'user-not-found':
+          return 'Usuário não encontrado.';
+        case 'wrong-password':
+          return 'Falha no login.';
       }
       return e.code;
     }
