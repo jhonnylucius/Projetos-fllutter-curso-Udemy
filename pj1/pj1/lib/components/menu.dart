@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:pj1/screens/dashBoard_screen.dart'; // Add this line
+import 'package:pj1/screens/dashboard_screen.dart'; // Add this line
 import 'package:pj1/screens/report_screen.dart';
 import 'package:pj1/services/auth_service.dart';
 
