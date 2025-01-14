@@ -58,7 +58,7 @@ class LoginScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       _authService
-                          .entrarUsuarioComVerificao(
+                          .entrarUsuario(
                         _emailController.text,
                         _senhaController.text,
                       )
