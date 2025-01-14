@@ -249,19 +249,4 @@ class _ReportScreenState extends State<ReportScreen> {
           .showSnackBar(SnackBar(content: Text('Erro ao gerar relatório: $e')));
     }
   }
-
-  String _getNextMonth(String currentMonth) {
-    final parts = currentMonth.split('/');
-    int month = int.parse(parts[0]);
-    int year = int.parse(parts[1]);
-
-    if (month == 12) {
-      month = 1;
-      year++;
-    } else {
-      month++;
-    }
-
-    return '${month.toString().padLeft(2, '0')}/$year';
-  }
 }
