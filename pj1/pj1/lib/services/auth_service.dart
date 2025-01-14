@@ -11,8 +11,14 @@ class AuthService {
 
   Future<String?> entrarUsuario(String email, String senha) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: senha);
+      UserCredential userCredential = await _firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: senha);
+
+      // Verificar se o email foi confirmado
+      if (!userCredential.user!.emailVerified) {
+        await _firebaseAuth.signOut();
+        return 'Por favor, verifique seu email antes de fazer login.';
+      }
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'user-not-found':
@@ -69,28 +75,6 @@ class AuthService {
     return null;
   }
 
-  Future<String?> entrarUsuarioComVerificao(String email, String senha) async {
-    try {
-      UserCredential userCredential = await _firebaseAuth
-          .signInWithEmailAndPassword(email: email, password: senha);
-
-      // Verificar se o email foi confirmado
-      if (!userCredential.user!.emailVerified) {
-        await _firebaseAuth.signOut();
-        return 'Por favor, verifique seu email antes de fazer login.';
-      }
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'user-not-found':
-          return 'Usuário não encontrado.';
-        case 'wrong-password':
-          return 'Falha no login.';
-      }
-      return e.code;
-    }
-    return null;
-  }
-
   Future<String?> redefinicaoSenha({required String email}) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
@@ -125,8 +109,6 @@ class AuthService {
     }
     return null;
   }
-
-  void resetPassword(String text) {}
 
   // Apenas adicionar este método na classe AuthService existente, mantendo todo resto
   Future<UserCredential?> signInWithGoogle() async {
