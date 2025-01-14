@@ -8,7 +8,7 @@ class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController __senhaController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
 
   final AuthService _authService = AuthService();
 
@@ -51,24 +51,41 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(height: 16.0),
                   TextField(
                     obscureText: true,
-                    controller: __senhaController,
+                    controller: _senhaController,
                     decoration: InputDecoration(hintText: 'Senha'),
                   ),
                   const SizedBox(height: 16.0),
                   ElevatedButton(
-                    onPressed: () async {
-                      final scaffoldMessenger = ScaffoldMessenger.of(context);
-                      final erro = await _authService.entrarUsuario(
-                          _emailController.text, __senhaController.text);
-                      if (erro != null) {
-                        final snackBar = SnackBar(
-                          content: Text('Dados Inválidos'),
-                          backgroundColor: Colors.red,
-                        );
-                        scaffoldMessenger.showSnackBar(snackBar);
-                      }
+                    onPressed: () {
+                      _authService
+                          .entrarUsuarioComVerificao(
+                        _emailController.text,
+                        _senhaController.text,
+                      )
+                          .then(
+                        (String? erro) {
+                          if (erro != null) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(erro),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
+                        },
+                      );
                     },
-                    child: const Text('Entrar'),
+                    child: Text('Entrar'),
                   ),
                   SizedBox(height: 16.0),
                   SignInButton(
