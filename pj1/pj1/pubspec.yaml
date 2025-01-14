@@ -50,6 +50,7 @@ dependencies:
   intl: ^0.19.0
   shared_preferences: ^2.3.5
   url_launcher: ^6.3.1
+  foundation: ^0.0.5
 
 dev_dependencies:
   flutter_test:
