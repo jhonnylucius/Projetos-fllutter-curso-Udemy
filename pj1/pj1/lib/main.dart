@@ -6,7 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:pj1/firebase_options.dart';
 import 'package:pj1/screens/costs_screen.dart';
-import 'package:pj1/screens/dashBoard_screen.dart';
+import 'package:pj1/screens/dashboard_screen.dart';
 import 'package:pj1/screens/expenses_screen.dart';
 import 'package:pj1/screens/home_screen.dart';
 import 'package:pj1/screens/login_screen.dart';
