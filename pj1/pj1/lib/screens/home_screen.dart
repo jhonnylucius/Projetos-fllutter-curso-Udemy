@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pj1/components/menu.dart';
-import 'package:pj1/models/user_model.dart';
 
 class HomeScreen extends StatefulWidget {
   final User user;
@@ -24,14 +23,26 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadUserDisplayName() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
+      // Força reload do usuário atual
+      await user.reload();
+      user = FirebaseAuth.instance.currentUser;
+
+      // Buscar dados do usuário no Firestore
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('users')
-          .doc(user.uid)
+          .doc(user?.uid)
           .get();
-      UserModel userModel =
-          UserModel.fromDocument(userDoc.data() as Map<String, dynamic>);
+
+      if (!mounted) return; // Evita setState se widget foi disposed
+
       setState(() {
-        displayName = userModel.displayName;
+        if (userDoc.exists && userDoc.data() != null) {
+          Map<String, dynamic> userData =
+              userDoc.data() as Map<String, dynamic>;
+          displayName = userData['displayName'] ?? user?.displayName ?? '';
+        } else {
+          displayName = user?.displayName ?? '';
+        }
       });
     }
   }

@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
-import 'package:pj1/models/user_model.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -26,30 +25,33 @@ class AuthService {
     return null;
   }
 
-  Future<String?> cadastrarUsuario(
-      {required String email,
-      required String senha,
-      required String nome}) async {
+  Future<String?> cadastrarUsuario({
+    required String email,
+    required String senha,
+    required String nome,
+  }) async {
     try {
+      // Criar usuário no Firebase Auth
       UserCredential userCredential = await _firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: senha);
 
-      // Atualizar o nome do usuário
+      // Atualizar displayName e aguardar
       await userCredential.user!.updateDisplayName(nome);
-      await userCredential.user!.reload();
 
-      // Criar um objeto UserModel
-      UserModel newUser = UserModel(
-        uid: userCredential.user!.uid,
-        displayName: nome,
-        email: email,
-      );
+      // Forçar reload para garantir atualização
+      await userCredential.user!.reload();
 
       // Salvar no Firestore
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(newUser.uid)
-          .set(newUser.toMap());
+          .doc(userCredential.user?.uid)
+          .set({
+        'displayName': nome,
+        'email': email,
+      });
+
+      // Recarregar usuário atual
+      await FirebaseAuth.instance.currentUser?.reload();
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':
