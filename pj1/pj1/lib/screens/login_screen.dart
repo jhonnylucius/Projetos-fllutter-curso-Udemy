@@ -1,8 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pj1/screens/register_screen.dart';
 import 'package:pj1/screens/reset_password_modal.dart';
 import 'package:pj1/services/auth_service.dart';
@@ -78,7 +75,7 @@ class LoginScreen extends StatelessWidget {
                     Buttons.Google,
                     text: 'Entrar com Google',
                     onPressed: () {
-                      singinWithGoogle();
+                      _authService.signInWithGoogle();
                     },
                   ),
                   SizedBox(height: 12.0),
@@ -115,29 +112,5 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<UserCredential> singinWithGoogle() async {
-    if (kIsWeb) {
-      // Criar provider do Google
-      GoogleAuthProvider googleProvider = GoogleAuthProvider();
-
-      // Opcional: Adicionar escopo se necessário
-      googleProvider
-          .addScope('https://www.googleapis.com/auth/contacts.readonly');
-
-      // Sign in
-      return await FirebaseAuth.instance.signInWithPopup(googleProvider);
-    } else {
-      // Flow mobile existente
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser!.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      return await FirebaseAuth.instance.signInWithCredential(credential);
-    }
   }
 }

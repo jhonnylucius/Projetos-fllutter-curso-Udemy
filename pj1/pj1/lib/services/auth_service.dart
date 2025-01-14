@@ -2,6 +2,9 @@ import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 import 'package:pj1/models/user_model.dart';
 
 class AuthService {
@@ -97,4 +100,33 @@ class AuthService {
   }
 
   void resetPassword(String text) {}
+
+  // Apenas adicionar este método na classe AuthService existente, mantendo todo resto
+  Future<UserCredential?> signInWithGoogle() async {
+    try {
+      if (kIsWeb) {
+        // Configuração específica para Web
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        // Removendo escopo de contatos, mantendo apenas autenticação básica
+        googleProvider.setCustomParameters({'prompt': 'select_account'});
+        return await _firebaseAuth.signInWithPopup(googleProvider);
+      } else {
+        // Código para Android
+        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+        final GoogleSignInAuthentication? googleAuth =
+            await googleUser?.authentication;
+
+        if (googleAuth?.accessToken != null && googleAuth?.idToken != null) {
+          final credential = GoogleAuthProvider.credential(
+            accessToken: googleAuth?.accessToken,
+            idToken: googleAuth?.idToken,
+          );
+          return await _firebaseAuth.signInWithCredential(credential);
+        }
+      }
+    } catch (e) {
+      Logger().e('Erro no login com Google: $e');
+    }
+    return null;
+  }
 }
