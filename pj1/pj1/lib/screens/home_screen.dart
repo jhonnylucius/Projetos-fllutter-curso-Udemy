@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,27 +15,39 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String displayName = '';
+  StreamSubscription<User?>? _authSubscription;
 
   @override
   void initState() {
     super.initState();
     _loadUserDisplayName();
+    // Adicionar listener para mudanças no estado da autenticação
+    _authSubscription =
+        FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        _loadUserDisplayName();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadUserDisplayName() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      // Força reload do usuário atual
       await user.reload();
       user = FirebaseAuth.instance.currentUser;
 
-      // Buscar dados do usuário no Firestore
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user?.uid)
           .get();
 
-      if (!mounted) return; // Evita setState se widget foi disposed
+      if (!mounted) return;
 
       setState(() {
         if (userDoc.exists && userDoc.data() != null) {
