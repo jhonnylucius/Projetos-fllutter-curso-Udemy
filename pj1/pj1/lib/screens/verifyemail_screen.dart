@@ -23,8 +23,9 @@ class VerifyEmailScreen extends StatelessWidget {
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
+                await Future.delayed(Duration(seconds: 3));
                 await user.reload();
-                if (user.emailVerified) {
+                if (user.emailVerified == true) {
                   Navigator.pushReplacementNamed(context, '/home');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
