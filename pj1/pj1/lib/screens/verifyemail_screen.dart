@@ -1,11 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class VerifyEmailScreen extends StatelessWidget {
+class VerifyEmailScreen extends StatefulWidget {
   final User user;
 
   const VerifyEmailScreen({super.key, required this.user});
 
+  @override
+  VerifyEmailScreenState createState() => VerifyEmailScreenState();
+}
+
+class VerifyEmailScreenState extends State<VerifyEmailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,15 +23,22 @@ class VerifyEmailScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Um email de verificação foi enviado para ${user.email}.',
+              'Um email de verificação foi enviado para ${widget.user.email}.',
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () async {
-                await Future.delayed(Duration(seconds: 3));
-                user.reload();
-                if (user.emailVerified != false) {
+                bool emailVerified = false;
+                for (int i = 0; i < 5; i++) {
+                  await Future.delayed(Duration(seconds: 2));
+                  await widget.user.reload();
+                  if (widget.user.emailVerified) {
+                    emailVerified = true;
+                    break;
+                  }
+                }
+                if (emailVerified) {
                   Navigator.pushReplacementNamed(context, '/home');
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -42,7 +54,7 @@ class VerifyEmailScreen extends StatelessWidget {
             SizedBox(height: 16.0),
             TextButton(
               onPressed: () async {
-                await user.sendEmailVerification();
+                await widget.user.sendEmailVerification();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Email de verificação reenviado.'),
