@@ -30,6 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> _checkEmailVerification() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && !user.emailVerified) {
+      Navigator.pushReplacementNamed(context, '/verify-email');
+    }
+  }
+
   @override
   void dispose() {
     _authSubscription?.cancel();

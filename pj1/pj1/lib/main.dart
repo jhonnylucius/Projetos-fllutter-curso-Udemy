@@ -10,7 +10,7 @@ import 'package:pj1/screens/dashboard_screen.dart';
 import 'package:pj1/screens/expenses_screen.dart';
 import 'package:pj1/screens/home_screen.dart';
 import 'package:pj1/screens/login_screen.dart';
-import 'package:pj1/screens/verifyemail_Screen.dart';
+import 'package:pj1/screens/verifyemail_screen.dart';
 import 'package:pj1/widgets/terms_of_service_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

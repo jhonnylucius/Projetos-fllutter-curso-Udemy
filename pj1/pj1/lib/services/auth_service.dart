@@ -3,8 +3,10 @@ import 'dart:core';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
+import 'package:pj1/screens/verifyemail_screen.dart';
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -35,6 +37,7 @@ class AuthService {
     required String email,
     required String senha,
     required String nome,
+    required BuildContext context,
   }) async {
     try {
       // Criar usuário no Firebase Auth
@@ -61,6 +64,14 @@ class AuthService {
 
       // Recarregar usuário atual
       await FirebaseAuth.instance.currentUser?.reload();
+
+      // Redirecionar para a tela de verificação de email
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VerifyEmailScreen(user: userCredential.user!),
+        ),
+      );
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':

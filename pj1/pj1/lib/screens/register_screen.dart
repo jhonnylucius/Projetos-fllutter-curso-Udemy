@@ -72,6 +72,7 @@ class RegisterScreen extends StatelessWidget {
                             email: _emailController.text,
                             senha: _senhaController.text,
                             nome: _nomeController.text,
+                            context: context,
                           )
                               .then((String? erro) {
                             if (erro != null) {
@@ -99,10 +100,17 @@ class RegisterScreen extends StatelessWidget {
                     SizedBox(height: 8.0),
                     TextButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/verifyemail');
                       },
                       child: Text('Já tenho uma conta!'),
                     ),
+                    SizedBox(height: 8.0),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/login');
+                      },
+                      child: Text('Login'),
+                    )
                   ],
                 ),
               ),
