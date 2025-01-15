@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _checkEmailVerification();
     _loadUserDisplayName();
     // Adicionar listener para mudanças no estado da autenticação
     _authSubscription =
