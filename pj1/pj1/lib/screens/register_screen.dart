@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:pj1/services/auth_service.dart';
 
 class RegisterScreen extends StatelessWidget {
-  RegisterScreen({super.key});
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
   final TextEditingController _confirmarSenhaController =
       TextEditingController();
   final TextEditingController _nomeController = TextEditingController();
-
   final AuthService _authService = AuthService();
+
+  RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -67,25 +66,12 @@ class RegisterScreen extends StatelessWidget {
                       onPressed: () {
                         if (_senhaController.text ==
                             _confirmarSenhaController.text) {
-                          _authService
-                              .cadastrarUsuario(
+                          _authService.cadastrarUsuario(
                             email: _emailController.text,
                             senha: _senhaController.text,
                             nome: _nomeController.text,
                             context: context,
-                          )
-                              .then((String? erro) {
-                            if (erro != null) {
-                              final snackBar = SnackBar(
-                                content: Text(erro),
-                                backgroundColor: Colors.red,
-                              );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                            } else {
-                              Navigator.pop(context);
-                            }
-                          });
+                          );
                         } else {
                           final snackBar = SnackBar(
                             content: Text('Senhas não conferem.'),
@@ -100,17 +86,10 @@ class RegisterScreen extends StatelessWidget {
                     SizedBox(height: 8.0),
                     TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/verifyemail');
+                        Navigator.pushNamed(context, '/login');
                       },
                       child: Text('Já tenho uma conta!'),
                     ),
-                    SizedBox(height: 8.0),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/login');
-                      },
-                      child: Text('Login'),
-                    )
                   ],
                 ),
               ),
@@ -121,31 +100,3 @@ class RegisterScreen extends StatelessWidget {
     );
   }
 }
-
-// explicações
-//  - O código acima é a tela de cadastro de usuário. O usuário informa o
-// e-mail, a senha, a confirmação da senha e o nome. O botão "Cadastrar"
-// chama o método cadastrarUsuario do AuthService, que é responsável por
-// criar um novo usuário no Firebase Authentication.
-//  - O método cadastrarUsuario recebe o e-mail, a senha e o nome do usuário
-// e chama o método createUserWithEmailAndPassword do FirebaseAuth para
-// criar o usuário. Se ocorrer algum erro, o método retorna uma mensagem
-// de erro. Caso contrário, o método retorna null.
-//  - O método cadastrarUsuario é chamado quando o usuário clica no botão
-// "Cadastrar". Se as senhas informadas não conferirem, é exibida uma
-// mensagem de erro. Caso contrário, o método cadastrarUsuario é chamado.
-// Se ocorrer algum erro, é exibida uma mensagem de erro. Caso contrário,
-// o usuário é redirecionado para a tela de login.
-//  - O botão "Já tenho uma conta!" redireciona o usuário para a tela de
-// login.
-//  - O código acima é um exemplo de como criar um novo usuário no Firebase
-// Authentication. O Firebase Authentication é um serviço que permite
-// autenticar usuários em aplicativos móveis e web. Ele fornece métodos
-// para criar, autenticar, atualizar e excluir usuários, além de fornecer
-// métodos para redefinir a senha e enviar e-mails de verificação.
-//  - O Firebase Authentication é uma solução pronta para autenticação de
-// usuários, que permite autenticar usuários por e-mail e senha, telefone,
-// Google, Facebook, Twitter, GitHub e outros provedores de autenticação.
-// Ele fornece métodos para criar, autenticar, atualizar e excluir usuários,
-// além de fornecer métodos para redefinir a senha e enviar e-mails de
-// verificação.
