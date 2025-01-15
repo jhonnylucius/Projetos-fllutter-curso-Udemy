@@ -10,6 +10,7 @@ import 'package:pj1/screens/dashboard_screen.dart';
 import 'package:pj1/screens/expenses_screen.dart';
 import 'package:pj1/screens/home_screen.dart';
 import 'package:pj1/screens/login_screen.dart';
+import 'package:pj1/screens/verifyemail_Screen.dart';
 import 'package:pj1/widgets/terms_of_service_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -48,6 +49,12 @@ class MyApp extends StatelessWidget {
             CostsScreen(user: FirebaseAuth.instance.currentUser!),
         '/expenses': (context) =>
             ExpensesScreen(user: FirebaseAuth.instance.currentUser!),
+        '/home': (context) => HomeScreen(
+            user: FirebaseAuth
+                .instance.currentUser!), // Ajustar para passar o usuário atual
+        '/verify-email': (context) => VerifyEmailScreen(
+            user: FirebaseAuth.instance
+                .currentUser!), // Adicionar rota para verificação de email
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
