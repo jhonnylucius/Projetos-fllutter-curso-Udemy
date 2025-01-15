@@ -11,6 +11,7 @@ class VerifyEmailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Verifique seu Email'),
+        automaticallyImplyLeading: false, // Remove a seta de voltar
       ),
       body: Center(
         child: Column(
@@ -24,7 +25,7 @@ class VerifyEmailScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 await Future.delayed(Duration(seconds: 3));
-                await user.reload();
+                user.reload();
                 if (user.emailVerified != false) {
                   Navigator.pushReplacementNamed(context, '/home');
                 } else {
