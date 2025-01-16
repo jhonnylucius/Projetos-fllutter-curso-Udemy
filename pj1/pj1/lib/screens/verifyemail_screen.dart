@@ -20,65 +20,68 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
         title: Text('Verifique seu Email'),
         automaticallyImplyLeading: false, // Remove a seta de voltar
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Um email de verificação foi enviado para ${widget.user.email}.',
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: isVerifying
-                  ? null
-                  : () async {
-                      setState(() {
-                        isVerifying = true;
-                      });
+      body: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            User? user = snapshot.data;
+            if (user != null && user.emailVerified) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushReplacementNamed(context, '/home');
+              });
+            }
+          }
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Um email de verificação foi enviado para ${widget.user.email}.',
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: isVerifying
+                      ? null
+                      : () async {
+                          setState(() {
+                            isVerifying = true;
+                          });
 
-                      bool emailVerified = false;
-                      for (int i = 0; i < 5; i++) {
-                        await Future.delayed(Duration(seconds: 2));
-                        await widget.user.reload();
-                        if (widget.user.emailVerified) {
-                          emailVerified = true;
-                          break;
-                        }
-                      }
-
-                      setState(() {
-                        isVerifying = false;
-                      });
-
-                      if (emailVerified) {
-                        Navigator.pushReplacementNamed(context, '/home');
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Email ainda não verificado.'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    },
-              child: Text('Já verifiquei meu email'),
+                          await widget.user.reload();
+                          if (widget.user.emailVerified) {
+                            Navigator.pushReplacementNamed(context, '/home');
+                          } else {
+                            setState(() {
+                              isVerifying = false;
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Email ainda não verificado.'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        },
+                  child: Text('Já verifiquei meu email'),
+                ),
+                SizedBox(height: 16.0),
+                TextButton(
+                  onPressed: () async {
+                    await widget.user.sendEmailVerification();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Email de verificação reenviado.'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  },
+                  child: Text('Reenviar email de verificação'),
+                ),
+              ],
             ),
-            SizedBox(height: 16.0),
-            TextButton(
-              onPressed: () async {
-                await widget.user.sendEmailVerification();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Email de verificação reenviado.'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              },
-              child: Text('Reenviar email de verificação'),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
