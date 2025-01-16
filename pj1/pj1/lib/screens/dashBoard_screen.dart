@@ -81,7 +81,6 @@ class DashBoardScreenState extends State<DashBoardScreen> {
         ),
         child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height,
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
@@ -117,36 +116,77 @@ class DashBoardScreenState extends State<DashBoardScreen> {
   }
 
   Widget _buildBarChart(String title, List<dynamic> data) {
-    return Card(
-      margin: EdgeInsets.all(14),
-      child: Padding(
-        padding: EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(height: 16),
-            SizedBox(
-              height: 160,
-              child: BarChart(
-                BarChartData(
-                  barGroups: data.map((item) {
-                    return BarChartGroupData(
-                      x: data.indexOf(item),
-                      barRods: [
-                        BarChartRodData(
-                          toY: item.preco,
-                          color: Theme.of(context).colorScheme.primary,
+    return GestureDetector(
+      onLongPress: () {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: Column(
+                  children: [
+                    AppBar(
+                      title: Text(title),
+                      automaticallyImplyLeading: false,
+                      actions: [
+                        IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
                         ),
                       ],
-                    );
-                  }).toList(),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: _buildChartContent(data),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
+            );
+          },
+        );
+      },
+      child: Card(
+        margin: EdgeInsets.all(14),
+        child: Padding(
+          padding: EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              SizedBox(height: 160, child: _buildChartContent(data)),
+              Text(
+                'Clique e segure para visualizar na horizontal',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildChartContent(List<dynamic> data) {
+    return BarChart(
+      BarChartData(
+        barGroups: data.map((item) {
+          return BarChartGroupData(
+            x: data.indexOf(item),
+            barRods: [
+              BarChartRodData(
+                toY: item.preco,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ],
+          );
+        }).toList(),
       ),
     );
   }
