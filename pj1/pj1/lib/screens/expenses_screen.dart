@@ -44,14 +44,30 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => showFormModal(),
-        icon: const Icon(Icons.add),
-        label: const Text(
-          'Add Receita',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          FloatingActionButton.extended(
+            onPressed: () => showFormModal(),
+            icon: const Icon(Icons.add),
+            label: const Text(
+              'Add Despesas',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.pushNamed(context, '/costs');
+            },
+            icon: const Icon(Icons.arrow_forward),
+            label: const Text(
+              'Ir para Desepesas',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       body: Container(
