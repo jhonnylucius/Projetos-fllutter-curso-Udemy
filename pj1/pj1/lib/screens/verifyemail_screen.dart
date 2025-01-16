@@ -11,8 +11,6 @@ class VerifyEmailScreen extends StatefulWidget {
 }
 
 class VerifyEmailScreenState extends State<VerifyEmailScreen> {
-  bool isVerifying = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,30 +38,9 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 16.0),
-                ElevatedButton(
-                  onPressed: isVerifying
-                      ? null
-                      : () async {
-                          setState(() {
-                            isVerifying = true;
-                          });
-
-                          await widget.user.reload();
-                          if (widget.user.emailVerified) {
-                            Navigator.pushReplacementNamed(context, '/home');
-                          } else {
-                            setState(() {
-                              isVerifying = false;
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Email ainda não verificado.'),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        },
-                  child: Text('Já verifiquei meu email'),
+                Text(
+                  'Assim que você verificar seu email, você será redirecionado automaticamente.',
+                  textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 16.0),
                 TextButton(
