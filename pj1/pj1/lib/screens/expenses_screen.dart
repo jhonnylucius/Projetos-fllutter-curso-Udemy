@@ -51,7 +51,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             onPressed: () => showFormModal(),
             icon: const Icon(Icons.add),
             label: const Text(
-              'Add Despesas',
+              'Add Receitas',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Theme.of(context).colorScheme.primary,
