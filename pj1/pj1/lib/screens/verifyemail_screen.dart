@@ -11,6 +11,8 @@ class VerifyEmailScreen extends StatefulWidget {
 }
 
 class VerifyEmailScreenState extends State<VerifyEmailScreen> {
+  bool isVerifying = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,27 +30,38 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
             ),
             SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: () async {
-                bool emailVerified = false;
-                for (int i = 0; i < 5; i++) {
-                  await Future.delayed(Duration(seconds: 2));
-                  await widget.user.reload();
-                  if (widget.user.emailVerified) {
-                    emailVerified = true;
-                    break;
-                  }
-                }
-                if (emailVerified) {
-                  Navigator.pushReplacementNamed(context, '/home');
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Email ainda não verificado.'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
+              onPressed: isVerifying
+                  ? null
+                  : () async {
+                      setState(() {
+                        isVerifying = true;
+                      });
+
+                      bool emailVerified = false;
+                      for (int i = 0; i < 5; i++) {
+                        await Future.delayed(Duration(seconds: 2));
+                        await widget.user.reload();
+                        if (widget.user.emailVerified) {
+                          emailVerified = true;
+                          break;
+                        }
+                      }
+
+                      setState(() {
+                        isVerifying = false;
+                      });
+
+                      if (emailVerified) {
+                        Navigator.pushReplacementNamed(context, '/home');
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Email ainda não verificado.'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    },
               child: Text('Já verifiquei meu email'),
             ),
             SizedBox(height: 16.0),
