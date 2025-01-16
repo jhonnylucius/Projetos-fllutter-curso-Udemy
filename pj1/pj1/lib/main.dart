@@ -55,6 +55,8 @@ class MyApp extends StatelessWidget {
         '/verify-email': (context) => VerifyEmailScreen(
             user: FirebaseAuth.instance
                 .currentUser!), // Adicionar rota para verificação de email
+        '/login': (context) =>
+            LoginScreen(), // Adicionar rota para verificação de email
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
