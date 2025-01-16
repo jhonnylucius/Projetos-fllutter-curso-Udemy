@@ -60,7 +60,7 @@ class _CostsScreenState extends State<CostsScreen> {
           ),
           FloatingActionButton.extended(
             onPressed: () {
-              Navigator.pushNamed(context, '/expenses_screen');
+              Navigator.pushNamed(context, '/expenses');
             },
             icon: const Icon(Icons.arrow_forward),
             label: const Text(
