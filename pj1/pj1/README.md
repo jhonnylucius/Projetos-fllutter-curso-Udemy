@@ -149,7 +149,10 @@ Directory structure:
 └── pj1/
     ├── README.md
     ├── analysis_options.yaml
+    ├── apphosting.yaml
+    ├── firestore.indexes.json
     ├── pubspec.yaml
+    ├── .firebaserc
     ├── .gitignore
     ├── .metadata
     ├── android/
@@ -194,8 +197,8 @@ Directory structure:
     │   │   └── hour_helpers.dart
     │   ├── models/
     │   │   ├── costs.dart
-    │   │   ├── users_model.dart
-    │   │   └── expenses.dart
+    │   │   ├── expenses.dart
+    │   │   └── user_model.dart
     │   ├── screens/
     │   │   ├── costs_screen.dart
     │   │   ├── dashBoard_screen.dart
@@ -203,9 +206,16 @@ Directory structure:
     │   │   ├── home_screen.dart
     │   │   ├── login_screen.dart
     │   │   ├── register_screen.dart
-    │   │   └── reset_password_modal.dart
-    │   └── services/
-    │       └── auth_service.dart
+    │   │   ├── report_screen.dart
+    │   │   ├── reset_password_modal.dart
+    │   │   └── verifyemail_screen.dart
+    │   ├── services/
+    │   │   └── auth_service.dart
+    │   └── widgets/
+    │       └── terms_of_service_dialog.dart
+    ├── public/
+    │   ├── 404.html
+    │   └── index.html
     ├── test/
     │   └── widget_test.dart
     ├── web/
