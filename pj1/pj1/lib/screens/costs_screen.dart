@@ -24,10 +24,10 @@ class _CostsScreenState extends State<CostsScreen> {
       FirebaseFirestore.instance; // Instância do Firestore
 
   final List<String> _tiposDespesa = [
-    'Obrigatória Anual',
+    'Avulsa',
     'Obrigatória Mensal',
-    'Imprevisto',
-    'Avulsa/Desnecessária'
+    'Obrigatória Mensal',
+    'Imprevisto'
   ];
 
   @override
@@ -46,17 +46,32 @@ class _CostsScreenState extends State<CostsScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () =>
-            showFormModal(), // Exibe o formulário para adicionar despesas
-        icon: const Icon(Icons.add),
-        label: const Text(
-          'Add Despesas',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          FloatingActionButton.extended(
+            onPressed: () => showFormModal(),
+            icon: const Icon(Icons.add),
+            label: const Text(
+              'Add Despesas',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+          FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.pushNamed(context, '/expenses_screen');
+            },
+            icon: const Icon(Icons.arrow_forward),
+            label: const Text(
+              'Ir para Receitas',
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+        ],
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
