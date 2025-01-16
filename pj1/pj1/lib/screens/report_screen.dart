@@ -85,6 +85,8 @@ class _ReportScreenState extends State<ReportScreen> {
                       decoration: InputDecoration(
                         labelText: 'Tipo de Relatório',
                         border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
                       items: [
                         DropdownMenuItem(
@@ -107,10 +109,14 @@ class _ReportScreenState extends State<ReportScreen> {
                         decoration: InputDecoration(
                           labelText: 'Tipo de Despesa',
                           border: OutlineInputBorder(),
+                          filled: true,
+                          fillColor: Colors.white,
                         ),
                         items: _tiposDespesa.map((tipo) {
                           return DropdownMenuItem(
-                              value: tipo, child: Text(tipo));
+                            value: tipo,
+                            child: Text(tipo),
+                          );
                         }).toList(),
                         onChanged: (value) =>
                             setState(() => selectedExpenseType = value),
@@ -121,10 +127,14 @@ class _ReportScreenState extends State<ReportScreen> {
                         decoration: InputDecoration(
                           labelText: 'Tipo de Receita',
                           border: OutlineInputBorder(),
+                          filled: true,
+                          fillColor: Colors.white,
                         ),
                         items: _tiposReceita.map((tipo) {
                           return DropdownMenuItem(
-                              value: tipo, child: Text(tipo));
+                            value: tipo,
+                            child: Text(tipo),
+                          );
                         }).toList(),
                         onChanged: (value) =>
                             setState(() => selectedIncomeType = value),
@@ -135,6 +145,8 @@ class _ReportScreenState extends State<ReportScreen> {
                       decoration: InputDecoration(
                         labelText: 'Mês',
                         border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white,
                       ),
                       items: _meses.map((mes) {
                         return DropdownMenuItem(value: mes, child: Text(mes));
