@@ -221,7 +221,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                 controller: precoController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  hintText: 'Valor da Receita.',
+                  hintText: 'Valor da Receita.(USE PONTO E NÃO VIRGULA!)',
                   labelText: '100.00',
                 ),
                 inputFormatters: [precoMaskFormatter],

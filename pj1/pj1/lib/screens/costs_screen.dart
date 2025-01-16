@@ -233,7 +233,7 @@ class _CostsScreenState extends State<CostsScreen> {
                 controller: precoController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  hintText: 'Valor da Despesa.',
+                  hintText: 'Valor da Despesa.(USE PONTO E NÃO VIRGULA!)',
                   labelText: '100.00',
                 ),
               ),
