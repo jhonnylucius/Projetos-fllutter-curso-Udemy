@@ -1,3 +1,5 @@
+import 'dart:async'; // Importe o pacote async
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -11,54 +13,74 @@ class VerifyEmailScreen extends StatefulWidget {
 }
 
 class VerifyEmailScreenState extends State<VerifyEmailScreen> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _startVerificationCheck();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel(); // Cancela o timer ao sair da tela
+    super.dispose();
+  }
+
+  void _startVerificationCheck() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) async {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await user.reload(); // Recarrega os dados do usuário
+        if (user.emailVerified) {
+          _navigateToHome(); // Navega para a tela home
+          timer.cancel();
+        }
+      }
+    });
+  }
+
+  void _navigateToHome() {
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, '/home');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Verifique seu Email'),
-        automaticallyImplyLeading: false, // Remove a seta de voltar
+        automaticallyImplyLeading: false,
       ),
-      body: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            User? user = snapshot.data;
-            if (user != null && user.emailVerified) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.pushReplacementNamed(context, '/home');
-              });
-            }
-          }
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Um email de verificação foi enviado para ${widget.user.email}.',
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 16.0),
-                Text(
-                  'Assim que você verificar seu email, você será redirecionado automaticamente.',
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 16.0),
-                TextButton(
-                  onPressed: () async {
-                    await widget.user.sendEmailVerification();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Email de verificação reenviado.'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  },
-                  child: Text('Reenviar email de verificação'),
-                ),
-              ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Um email de verificação foi enviado para ${widget.user.email}.',
+              textAlign: TextAlign.center,
             ),
-          );
-        },
+            SizedBox(height: 16.0),
+            Text(
+              'Assim que você verificar seu email, você será redirecionado automaticamente.',
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 16.0),
+            TextButton(
+              onPressed: () async {
+                await widget.user.sendEmailVerification();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Email de verificação reenviado.'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              },
+              child: Text('Reenviar email de verificação'),
+            ),
+          ],
+        ),
       ),
     );
   }
