@@ -1,4 +1,4 @@
-## Projeto Login email/senha e gmail com Flutter, Dart e Firebase 🚀
+# Projeto Login email/senha e gmail com Flutter, Dart e Firebase 🚀
 ### GestorFinanceiro é um app para te ajudar a controlar suas finanças e pode identificar erros no controle de seu 💸💵💴💶💷💰 !! 
 
 <div style="display: flex; justify-content: space-between; margin-bottom: 30px">
@@ -6,7 +6,6 @@
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg" width="40px" alt="Firebase"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dart/dart-original.svg" width="40px" alt="Dart"/>
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="35px" alt="gmail"/>
-  
 </div>
 
 ## 🎥 Demonstração
@@ -28,7 +27,6 @@
 # 2. Extraia o arquivo zip em C:\\src\\flutter
 # 3. Adicione ao Path do sistema:
 C:\\src\\flutter\\bin
-
 ```
 
 ### 2. Instalação do Android Studio
@@ -40,14 +38,12 @@ C:\\src\\flutter\\bin
 # - Android SDK
 # - Android SDK Command-line Tools
 # - Android Emulator
-
 ```
 
 ### 3. Aceitar licenças Android
 
 ```bash
 flutter doctor --android-licenses
-
 ```
 
 ## Configuração do VS Code
@@ -72,15 +68,14 @@ flutter pub add firebase_messaging
 flutter pub add http
 flutter pub add mask_text_input_formatter
 flutter pub add uuid
-flutter pub logger
-flutter pub fl_chart
-flutter pub intl
-
+flutter pub add logger
+flutter pub add fl_chart
+flutter pub add intl
 ```
-## erros conhecidos
 
-- ao rodar o flutter run e der um erro dizendo que você esta usando uma versão "21 do minSdk", basta passar para "minSdk = 23", no arquivo <android/app/build.gradle>. 
+## Erros Conhecidos
 
+- Ao rodar o `flutter run` e der um erro dizendo que você está usando uma versão "21 do minSdk", basta passar para "minSdk = 23", no arquivo `<android/app/build.gradle>`.
 
 ## Configuração do Firebase
 
@@ -88,7 +83,6 @@ flutter pub intl
 
 ```bash
 npm install -g firebase-tools
-
 ```
 
 ### 2. Configuração do Projeto
@@ -102,37 +96,49 @@ flutterfire configure
 
 # Selecionar plataformas
 flutter create --platforms android,web .
-
 ```
 
 ## Sobre o Projeto
 
-# Funcionalidades Disponíveis no Aplicativo
+### Funcionalidades Disponíveis no Aplicativo
 
-## Autenticação
+#### Autenticação
 - 🔐 **Login com E-mail/Senha**: Permite que os usuários façam login usando suas credenciais de e-mail e senha.
 - 🔑 **Login com Google**: Integração com o Google Sign-In para permitir que os usuários façam login usando suas contas do Google.
 - 📝 **Registro de Nova Conta**: Permite que novos usuários se registrem no aplicativo criando uma conta com e-mail e senha.
 - 🔄 **Redefinir Senha**: Funcionalidade para os usuários redefinirem suas senhas caso as esqueçam.
 
-## Gerenciamento de Dados
+#### Gerenciamento de Dados
 - ✅ **Atualizar e Salvar Dados**: Permite que os usuários atualizem e salvem informações no banco de dados.
 - ❌ **Excluir Dados**: Funcionalidade para excluir dados armazenados no banco de dados.
 - 🗑️ **Excluir Conta**: Permite que os usuários excluam suas contas do aplicativo.
 
-## Interface do Usuário
+#### Interface do Usuário
 - 🎨 **Design Material 3**: Utiliza o Material Design 3 para uma interface moderna e intuitiva.
 - 📊 **Dashboard**: Tela de dashboard que exibe informações resumidas e gráficos sobre despesas e receitas.
 - 📅 **Gerenciamento de Despesas**: Tela para registrar, atualizar e excluir despesas.
 - 💰 **Gerenciamento de Receitas**: Tela para registrar, atualizar e excluir receitas.
 
-## Notificações
+#### Notificações
 - 📬 **Firebase Messaging**: Integração com o Firebase Cloud Messaging para envio de notificações push.
 
-
-## Outros
+#### Outros
 - 🌐 **Suporte Multiplataforma**: Suporte para Android e Web.
 - 📈 **Gráficos**: Utilização da biblioteca `fl_chart` para exibição de gráficos no dashboard.
+
+### Funcionalidades Adicionais
+
+#### Boas Práticas de Programação
+- 📜 **Aceite dos Termos de Serviço**: Diálogo para que os usuários leiam e aceitem os termos de serviço antes de utilizar o aplicativo.
+- 📧 **Verificação de Email**: Verificação de email para novos usuários, garantindo que apenas emails válidos sejam utilizados.
+- 🔄 **Redirecionamento Automático**: Redirecionamento automático para a tela principal após a verificação do email.
+- 🔍 **Listener de Autenticação**: Listener para mudanças no estado da autenticação, garantindo que a interface do usuário seja atualizada conforme necessário.
+
+#### Funcionalidades para Estudantes de Programação
+- 🛠️ **Estrutura Modular**: Código organizado em módulos, facilitando a manutenção e a escalabilidade do projeto.
+- 🧪 **Testes Unitários**: Inclusão de testes unitários para garantir a qualidade e a funcionalidade do código.
+- 📚 **Comentários e Documentação**: Código bem comentado e documentado, facilitando o entendimento e a aprendizagem.
+- 🔄 **Gerenciamento de Estado**: Utilização de boas práticas para gerenciamento de estado, como o uso de `StreamSubscription` para monitorar mudanças no estado da autenticação.
 
 ---
 
@@ -207,13 +213,11 @@ Directory structure:
     │   └── icons/
     └── .vscode/
         └── settings.json
-
-
 ```
 
-# 🔥Como Utilizar o App
+## 🔥 Como Utilizar o App
 
-## Pré-requisitos
+### Pré-requisitos
 
 - Flutter SDK instalado
 - Git instalado
@@ -221,24 +225,22 @@ Directory structure:
 - Android Studio (apenas para SDK e emulador) ou dispositivo físico
 - VS Code com extensões Flutter e Dart
 
-## Passo a Passo
+### Passo a Passo
 
-### 1. Clone o Repositório
+#### 1. Clone o Repositório
 
 ```bash
-git clone <[https://github.com/jhonnylucius/pj1/pj1.git](https://github.com/jhonnylucius/Projetos-fllutter-curso-Udemy.git)>
+git clone <https://github.com/jhonnylucius/Projetos-fllutter-curso-Udemy.git>
 cd pj1
-
 ```
 
-### 2. Instale as Dependências
+#### 2. Instale as Dependências
 
 ```bash
 flutter pub get
-
 ```
 
-### 3. Configure o Firebase
+#### 3. Configure o Firebase
 
 ```bash
 # Certifique-se de ter o Firebase CLI instalado
@@ -249,10 +251,9 @@ firebase login
 
 # Configure o projeto
 flutterfire configure
-
 ```
 
-### 4. Execute o App
+#### 4. Execute o App
 
 ```bash
 # Para dispositivo físico Android conectado via USB
@@ -261,7 +262,6 @@ flutter run
 # Para emulador
 flutter emulators --launch <emulator_id>
 flutter run
-
 ```
 
 ## Troubleshooting
@@ -286,4 +286,4 @@ Este projeto está sob a licença MIT.
 
 ---
 
-⭐ Se este projeto ajudou você, considere dar uma estrela no repositório!
+⭐ Se este projeto ajudou você, considere dar uma estrela no repositório!# Projeto Login email/senha e gmail com Flutter, Dart e Firebase 🚀
