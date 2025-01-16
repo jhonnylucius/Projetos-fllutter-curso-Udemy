@@ -194,6 +194,7 @@ Directory structure:
     │   │   └── hour_helpers.dart
     │   ├── models/
     │   │   ├── costs.dart
+    │   │   ├── users_model.dart
     │   │   └── expenses.dart
     │   ├── screens/
     │   │   ├── costs_screen.dart
