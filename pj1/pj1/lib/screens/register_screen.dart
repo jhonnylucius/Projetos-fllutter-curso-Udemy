@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pj1/services/auth_service.dart';
+
+import 'verifyemail_screen.dart'; // Importar VerifyEmailScreen
 
 class RegisterScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -63,15 +66,24 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8.0),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_senhaController.text ==
                             _confirmarSenhaController.text) {
-                          _authService.cadastrarUsuario(
+                          User? user = (await _authService.cadastrarUsuario(
                             email: _emailController.text,
                             senha: _senhaController.text,
                             nome: _nomeController.text,
                             context: context,
-                          );
+                          )) as User?;
+                          if (user != null) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    VerifyEmailScreen(user: user),
+                              ),
+                            );
+                          }
                         } else {
                           final snackBar = SnackBar(
                             content: Text('Senhas não conferem.'),
