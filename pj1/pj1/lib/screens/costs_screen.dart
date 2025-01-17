@@ -228,7 +228,7 @@ class _CostsScreenState extends State<CostsScreen> {
       builder: (context) {
         return Padding(
           padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 8,
             left: 16,
             right: 16,
             top: 16,
