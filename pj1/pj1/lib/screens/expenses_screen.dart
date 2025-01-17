@@ -21,6 +21,7 @@ class ExpensesScreen extends StatefulWidget {
 class _ExpensesScreenState extends State<ExpensesScreen> {
   List<Expenses> listExpenses = [];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final _formKey = GlobalKey<FormState>(); // Chave do formulário
 
   final List<String> _tiposReceita = [
     'Anual',
@@ -31,13 +32,13 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   @override
   void initState() {
     super.initState();
-    refresh();
+    refresh(); // Atualizar lista de receitas ao inicializar
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Menu(user: widget.user),
+      drawer: Menu(user: widget.user), // Menu lateral
       appBar: AppBar(
         title: Text('GestorFinanceiro'),
         elevation: 2,
@@ -115,20 +116,21 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             : ListView(
                 padding: EdgeInsets.only(left: 4, right: 4),
                 children: List.generate(
-                  listExpenses.length,
+                  listExpenses
+                      .length, // Cria uma lista de widgets baseada em receitas
                   (index) {
                     Expenses model = listExpenses[index];
                     return Dismissible(
-                      key: ValueKey<Expenses>(model),
+                      key: ValueKey<Expenses>(model), // Identificador único
                       direction: DismissDirection.endToStart,
                       background: Container(
                         alignment: Alignment.centerRight,
                         padding: const EdgeInsets.only(right: 12),
-                        color: Colors.red,
+                        color: Colors.red, // Fundo vermelho ao deslizar
                         child: Icon(Icons.delete, color: Colors.white),
                       ),
                       onDismissed: (direction) {
-                        remove(model);
+                        remove(model); // Remove o item ao deslizar
                       },
                       child: Card(
                         elevation: 2,
@@ -136,7 +138,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                           children: [
                             ListTile(
                               onLongPress: () {
-                                showFormModal(model: model);
+                                showFormModal(model: model); // Edita a receita
                               },
                               onTap: () {},
                               leading: Icon(Icons.list_alt_rounded, size: 56),
@@ -185,7 +187,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
   showFormModal({Expenses? model}) {
     String confirmationButton = "Salvar";
-    String SkipButton = "Cancelar";
+    String skipButton = "Cancelar";
 
     TextEditingController dataController = TextEditingController();
     TextEditingController precoController = TextEditingController();
@@ -217,99 +219,151 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             right: 16,
             top: 16,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: dataController,
-                decoration: InputDecoration(
-                  hintText: '01/01/2025',
-                  labelText: 'Data',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.calendar_today),
-                    onPressed: () => _selectDate(context, dataController),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: dataController,
+                  decoration: InputDecoration(
+                    hintText: '01/01/2025',
+                    labelText: 'Data',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.calendar_today),
+                      onPressed: () => _selectDate(context, dataController),
+                    ),
                   ),
+                  readOnly: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira a data.';
+                    }
+                    return null;
+                  },
                 ),
-                readOnly: true,
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: precoController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: 'Valor da Receita.(USE PONTO E NÃO VIRGULA!)',
-                  labelText: '100.00',
-                ),
-                inputFormatters: [precoMaskFormatter],
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: descricaoDaReceitaController,
-                decoration: InputDecoration(
-                  hintText: 'Qual a receita que você recebeu?',
-                  labelText: 'Descrição',
-                ),
-              ),
-              SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: tipoReceitaController.text.isEmpty
-                    ? _tiposReceita[0]
-                    : tipoReceitaController.text,
-                decoration: InputDecoration(
-                  labelText: 'Tipo da Receita',
-                  border: OutlineInputBorder(),
-                ),
-                items: _tiposReceita.map((String tipo) {
-                  return DropdownMenuItem<String>(
-                    value: tipo,
-                    child: Text(tipo),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    tipoReceitaController.text = newValue!;
-                  });
-                },
-              ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(SkipButton),
+                SizedBox(height: 16),
+                TextFormField(
+                  controller: precoController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: 'Valor da Receita.(USE PONTO E NÃO VIRGULA!)',
+                    labelText: '100.00',
                   ),
-                  SizedBox(width: 16),
-                  TextButton(
-                    onPressed: () async {
-                      Expenses expenses = Expenses(
-                        id: const Uuid().v1(),
-                        data: dataController.text,
-                        preco: double.tryParse(precoController.text) ?? 0.0,
-                        descricaoDaReceita: descricaoDaReceitaController.text,
-                        tipoReceita: tipoReceitaController.text,
-                      );
-
-                      if (model != null) {
-                        expenses.id = model.id;
-                      }
-
-                      await firestore
-                          .collection('${widget.user.uid}_expenses')
-                          .doc(expenses.id)
-                          .set(expenses.toMap());
-
-                      await refresh();
-                      Navigator.pop(context);
-                    },
-                    child: Text(confirmationButton),
+                  inputFormatters: [precoMaskFormatter],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o preço.';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  controller: descricaoDaReceitaController,
+                  decoration: InputDecoration(
+                    hintText: 'Qual a receita que você recebeu?',
+                    labelText: 'Descrição',
                   ),
-                ],
-              ),
-            ],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira a descrição.';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: tipoReceitaController.text.isEmpty
+                      ? _tiposReceita[0]
+                      : tipoReceitaController.text,
+                  decoration: InputDecoration(
+                    labelText: 'Tipo da Receita',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _tiposReceita.map((String tipo) {
+                    return DropdownMenuItem<String>(
+                      value: tipo,
+                      child: Text(tipo),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      tipoReceitaController.text = newValue!;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, selecione o tipo de receita.';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(skipButton),
+                    ),
+                    SizedBox(width: 16),
+                    TextButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          Expenses expenses = Expenses(
+                            id: const Uuid().v1(),
+                            data: dataController.text,
+                            preco: double.tryParse(precoController.text) ?? 0.0,
+                            descricaoDaReceita:
+                                descricaoDaReceitaController.text,
+                            tipoReceita: tipoReceitaController.text,
+                          );
+
+                          if (model != null) {
+                            expenses.id = model.id;
+                          }
+
+                          await firestore
+                              .collection('${widget.user.uid}_expenses')
+                              .doc(expenses.id)
+                              .set(expenses.toMap());
+
+                          await refresh();
+                          Navigator.pop(context);
+                        } else {
+                          _showErrorDialog();
+                        }
+                      },
+                      child: Text(confirmationButton),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Campos Obrigatórios'),
+          content: Text('Por favor, preencha todos os campos obrigatórios.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
         );
       },
     );
