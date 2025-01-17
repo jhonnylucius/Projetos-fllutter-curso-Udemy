@@ -42,44 +42,47 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
   void _navigateToHome() {
     if (mounted) {
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Verifique seu Email'),
-        automaticallyImplyLeading: false,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Um email de verificação foi enviado para ${widget.user.email}.',
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Assim que você verificar seu email, você será redirecionado automaticamente.',
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 16.0),
-            TextButton(
-              onPressed: () async {
-                await widget.user.sendEmailVerification();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Email de verificação reenviado.'),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              },
-              child: Text('Reenviar email de verificação'),
-            ),
-          ],
+    return WillPopScope(
+      onWillPop: () async => false, // Desabilita o botão de voltar
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Verifique seu Email'),
+          automaticallyImplyLeading: false,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Um email de verificação foi enviado para ${widget.user.email}.',
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 16.0),
+              Text(
+                'Assim que você verificar seu email, você será redirecionado automaticamente.',
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 16.0),
+              TextButton(
+                onPressed: () async {
+                  await widget.user.sendEmailVerification();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Email de verificação reenviado.'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                },
+                child: Text('Reenviar email de verificação'),
+              ),
+            ],
+          ),
         ),
       ),
     );
