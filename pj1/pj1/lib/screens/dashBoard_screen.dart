@@ -49,11 +49,15 @@ class DashBoardScreenState extends State<DashBoardScreen> {
     try {
       QuerySnapshot<Map<String, dynamic>> costsSnapshot =
           await FirebaseFirestore.instance
-              .collection('${widget.userId}_costs')
+              .collection('users')
+              .doc(widget.userId)
+              .collection('costs')
               .get();
       QuerySnapshot<Map<String, dynamic>> expensesSnapshot =
           await FirebaseFirestore.instance
-              .collection('${widget.userId}_expenses')
+              .collection('users')
+              .doc(widget.userId)
+              .collection('expenses')
               .get();
 
       setState(() {
@@ -72,6 +76,11 @@ class DashBoardScreenState extends State<DashBoardScreen> {
             listExpenses.isNotEmpty ? totalExpenses / listExpenses.length : 0.0;
 
         saldo = totalExpenses - totalCosts;
+
+        Logger().i('Dados carregados com sucesso');
+        Logger().i('Total de Despesas: $totalCosts');
+        Logger().i('Total de Receitas: $totalExpenses');
+        Logger().i('Saldo: $saldo');
       });
     } catch (e) {
       Logger().e('Erro ao carregar dados: $e');
@@ -79,7 +88,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
   }
 
   // Função para filtrar receitas por mês
-  List<Expenses> _filterExpensesByMonth(int month) {
+  List<Expenses> filterExpensesByMonth(int month) {
     return listExpenses.where((expense) {
       DateTime expenseDate = DateFormat('dd/MM/yyyy')
           .parse(expense.data); // Adapte o formato se necessário
