@@ -38,6 +38,8 @@ class TermsOfServiceDialog extends StatelessWidget {
           onPressed: () {
             onAccepted();
             Navigator.of(context).pop(); // Fechar o diálogo
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                '/login', (route) => false); // Navegar para a tela de login
           },
         ),
         TextButton(
@@ -45,9 +47,8 @@ class TermsOfServiceDialog extends StatelessWidget {
           onPressed: () {
             onDeclined();
             Navigator.of(context).pop(); // Fechar o diálogo
-            // Fechar o aplicativo ou navegar para uma tela específica
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil('/', (route) => false);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                '/', (route) => false); // Navegar para a tela inicial
           },
         ),
       ],
