@@ -90,9 +90,9 @@ class _ReportScreenState extends State<ReportScreen> {
                       ),
                       items: [
                         DropdownMenuItem(
-                            value: 'expenses', child: Text('Receitas')),
+                            value: 'expenses', child: Text('Despesas')),
                         DropdownMenuItem(
-                            value: 'costs', child: Text('Despesas')),
+                            value: 'costs', child: Text('Receitas')),
                       ],
                       onChanged: (value) {
                         setState(() {
@@ -103,7 +103,7 @@ class _ReportScreenState extends State<ReportScreen> {
                       },
                     ),
                     SizedBox(height: 16),
-                    if (selectedType == 'costs')
+                    if (selectedType == 'expenses')
                       DropdownButtonFormField<String>(
                         value: selectedExpenseType ?? _tiposDespesa[0],
                         decoration: InputDecoration(
@@ -121,7 +121,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         onChanged: (value) =>
                             setState(() => selectedExpenseType = value),
                       ),
-                    if (selectedType == 'expenses')
+                    if (selectedType == 'costs')
                       DropdownButtonFormField<String>(
                         value: selectedIncomeType ?? _tiposReceita[0],
                         decoration: InputDecoration(
@@ -171,8 +171,8 @@ class _ReportScreenState extends State<ReportScreen> {
                     Padding(
                       padding: EdgeInsets.all(16),
                       child: Text(
-                        'Relatório de ${selectedType == "expenses" ? "Receitas" : "Despesas"}\n'
-                        '${selectedType == "costs" ? "Tipo: ${selectedExpenseType ?? 'Todas'}" : "Tipo: ${selectedIncomeType ?? 'Todas'}"}\n'
+                        'Relatório de ${selectedType == "expenses" ? "Despesas" : "Receitas"}\n'
+                        '${selectedType == "expenses" ? "Tipo: ${selectedExpenseType ?? 'Todas'}" : "Tipo: ${selectedIncomeType ?? 'Todas'}"}\n'
                         'Período: $selectedMonth',
                         style: Theme.of(context).textTheme.titleLarge,
                         textAlign: TextAlign.center,
@@ -190,8 +190,8 @@ class _ReportScreenState extends State<ReportScreen> {
                             title: Text(
                                 '${item['data']} - R\$ ${item['preco'].toStringAsFixed(2)}'),
                             subtitle: Text(selectedType == 'expenses'
-                                ? '${item['descricaoDaReceita'] ?? ''} (${item['tipoReceita'] ?? ''})'
-                                : '${item['descricaoDaDespesa'] ?? ''} (${item['tipoDespesa'] ?? ''})'),
+                                ? '${item['descricaoDaDespesa'] ?? ''} (${item['tipoDespesa'] ?? ''})'
+                                : '${item['descricaoDaReceita'] ?? ''} (${item['tipoReceita'] ?? ''})'),
                           );
                         },
                       ),
@@ -214,7 +214,7 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   void generateReport() async {
-    final collection = selectedType == 'expenses' ? 'expenses' : 'costs';
+    final collection = selectedType == 'expenses' ? 'despesas' : 'receitas';
 
     try {
       Query query = FirebaseFirestore.instance
@@ -222,13 +222,13 @@ class _ReportScreenState extends State<ReportScreen> {
           .doc(widget.user.uid)
           .collection(collection);
 
-      if (selectedType == 'costs' &&
+      if (selectedType == 'expenses' &&
           selectedExpenseType != null &&
           selectedExpenseType != 'Todas') {
         query = query.where('tipoDespesa', isEqualTo: selectedExpenseType);
       }
 
-      if (selectedType == 'expenses' &&
+      if (selectedType == 'costs' &&
           selectedIncomeType != null &&
           selectedIncomeType != 'Todas') {
         query = query.where('tipoReceita', isEqualTo: selectedIncomeType);
