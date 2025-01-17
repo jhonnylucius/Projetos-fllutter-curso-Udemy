@@ -217,7 +217,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
       builder: (context) {
         return Padding(
           padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom + 8,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
             left: 16,
             right: 16,
             top: 16,
