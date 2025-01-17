@@ -141,7 +141,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
           context: context,
           builder: (context) {
             return Dialog(
-              child: Container(
+              child: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.5,
                 child: Column(
