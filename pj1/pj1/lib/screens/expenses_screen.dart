@@ -24,9 +24,9 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   final _formKey = GlobalKey<FormState>(); // Chave do formulário
 
   final List<String> _tiposReceita = [
-    'Esporádica'
-        'Mensal'
-        'Anual',
+    'Esporádica',
+    'Mensal',
+    'Anual',
   ];
 
   @override
@@ -45,32 +45,35 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          FloatingActionButton.extended(
-            onPressed: () => showFormModal(),
-            icon: const Icon(Icons.add),
-            label: const Text(
-              'Add Receitas',
-              style: TextStyle(color: Colors.white),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FloatingActionButton.extended(
+              onPressed: () => showFormModal(),
+              icon: const Icon(Icons.add),
+              label: const Text(
+                'Add Receitas',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.primary,
             ),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-          ),
-          FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.pushNamed(context, '/costs');
-            },
-            icon: const Icon(Icons.arrow_forward),
-            label: const Text(
-              'Ir p/ Despesas',
-              style: TextStyle(color: Colors.white),
+            FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.pushNamed(context, '/costs');
+              },
+              icon: const Icon(Icons.arrow_forward),
+              label: const Text(
+                'Ir p/ Despesas',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.primary,
             ),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-          ),
-        ],
+          ],
+        ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

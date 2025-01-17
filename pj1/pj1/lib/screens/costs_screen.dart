@@ -48,30 +48,33 @@ class _CostsScreenState extends State<CostsScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          FloatingActionButton.extended(
-            onPressed: () => showFormModal(),
-            icon: const Icon(Icons.add),
-            label: const Text(
-              'Add Despesas',
-              style: TextStyle(color: Colors.white),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FloatingActionButton.extended(
+              onPressed: () => showFormModal(),
+              icon: const Icon(Icons.add),
+              label: const Text(
+                'Add Despesas',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.primary,
             ),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-          ),
-          FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.pushNamed(context, '/expenses');
-            },
-            icon: const Icon(Icons.arrow_forward),
-            label: const Text(
-              'Ir p/ Receitas',
-              style: TextStyle(color: Colors.white),
+            FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.pushNamed(context, '/expenses');
+              },
+              icon: const Icon(Icons.arrow_forward),
+              label: const Text(
+                'Ir p/ Receitas',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.primary,
             ),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: Container(
