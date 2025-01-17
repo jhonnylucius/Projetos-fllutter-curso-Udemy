@@ -12,14 +12,14 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  String selectedType = 'expenses';
+  String selectedType = 'receitas'; // Alterado para 'receitas'
   String selectedMonth = '01/2025';
   String? selectedExpenseType;
   String? selectedIncomeType;
   List<dynamic> reportData = [];
   double totalValue = 0.0;
 
-  final List<String> _tiposDespesa = [
+  final List<String> tiposDespesa = [
     'Todas',
     'Obrigatória Anual',
     'Obrigatória Mensal',
@@ -27,9 +27,9 @@ class _ReportScreenState extends State<ReportScreen> {
     'Avulsa'
   ];
 
-  final List<String> _tiposReceita = ['Todas', 'Mensal', 'Anual', 'Esporádica'];
+  final List<String> tiposReceita = ['Todas', 'Mensal', 'Anual', 'Esporádica'];
 
-  final List<String> _meses = [
+  final List<String> meses = [
     'Todas',
     '01/2025',
     '02/2025',
@@ -90,9 +90,9 @@ class _ReportScreenState extends State<ReportScreen> {
                       ),
                       items: [
                         DropdownMenuItem(
-                            value: 'expenses', child: Text('Despesas')),
+                            value: 'receitas', child: Text('Receitas')),
                         DropdownMenuItem(
-                            value: 'costs', child: Text('Receitas')),
+                            value: 'despesas', child: Text('Despesas')),
                       ],
                       onChanged: (value) {
                         setState(() {
@@ -103,16 +103,16 @@ class _ReportScreenState extends State<ReportScreen> {
                       },
                     ),
                     SizedBox(height: 16),
-                    if (selectedType == 'expenses')
+                    if (selectedType == 'despesas')
                       DropdownButtonFormField<String>(
-                        value: selectedExpenseType ?? _tiposDespesa[0],
+                        value: selectedExpenseType ?? tiposDespesa[0],
                         decoration: InputDecoration(
                           labelText: 'Tipo de Despesa',
                           border: OutlineInputBorder(),
                           filled: true,
                           fillColor: Colors.white,
                         ),
-                        items: _tiposDespesa.map((tipo) {
+                        items: tiposDespesa.map((tipo) {
                           return DropdownMenuItem(
                             value: tipo,
                             child: Text(tipo),
@@ -121,16 +121,16 @@ class _ReportScreenState extends State<ReportScreen> {
                         onChanged: (value) =>
                             setState(() => selectedExpenseType = value),
                       ),
-                    if (selectedType == 'costs')
+                    if (selectedType == 'receitas')
                       DropdownButtonFormField<String>(
-                        value: selectedIncomeType ?? _tiposReceita[0],
+                        value: selectedIncomeType ?? tiposReceita[0],
                         decoration: InputDecoration(
                           labelText: 'Tipo de Receita',
                           border: OutlineInputBorder(),
                           filled: true,
                           fillColor: Colors.white,
                         ),
-                        items: _tiposReceita.map((tipo) {
+                        items: tiposReceita.map((tipo) {
                           return DropdownMenuItem(
                             value: tipo,
                             child: Text(tipo),
@@ -148,7 +148,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         filled: true,
                         fillColor: Colors.white,
                       ),
-                      items: _meses.map((mes) {
+                      items: meses.map((mes) {
                         return DropdownMenuItem(value: mes, child: Text(mes));
                       }).toList(),
                       onChanged: (value) =>
@@ -171,8 +171,8 @@ class _ReportScreenState extends State<ReportScreen> {
                     Padding(
                       padding: EdgeInsets.all(16),
                       child: Text(
-                        'Relatório de ${selectedType == "expenses" ? "Despesas" : "Receitas"}\n'
-                        '${selectedType == "expenses" ? "Tipo: ${selectedExpenseType ?? 'Todas'}" : "Tipo: ${selectedIncomeType ?? 'Todas'}"}\n'
+                        'Relatório de ${selectedType == "receitas" ? "Receitas" : "Despesas"}\n'
+                        '${selectedType == "despesas" ? "Tipo: ${selectedExpenseType ?? 'Todas'}" : "Tipo: ${selectedIncomeType ?? 'Todas'}"}\n'
                         'Período: $selectedMonth',
                         style: Theme.of(context).textTheme.titleLarge,
                         textAlign: TextAlign.center,
@@ -189,7 +189,7 @@ class _ReportScreenState extends State<ReportScreen> {
                             ),
                             title: Text(
                                 '${item['data']} - R\$ ${item['preco'].toStringAsFixed(2)}'),
-                            subtitle: Text(selectedType == 'expenses'
+                            subtitle: Text(selectedType == 'despesas'
                                 ? '${item['descricaoDaDespesa'] ?? ''} (${item['tipoDespesa'] ?? ''})'
                                 : '${item['descricaoDaReceita'] ?? ''} (${item['tipoReceita'] ?? ''})'),
                           );
@@ -214,7 +214,9 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   void generateReport() async {
-    final collection = selectedType == 'expenses' ? 'despesas' : 'receitas';
+    final collection = selectedType == 'receitas'
+        ? 'expenses'
+        : 'costs'; // Corrigido para 'expenses' e 'costs'
 
     try {
       Query query = FirebaseFirestore.instance
@@ -222,13 +224,13 @@ class _ReportScreenState extends State<ReportScreen> {
           .doc(widget.user.uid)
           .collection(collection);
 
-      if (selectedType == 'expenses' &&
+      if (selectedType == 'despesas' &&
           selectedExpenseType != null &&
           selectedExpenseType != 'Todas') {
         query = query.where('tipoDespesa', isEqualTo: selectedExpenseType);
       }
 
-      if (selectedType == 'costs' &&
+      if (selectedType == 'receitas' &&
           selectedIncomeType != null &&
           selectedIncomeType != 'Todas') {
         query = query.where('tipoReceita', isEqualTo: selectedIncomeType);
