@@ -63,7 +63,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
             },
             icon: const Icon(Icons.arrow_forward),
             label: const Text(
-              'Ir para Despesas',
+              'Ir p/ Despesas',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Theme.of(context).colorScheme.primary,
