@@ -22,6 +22,8 @@ class _CostsScreenState extends State<CostsScreen> {
   List<Costs> listCosts = []; // Lista para armazenar as despesas
   FirebaseFirestore firestore =
       FirebaseFirestore.instance; // Instância do Firestore
+  final GlobalKey<FormState> _formKey =
+      GlobalKey<FormState>(); // Chave do formulário
 
   final List<String> _tiposDespesa = [
     'Avulsa',
@@ -228,104 +230,156 @@ class _CostsScreenState extends State<CostsScreen> {
             right: 16,
             top: 16,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: dataController,
-                decoration: InputDecoration(
-                  hintText: '01/01/2025',
-                  labelText: 'Data',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.calendar_today),
-                    onPressed: () => _selectDate(context, dataController),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: dataController,
+                  decoration: InputDecoration(
+                    hintText: '01/01/2025',
+                    labelText: 'Data',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.calendar_today),
+                      onPressed: () => _selectDate(context, dataController),
+                    ),
                   ),
+                  readOnly: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira a data.';
+                    }
+                    return null;
+                  },
                 ),
-                readOnly: true,
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: precoController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: 'Valor da Despesa.(USE PONTO e NÃO ","!)',
-                  labelText: '100.00',
-                ),
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: descricaoDaDespesaController,
-                decoration: InputDecoration(
-                  hintText: 'Qual a despesa que você pagou?',
-                  labelText: 'Descrição',
-                ),
-              ),
-              SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: tipoDespesaController.text.isEmpty
-                    ? _tiposDespesa[0]
-                    : tipoDespesaController.text,
-                decoration: InputDecoration(
-                  labelText: 'Tipo da Despesa',
-                  border: OutlineInputBorder(),
-                ),
-                items: _tiposDespesa.map((String tipo) {
-                  return DropdownMenuItem<String>(
-                    value: tipo,
-                    child: Text(tipo),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    tipoDespesaController.text = newValue!;
-                  });
-                },
-              ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      if (mounted) {
-                        Navigator.pop(context);
-                      }
-                    },
-                    child: Text(skipButton),
+                SizedBox(height: 16),
+                TextFormField(
+                  controller: precoController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: 'Valor da Despesa.(USE PONTO e NÃO ","!)',
+                    labelText: '100.00',
                   ),
-                  SizedBox(width: 16),
-                  TextButton(
-                    onPressed: () async {
-                      Costs costs = Costs(
-                        id: const Uuid().v1(),
-                        data: dataController.text,
-                        preco: double.tryParse(precoController.text) ?? 0.0,
-                        descricaoDaDespesa: descricaoDaDespesaController.text,
-                        tipoDespesa: tipoDespesaController.text,
-                      );
-
-                      if (model != null) {
-                        costs.id = model.id;
-                      }
-
-                      await firestore
-                          .collection('${widget.user.uid}_costs')
-                          .doc(costs.id)
-                          .set(costs.toMap());
-
-                      await refresh();
-                      if (mounted) {
-                        if (context.mounted) {
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o preço.';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  controller: descricaoDaDespesaController,
+                  decoration: InputDecoration(
+                    hintText: 'Qual a despesa que você pagou?',
+                    labelText: 'Descrição',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira a descrição.';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: tipoDespesaController.text.isEmpty
+                      ? _tiposDespesa[0]
+                      : tipoDespesaController.text,
+                  decoration: InputDecoration(
+                    labelText: 'Tipo da Despesa',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _tiposDespesa.map((String tipo) {
+                    return DropdownMenuItem<String>(
+                      value: tipo,
+                      child: Text(tipo),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      tipoDespesaController.text = newValue!;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, selecione o tipo de despesa.';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        if (mounted) {
                           Navigator.pop(context);
                         }
-                      }
-                    },
-                    child: Text(confirmationButton),
-                  ),
-                ],
-              ),
-            ],
+                      },
+                      child: Text(skipButton),
+                    ),
+                    SizedBox(width: 16),
+                    TextButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          Costs costs = Costs(
+                            id: const Uuid().v1(),
+                            data: dataController.text,
+                            preco: double.tryParse(precoController.text) ?? 0.0,
+                            descricaoDaDespesa:
+                                descricaoDaDespesaController.text,
+                            tipoDespesa: tipoDespesaController.text,
+                          );
+
+                          if (model != null) {
+                            costs.id = model.id;
+                          }
+
+                          await firestore
+                              .collection('${widget.user.uid}_costs')
+                              .doc(costs.id)
+                              .set(costs.toMap());
+
+                          await refresh();
+                          if (mounted) {
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
+                          }
+                        } else {
+                          _showErrorDialog();
+                        }
+                      },
+                      child: Text(confirmationButton),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Campos Obrigatórios'),
+          content: Text('Por favor, preencha todos os campos obrigatórios.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
         );
       },
     );

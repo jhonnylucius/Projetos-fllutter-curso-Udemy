@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:pj1/screens/dashboard_screen.dart'; // Add this line
+import 'package:pj1/screens/dashboard_screen.dart';
+import 'package:pj1/screens/home_screen.dart'; // Importar HomeScreen
 import 'package:pj1/screens/report_screen.dart';
 import 'package:pj1/services/auth_service.dart';
 
@@ -78,6 +79,18 @@ class Menu extends StatelessWidget {
                 Text(user.displayName != null ? user.displayName! : ''),
           ),
           ListTile(
+            leading: Icon(Icons.home),
+            title: const Text('Home'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomeScreen(user: user),
+                ),
+              );
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.dashboard),
             title: const Text('Dashboard'),
             onTap: () {
@@ -89,7 +102,6 @@ class Menu extends StatelessWidget {
               );
             },
           ),
-          // Adicionar no Menu
           ListTile(
             leading: Icon(Icons.description),
             title: const Text('Relatórios'),

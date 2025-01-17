@@ -72,25 +72,44 @@ class DashBoardScreenState extends State<DashBoardScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/background_login.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                _buildInfoCard(),
-                _buildBarChart('Despesas por Dia', listCosts),
-                _buildBarChart('Receitas por Dia', listExpenses),
-              ],
+      body: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
             ),
           ),
-        ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    _buildInfoCard(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        'Despesas por Dia',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    _buildBarChart('', listCosts),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        'Receitas por Dia',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    _buildBarChart('', listExpenses),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -161,10 +180,12 @@ class DashBoardScreenState extends State<DashBoardScreen> {
             children: [
               Text(title,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              SizedBox(height: 160, child: _buildChartContent(data)),
+              SizedBox(height: 140, child: _buildChartContent(data)),
               Text(
-                'Clique e segure para visualizar na horizontal',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                'Clique aqui e segure para visualizar maior',
+                style: TextStyle(
+                    fontSize: 12,
+                    color: const Color.fromARGB(255, 132, 17, 143)),
               ),
             ],
           ),
