@@ -9,7 +9,7 @@
 </div>
 
 ## 🎥 Demonstração
-[![Demonstração do App](https://img.youtube.com/vi/mF_-gHBVBqQ/0.jpg)](https://www.youtube.com/shorts/mF_-gHBVBqQ)
+[![Demonstração do App](https://img.youtube.com/vi/mF_-gHBVBqQ/0.jpg)](https://www.youtube.com/shorts/CUfeLySKLI0)
 
 ## 📋 Índice
 
