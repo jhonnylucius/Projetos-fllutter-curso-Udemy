@@ -66,7 +66,7 @@ class _CostsScreenState extends State<CostsScreen> {
             },
             icon: const Icon(Icons.arrow_forward),
             label: const Text(
-              'Ir para Receitas',
+              'Ir p/ Receitas',
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Theme.of(context).colorScheme.primary,
