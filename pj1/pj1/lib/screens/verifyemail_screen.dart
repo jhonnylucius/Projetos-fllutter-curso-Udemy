@@ -52,7 +52,17 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
       canPop: false, // Desabilita o gesto de voltar e o botão físico/virtual
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Verifique seu Email'),
+          title: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, '/login');
+                },
+              ),
+              const Text('Verifique seu Email'),
+            ],
+          ),
           automaticallyImplyLeading: false,
         ),
         body: Center(
