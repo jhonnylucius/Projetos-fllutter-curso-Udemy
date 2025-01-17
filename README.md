@@ -5,8 +5,8 @@ Este repositório contém exercícios práticos de Dart com Flutter, desenvolvid
 ## Link para o 1º Projeto do Curso
 #### [link para o projeto e Demonstração abaixo](/pj1/pj1/)
 
-## 🎥 Demonstração
-[![Demonstração do App](https://img.youtube.com/vi/mF_-gHBVBqQ/0.jpg)](https://www.youtube.com/watch?v=oK9PnORuoVE)
+## 🎥 Demonstração ATUALIZADA
+[![Demonstração do App](https://img.youtube.com/vi/mF_-gHBVBqQ/0.jpg)](https://www.youtube.com/shorts/CUfeLySKLI0)
 
 ## Exemplos Incluídos - link para as demais pastas
 
