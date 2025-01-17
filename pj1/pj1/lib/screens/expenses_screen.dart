@@ -24,9 +24,9 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   final _formKey = GlobalKey<FormState>(); // Chave do formulário
 
   final List<String> _tiposReceita = [
-    'Anual',
-    'Mensal',
-    'Esporádica',
+    'Esporádica'
+        'Mensal'
+        'Anual',
   ];
 
   @override

@@ -28,7 +28,7 @@ class _CostsScreenState extends State<CostsScreen> {
   final List<String> _tiposDespesa = [
     'Avulsa',
     'Obrigatória Mensal',
-    'Obrigatória Mensal',
+    'Obrigatória Anual',
     'Imprevisto'
   ];
 
