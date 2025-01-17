@@ -214,12 +214,13 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   void generateReport() async {
-    final collection = selectedType == 'expenses'
-        ? '${widget.user.uid}_expenses'
-        : '${widget.user.uid}_costs';
+    final collection = selectedType == 'expenses' ? 'expenses' : 'costs';
 
     try {
-      Query query = FirebaseFirestore.instance.collection(collection);
+      Query query = FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.user.uid)
+          .collection(collection);
 
       if (selectedType == 'costs' &&
           selectedExpenseType != null &&
@@ -257,8 +258,6 @@ class _ReportScreenState extends State<ReportScreen> {
       });
     } catch (e) {
       Logger().e('Erro ao gerar relatório: $e');
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Erro ao gerar relatório: $e')));
     }
   }
 }
