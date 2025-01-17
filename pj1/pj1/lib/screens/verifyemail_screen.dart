@@ -1,4 +1,4 @@
-import 'dart:async'; // Importe o pacote async
+import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,7 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
   @override
   void dispose() {
-    _timer?.cancel(); // Cancela o timer ao sair da tela
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -31,9 +31,9 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) async {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        await user.reload(); // Recarrega os dados do usuário
+        await user.reload();
         if (user.emailVerified) {
-          _navigateToHome(); // Navega para a tela home
+          _navigateToHome();
           timer.cancel();
         }
       }
@@ -48,11 +48,11 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false, // Desabilita o botão de voltar
+    return PopScope(
+      canPop: false, // Desabilita o gesto de voltar e o botão físico/virtual
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Verifique seu Email'),
+          title: const Text('Verifique seu Email'),
           automaticallyImplyLeading: false,
         ),
         body: Center(
@@ -63,23 +63,23 @@ class VerifyEmailScreenState extends State<VerifyEmailScreen> {
                 'Um email de verificação foi enviado para ${widget.user.email}.',
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 16.0),
-              Text(
+              const SizedBox(height: 16.0),
+              const Text(
                 'Assim que você verificar seu email, você será redirecionado automaticamente.',
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextButton(
                 onPressed: () async {
                   await widget.user.sendEmailVerification();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                    const SnackBar(
                       content: Text('Email de verificação reenviado.'),
                       backgroundColor: Colors.green,
                     ),
                   );
                 },
-                child: Text('Reenviar email de verificação'),
+                child: const Text('Reenviar email de verificação'),
               ),
             ],
           ),
