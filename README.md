@@ -3,7 +3,7 @@
 Este repositório contém exercícios práticos de Dart com Flutter, desenvolvidos durante o curso da Udemy. Aqui você encontrará exemplos e projetos que ajudam a entender e aplicar os conceitos fundamentais da linguagem.
 
 ## Link para o 1º Projeto do Curso
-#### [link para o projeto e Demonstração abaixo](/pj1/pj1/)
+#### [link para o projeto](/pj1/pj1/)
 
 ## 🎥 Demonstração ATUALIZADA
 [![Demonstração do App](https://img.youtube.com/vi/mF_-gHBVBqQ/0.jpg)](https://www.youtube.com/shorts/CUfeLySKLI0)
