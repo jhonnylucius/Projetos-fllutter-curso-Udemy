@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:pj1/models/costs.dart';
 import 'package:pj1/models/expenses.dart';
@@ -21,8 +22,22 @@ class DashBoardScreenState extends State<DashBoardScreen> {
   double totalExpenses = 0.0;
   double averageCosts = 0.0;
   double averageExpenses = 0.0;
-  double surplus = 0.0;
-  double deficit = 0.0;
+  double saldo = 0.0;
+  int selectedMonth = DateTime.now().month; // Mês atual como padrão
+  List<String> monthList = [
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro'
+  ];
 
   @override
   void initState() {
@@ -56,12 +71,30 @@ class DashBoardScreenState extends State<DashBoardScreen> {
         averageExpenses =
             listExpenses.isNotEmpty ? totalExpenses / listExpenses.length : 0.0;
 
-        surplus = totalExpenses - totalCosts;
-        deficit = totalCosts - totalExpenses;
+        saldo = totalExpenses - totalCosts;
       });
     } catch (e) {
       Logger().e('Erro ao carregar dados: $e');
     }
+  }
+
+  // Função para filtrar receita por mês
+  List<Expenses> _filterExpensesByMonth(int month) {
+    return listExpenses.where((expense) {
+      DateTime expenseDate = DateFormat('dd/MM/yyyy')
+          .parse(expense.data); // Adapte o formato se necessário
+      return expenseDate.month == month;
+    }).toList();
+  }
+
+  // Função para calcular o total de receitas por tipo
+  Map<String, double> _calculateExpensesByType(List<Expenses> expenses) {
+    Map<String, double> expensesByType = {};
+    for (var expense in expenses) {
+      expensesByType[expense.tipoReceita] =
+          (expensesByType[expense.tipoReceita] ?? 0) + expense.preco;
+    }
+    return expensesByType;
   }
 
   @override
@@ -75,7 +108,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
       body: Column(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
             ),
           ),
@@ -86,24 +119,44 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                 child: Column(
                   children: [
                     _buildInfoCard(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
-                        'Despesas por Dia',
+                        'Despesas Totais e por Tipo (Anual)',
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    _buildBarChart('', listCosts),
+                    _buildPieChart(listExpenses, 'Despesas Anuais'),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        'Receitas por Dia',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Despesas Totais e por Tipo (Mensal)',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          DropdownButton<int>(
+                            value: selectedMonth,
+                            onChanged: (int? newValue) {
+                              setState(() {
+                                selectedMonth = newValue!;
+                              });
+                            },
+                            items: monthList.asMap().entries.map((entry) {
+                              return DropdownMenuItem<int>(
+                                value: entry.key + 1,
+                                child: Text(entry.value),
+                              );
+                            }).toList(),
+                          ),
+                        ],
                       ),
                     ),
-                    _buildBarChart('', listExpenses),
+                    _buildPieChart(_filterExpensesByMonth(selectedMonth),
+                        'Despesas Mensais'),
                   ],
                 ),
               ),
@@ -116,9 +169,9 @@ class DashBoardScreenState extends State<DashBoardScreen> {
 
   Widget _buildInfoCard() {
     return Card(
-      margin: EdgeInsets.all(14),
+      margin: const EdgeInsets.all(14),
       child: Padding(
-        padding: EdgeInsets.all(14),
+        padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -126,15 +179,27 @@ class DashBoardScreenState extends State<DashBoardScreen> {
             Text('Total de Receitas: \$${totalExpenses.toStringAsFixed(2)}'),
             Text('Média de Despesas: \$${averageCosts.toStringAsFixed(2)}'),
             Text('Média de Receitas: \$${averageExpenses.toStringAsFixed(2)}'),
-            Text('Superávit: \$${surplus.toStringAsFixed(2)}'),
-            Text('Déficit: \$${deficit.toStringAsFixed(2)}'),
+            Text('Saldo: \$${saldo.toStringAsFixed(2)}'),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildBarChart(String title, List<dynamic> data) {
+  Widget _buildPieChart(List<Expenses> expenses, String title) {
+    Map<String, double> expensesByType = _calculateExpensesByType(expenses);
+    List<Color> colors = [
+      Colors.blue,
+      Colors.green,
+      Colors.red,
+      Colors.orange,
+      Colors.purple,
+      Colors.teal,
+      Colors.lime,
+      Colors.pink,
+      Colors.amber,
+      Colors.cyan,
+    ];
     return GestureDetector(
       onLongPress: () {
         showDialog(
@@ -151,7 +216,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                       automaticallyImplyLeading: false,
                       actions: [
                         IconButton(
-                          icon: Icon(Icons.close),
+                          icon: const Icon(Icons.close),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
@@ -161,7 +226,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: _buildChartContent(data),
+                        child: _buildChartContentPie(expensesByType, colors),
                       ),
                     ),
                   ],
@@ -172,20 +237,21 @@ class DashBoardScreenState extends State<DashBoardScreen> {
         );
       },
       child: Card(
-        margin: EdgeInsets.all(14),
+        margin: const EdgeInsets.all(14),
         child: Padding(
-          padding: EdgeInsets.all(14),
+          padding: const EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              SizedBox(height: 140, child: _buildChartContent(data)),
-              Text(
+              SizedBox(
+                  height: 200,
+                  child: _buildChartContentPie(expensesByType, colors)),
+              const Text(
                 'Clique aqui e segure para visualizar maior',
                 style: TextStyle(
-                    fontSize: 12,
-                    color: const Color.fromARGB(255, 132, 17, 143)),
+                    fontSize: 12, color: Color.fromARGB(255, 132, 17, 143)),
               ),
             ],
           ),
@@ -194,21 +260,64 @@ class DashBoardScreenState extends State<DashBoardScreen> {
     );
   }
 
-  Widget _buildChartContent(List<dynamic> data) {
-    return BarChart(
-      BarChartData(
-        barGroups: data.map((item) {
-          return BarChartGroupData(
-            x: data.indexOf(item),
-            barRods: [
-              BarChartRodData(
-                toY: item.preco,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ],
-          );
-        }).toList(),
-      ),
+  Widget _buildChartContentPie(
+      Map<String, double> expensesByType, List<Color> colors) {
+    List<PieChartSectionData> pieChartSections = [];
+    int colorIndex = 0;
+    double totalExpenses =
+        expensesByType.values.fold(0, (sum, value) => sum + value);
+
+    expensesByType.forEach((type, value) {
+      double percentage = (value / totalExpenses) * 100;
+      pieChartSections.add(
+        PieChartSectionData(
+          color: colors[colorIndex % colors.length],
+          value: value,
+          title: '${percentage.toStringAsFixed(1)}%',
+          radius: 50,
+          titleStyle: const TextStyle(
+              fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      );
+      colorIndex++;
+    });
+
+    return Row(
+      children: [
+        Expanded(
+          child: PieChart(
+            PieChartData(
+                sections: pieChartSections,
+                centerSpaceRadius: 30,
+                borderData: FlBorderData(show: false),
+                sectionsSpace: 0,
+                pieTouchData: PieTouchData(
+                  touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                    //Implementar a lógica de toque aqui, caso seja necessário
+                  },
+                )),
+          ),
+        ),
+        Expanded(
+            child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: expensesByType.length,
+          itemBuilder: (context, index) {
+            final type = expensesByType.keys.toList()[index];
+            final value = expensesByType.values.toList()[index];
+            return ListTile(
+              leading: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: colors[index % colors.length])),
+              title: Text('$type : ${value.toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 14)),
+            );
+          },
+        )),
+      ],
     );
   }
 }
