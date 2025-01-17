@@ -5,8 +5,11 @@ class TermsOfServiceDialog extends StatelessWidget {
   final VoidCallback onAccepted;
   final VoidCallback onDeclined;
 
-  const TermsOfServiceDialog(
-      {super.key, required this.onAccepted, required this.onDeclined});
+  const TermsOfServiceDialog({
+    super.key,
+    required this.onAccepted,
+    required this.onDeclined,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +37,17 @@ class TermsOfServiceDialog extends StatelessWidget {
           child: Text('Aceitar'),
           onPressed: () {
             onAccepted();
+            Navigator.of(context).pop(); // Fechar o diálogo
           },
         ),
         TextButton(
           child: Text('Recusar'),
           onPressed: () {
             onDeclined();
+            Navigator.of(context).pop(); // Fechar o diálogo
+            // Fechar o aplicativo ou navegar para uma tela específica
+            Navigator.of(context)
+                .pushNamedAndRemoveUntil('/', (route) => false);
           },
         ),
       ],
