@@ -78,12 +78,21 @@ class DashBoardScreenState extends State<DashBoardScreen> {
     }
   }
 
-  // Função para filtrar receita por mês
+  // Função para filtrar receitas por mês
   List<Expenses> _filterExpensesByMonth(int month) {
     return listExpenses.where((expense) {
       DateTime expenseDate = DateFormat('dd/MM/yyyy')
           .parse(expense.data); // Adapte o formato se necessário
       return expenseDate.month == month;
+    }).toList();
+  }
+
+  // Função para filtrar despesas por mês
+  List<Costs> _filterCostsByMonth(int month) {
+    return listCosts.where((cost) {
+      DateTime costDate = DateFormat('dd/MM/yyyy')
+          .parse(cost.data); // Adapte o formato se necessário
+      return costDate.month == month;
     }).toList();
   }
 
@@ -95,6 +104,16 @@ class DashBoardScreenState extends State<DashBoardScreen> {
           (expensesByType[expense.tipoReceita] ?? 0) + expense.preco;
     }
     return expensesByType;
+  }
+
+  // Função para calcular o total de despesas por tipo
+  Map<String, double> _calculateCostsByType(List<Costs> costs) {
+    Map<String, double> costsByType = {};
+    for (var cost in costs) {
+      costsByType[cost.tipoDespesa] =
+          (costsByType[cost.tipoDespesa] ?? 0) + cost.preco;
+    }
+    return costsByType;
   }
 
   @override
@@ -122,19 +141,19 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
-                        'Despesas Totais e por Tipo (Anual)',
+                        'Receitas Totais e por Tipo (Anual)',
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    _buildPieChart(listExpenses, 'Despesas Anuais'),
+                    _buildPieChart(listExpenses, 'Receitas Anuais'),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Despesas Totais e por Tipo (Mensal)',
+                            'Despesas Totais e por Tipo de despesa',
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),
@@ -155,8 +174,8 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                         ],
                       ),
                     ),
-                    _buildPieChart(_filterExpensesByMonth(selectedMonth),
-                        'Despesas Mensais'),
+                    _buildPieChart(
+                        _filterCostsByMonth(selectedMonth), 'Despesas Mensais'),
                   ],
                 ),
               ),
@@ -186,8 +205,14 @@ class DashBoardScreenState extends State<DashBoardScreen> {
     );
   }
 
-  Widget _buildPieChart(List<Expenses> expenses, String title) {
-    Map<String, double> expensesByType = _calculateExpensesByType(expenses);
+  Widget _buildPieChart(List<dynamic> items, String title) {
+    Map<String, double> dataByType;
+    if (title.contains('Receitas')) {
+      dataByType = _calculateExpensesByType(items.cast<Expenses>());
+    } else {
+      dataByType = _calculateCostsByType(items.cast<Costs>());
+    }
+
     List<Color> colors = [
       Colors.blue,
       Colors.green,
@@ -226,7 +251,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: _buildChartContentPie(expensesByType, colors),
+                        child: _buildChartContentPie(dataByType, colors),
                       ),
                     ),
                   ],
@@ -247,7 +272,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               SizedBox(
                   height: 200,
-                  child: _buildChartContentPie(expensesByType, colors)),
+                  child: _buildChartContentPie(dataByType, colors)),
               const Text(
                 'Clique aqui e segure para visualizar maior',
                 style: TextStyle(
@@ -261,14 +286,13 @@ class DashBoardScreenState extends State<DashBoardScreen> {
   }
 
   Widget _buildChartContentPie(
-      Map<String, double> expensesByType, List<Color> colors) {
+      Map<String, double> dataByType, List<Color> colors) {
     List<PieChartSectionData> pieChartSections = [];
     int colorIndex = 0;
-    double totalExpenses =
-        expensesByType.values.fold(0, (sum, value) => sum + value);
+    double totalValue = dataByType.values.fold(0, (sum, value) => sum + value);
 
-    expensesByType.forEach((type, value) {
-      double percentage = (value / totalExpenses) * 100;
+    dataByType.forEach((type, value) {
+      double percentage = (value / totalValue) * 100;
       pieChartSections.add(
         PieChartSectionData(
           color: colors[colorIndex % colors.length],
@@ -301,10 +325,10 @@ class DashBoardScreenState extends State<DashBoardScreen> {
         Expanded(
             child: ListView.builder(
           shrinkWrap: true,
-          itemCount: expensesByType.length,
+          itemCount: dataByType.length,
           itemBuilder: (context, index) {
-            final type = expensesByType.keys.toList()[index];
-            final value = expensesByType.values.toList()[index];
+            final type = dataByType.keys.toList()[index];
+            final value = dataByType.values.toList()[index];
             return ListTile(
               leading: Container(
                   width: 10,
