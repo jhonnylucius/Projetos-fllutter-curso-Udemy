@@ -141,7 +141,26 @@ class AuthService {
             accessToken: googleAuth?.accessToken,
             idToken: googleAuth?.idToken,
           );
-          return await _firebaseAuth.signInWithCredential(credential);
+          final UserCredential userCredential =
+              await _firebaseAuth.signInWithCredential(credential);
+
+          final User? user = userCredential.user;
+
+          if (user != null) {
+            // Salvar nome e email no Firestore
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(user.uid)
+                .set({
+              'name': user.displayName,
+              'email': user.email,
+            });
+
+            // Comentário: Correção feita aqui para salvar nome e email no Firestore
+            Logger().i('Usuário logado: ${user.displayName}, ${user.email}');
+          }
+
+          return userCredential;
         }
       }
     } catch (e) {
