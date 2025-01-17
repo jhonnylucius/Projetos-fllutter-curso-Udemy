@@ -24,7 +24,7 @@ class _ReportScreenState extends State<ReportScreen> {
     'Obrigatória Anual',
     'Obrigatória Mensal',
     'Imprevisto',
-    'Avulsa/Desnecessária'
+    'Avulsa'
   ];
 
   final List<String> _tiposReceita = ['Todas', 'Mensal', 'Anual', 'Esporádica'];
