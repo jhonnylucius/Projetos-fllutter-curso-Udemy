@@ -1,35 +1,7 @@
 {
   "indexes": [
     {
-      "collectionGroup": "Collection%3A%20%24%7BuserId%7D_costs",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "data",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "tipoDespesa",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "Collection%3A%20%24%7BuserId%7D_expenses",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "data",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "tipoReceita",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "qTLh81E9e6STe6DdIUU0aHgNf1d2_costs",
+      "collectionGroup": "costs",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -43,35 +15,7 @@
       ]
     },
     {
-      "collectionGroup": "qTLh81E9e6STe6DdIUU0aHgNf1d2_expenses",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "tipoReceita",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "data",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "Xvkuq6ynhzOs6rVDoqyzM324bgu1_costs",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "tipoDespesa",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "data",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
-      "collectionGroup": "Xvkuq6ynhzOs6rVDoqyzM324bgu1_expenses",
+      "collectionGroup": "expenses",
       "queryScope": "COLLECTION",
       "fields": [
         {
@@ -84,6 +28,5 @@
         }
       ]
     }
-  ],
-  "fieldOverrides": []
+  ]
 }
