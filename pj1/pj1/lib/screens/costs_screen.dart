@@ -79,70 +79,66 @@ class _CostsScreenState extends State<CostsScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: Stack(
         children: [
-          SingleChildScrollView(
-            // Adicionado para permitir rolagem
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    const Color.fromARGB(255, 255, 255, 255)
-                        .withAlpha((0.1 * 255).toInt()),
-                    Colors.white,
-                  ],
-                ),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  const Color.fromARGB(255, 255, 255, 255)
+                      .withAlpha((0.1 * 255).toInt()),
+                  Colors.white,
+                ],
               ),
-              // Adicionar padding inferior para não sobrepor os botões
-              padding: EdgeInsets.only(bottom: 80),
-              child: listCosts.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            'assets/Icon-192.png',
-                            width: 100,
-                            height: 100,
+            ),
+            padding: EdgeInsets.only(bottom: 80),
+            child: listCosts.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/Icon-192.png',
+                          width: 100,
+                          height: 100,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Vamos começar?',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: const Color.fromARGB(255, 251, 251, 252),
                           ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Vamos começar?',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: const Color.fromARGB(255, 251, 251, 252),
-                            ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Registre suas Despesas',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: const Color.fromARGB(255, 129, 18, 151),
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Registre suas Despesas',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: const Color.fromARGB(255, 129, 18, 151),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView(
-                      padding: EdgeInsets.only(left: 4, right: 4),
-                      children: List.generate(
-                        listCosts
-                            .length, // Cria uma lista de widgets baseada em despesas
-                        (index) {
+                        ),
+                      ],
+                    ),
+                  )
+                : CustomScrollView(
+                    slivers: [
+                      SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
                           Costs model = listCosts[index];
                           return Dismissible(
-                            key: ValueKey<Costs>(model), // Identificador único
+                            key: ValueKey<Costs>(model),
                             direction: DismissDirection.endToStart,
                             background: Container(
                               alignment: Alignment.centerRight,
                               padding: const EdgeInsets.only(right: 12),
-                              color: Colors.red, // Fundo vermelho ao deslizar
+                              color: Colors.red,
                               child: Icon(Icons.delete, color: Colors.white),
                             ),
                             onDismissed: (direction) {
-                              remove(model); // Remove o item ao deslizar
+                              remove(model);
                             },
                             child: Card(
                               elevation: 2,
@@ -150,8 +146,7 @@ class _CostsScreenState extends State<CostsScreen> {
                                 children: [
                                   ListTile(
                                     onLongPress: () {
-                                      showFormModal(
-                                          model: model); // Edita a despesa
+                                      showFormModal(model: model);
                                     },
                                     onTap: () {},
                                     leading:
@@ -177,10 +172,11 @@ class _CostsScreenState extends State<CostsScreen> {
                             ),
                           );
                         },
-                      ),
-                    ),
-            ),
-          )
+                        childCount: listCosts.length,
+                      )),
+                    ],
+                  ),
+          ),
         ],
       ),
     );
