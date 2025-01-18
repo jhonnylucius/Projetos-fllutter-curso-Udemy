@@ -74,99 +74,112 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              const Color.fromARGB(255, 255, 255, 255)
-                  .withAlpha((0.1 * 255).toInt()),
-              Colors.white,
-            ],
-          ),
-        ),
-        child: listExpenses.isEmpty
-            ? Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.asset(
-                      'assets/Icon-192.png',
-                      width: 100,
-                      height: 100,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Vamos começar?',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: const Color.fromARGB(255, 251, 251, 252),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Registre suas Receitas',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: const Color.fromARGB(255, 129, 18, 151),
-                      ),
-                    ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            // Adicionado para permitir rolagem
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    const Color.fromARGB(255, 255, 255, 255)
+                        .withAlpha((0.1 * 255).toInt()),
+                    Colors.white,
                   ],
                 ),
-              )
-            : ListView(
-                padding: EdgeInsets.only(left: 4, right: 4),
-                children: List.generate(
-                  listExpenses
-                      .length, // Cria uma lista de widgets baseada em receitas
-                  (index) {
-                    Expenses model = listExpenses[index];
-                    return Dismissible(
-                      key: ValueKey<Expenses>(model), // Identificador único
-                      direction: DismissDirection.endToStart,
-                      background: Container(
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(right: 12),
-                        color: Colors.red, // Fundo vermelho ao deslizar
-                        child: Icon(Icons.delete, color: Colors.white),
+              ),
+              // Adicionar padding inferior para não sobrepor os botões
+              padding: EdgeInsets.only(bottom: 80),
+              child: listExpenses.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            'assets/Icon-192.png',
+                            width: 100,
+                            height: 100,
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Vamos começar?',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: const Color.fromARGB(255, 251, 251, 252),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Registre suas Receitas',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: const Color.fromARGB(255, 129, 18, 151),
+                            ),
+                          ),
+                        ],
                       ),
-                      onDismissed: (direction) {
-                        remove(model); // Remove o item ao deslizar
-                      },
-                      child: Card(
-                        elevation: 2,
-                        child: Column(
-                          children: [
-                            ListTile(
-                              onLongPress: () {
-                                showFormModal(model: model); // Edita a receita
-                              },
-                              onTap: () {},
-                              leading: Icon(Icons.list_alt_rounded, size: 56),
-                              title: Text("Data: ${model.data}"),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    )
+                  : ListView(
+                      padding: EdgeInsets.only(left: 4, right: 4),
+                      children: List.generate(
+                        listExpenses
+                            .length, // Cria uma lista de widgets baseada em receitas
+                        (index) {
+                          Expenses model = listExpenses[index];
+                          return Dismissible(
+                            key: ValueKey<Expenses>(
+                                model), // Identificador único
+                            direction: DismissDirection.endToStart,
+                            background: Container(
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 12),
+                              color: Colors.red, // Fundo vermelho ao deslizar
+                              child: Icon(Icons.delete, color: Colors.white),
+                            ),
+                            onDismissed: (direction) {
+                              remove(model); // Remove o item ao deslizar
+                            },
+                            child: Card(
+                              elevation: 2,
+                              child: Column(
                                 children: [
-                                  Text(
-                                      "Preço: ${model.preco.toStringAsFixed(2)}"),
-                                  Text(
-                                    "Descrição: ${model.descricaoDaReceita != null && model.descricaoDaReceita!.isNotEmpty ? model.descricaoDaReceita : 'Sem descrição'}",
-                                  ),
-                                  Text(
-                                    "tipo da Receita: ${model.tipoReceita.isNotEmpty ? model.tipoReceita : 'Sem descrição'}",
+                                  ListTile(
+                                    onLongPress: () {
+                                      showFormModal(
+                                          model: model); // Edita a receita
+                                    },
+                                    onTap: () {},
+                                    leading:
+                                        Icon(Icons.list_alt_rounded, size: 56),
+                                    title: Text("Data: ${model.data}"),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            "Preço: ${model.preco.toStringAsFixed(2)}"),
+                                        Text(
+                                          "Descrição: ${model.descricaoDaReceita != null && model.descricaoDaReceita!.isNotEmpty ? model.descricaoDaReceita : 'Sem descrição'}",
+                                        ),
+                                        Text(
+                                          "tipo da Receita: ${model.tipoReceita.isNotEmpty ? model.tipoReceita : 'Sem descrição'}",
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-              ),
+                    ),
+            ),
+          )
+        ],
       ),
     );
   }
