@@ -43,8 +43,8 @@ class MyApp extends StatelessWidget {
       title: 'GestorFinanceiro',
       routes: {
         '/': (context) => const RoteadorTelas(),
-        '/dashboard': (context) => DashBoardScreen(
-            userId: FirebaseAuth.instance.currentUser?.uid ?? ''),
+        '/dashboard': (context) =>
+            DashBoardScreen(user: FirebaseAuth.instance.currentUser?.uid ?? ''),
         '/costs': (context) =>
             CostsScreen(user: FirebaseAuth.instance.currentUser!),
         '/expenses': (context) =>
