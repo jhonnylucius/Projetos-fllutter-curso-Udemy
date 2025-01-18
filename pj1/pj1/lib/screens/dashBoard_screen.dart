@@ -158,46 +158,33 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                     _buildPieChart(listExpenses, 'Receitas Anuais'),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
+                          vertical: 8.0, horizontal: 16.0), // Ajustado padding
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Text(
-                              'Despesas Totais e por Tipo de despesa',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
+                          Text(
+                            'Despesas Totais e por Tipo de despesa',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           Container(
-                            margin: EdgeInsets.only(left: 8.0),
+                            // Adicionado Container para decoração
                             padding: EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 4),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surface,
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
                                 color: Theme.of(context).colorScheme.primary,
                                 width: 1,
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
                             ),
                             child: DropdownButton<int>(
                               value: selectedMonth,
-                              underline: Container(),
+                              underline: Container(), // Remove a linha padrão
                               icon: Icon(
                                 Icons.arrow_drop_down,
                                 color: Theme.of(context).colorScheme.primary,
-                              ),
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.primary,
-                                fontWeight: FontWeight.w500,
                               ),
                               onChanged: (int? newValue) {
                                 setState(() {
