@@ -152,7 +152,8 @@ class AuthService {
                 .collection('users')
                 .doc(user.uid)
                 .set({
-              'name': user.displayName,
+              'displayName':
+                  user.displayName, // Alterado de 'name' para 'displayName'
               'email': user.email,
             });
 
