@@ -330,7 +330,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                           }
 
                           await firestore
-                              .collection('${widget.user.uid}_expenses')
+                              .collection('users/${widget.user.uid}/expenses')
                               .doc(expenses.id)
                               .set(expenses.toMap());
 
