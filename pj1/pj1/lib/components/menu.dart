@@ -97,7 +97,7 @@ class Menu extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DashBoardScreen(userId: user.uid),
+                  builder: (context) => DashBoardScreen(user: user.uid),
                 ),
               );
             },
@@ -109,7 +109,7 @@ class Menu extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ReportScreen(userId: user),
+                  builder: (context) => ReportScreen(user: user),
                 ),
               );
             },

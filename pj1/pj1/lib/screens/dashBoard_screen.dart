@@ -7,9 +7,9 @@ import 'package:pj1/models/costs.dart';
 import 'package:pj1/models/expenses.dart';
 
 class DashBoardScreen extends StatefulWidget {
-  final String userId;
+  final String user;
 
-  const DashBoardScreen({super.key, required this.userId});
+  const DashBoardScreen({super.key, required this.user});
 
   @override
   DashBoardScreenState createState() => DashBoardScreenState();
@@ -50,13 +50,13 @@ class DashBoardScreenState extends State<DashBoardScreen> {
       QuerySnapshot<Map<String, dynamic>> costsSnapshot =
           await FirebaseFirestore.instance
               .collection('users')
-              .doc(widget.userId)
+              .doc(widget.user)
               .collection('costs')
               .get();
       QuerySnapshot<Map<String, dynamic>> expensesSnapshot =
           await FirebaseFirestore.instance
               .collection('users')
-              .doc(widget.userId)
+              .doc(widget.user)
               .collection('expenses')
               .get();
 
