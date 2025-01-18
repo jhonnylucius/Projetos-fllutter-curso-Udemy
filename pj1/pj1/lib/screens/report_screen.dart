@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 class ReportScreen extends StatefulWidget {
-  final User user;
-  const ReportScreen({super.key, required this.user});
+  final User userId;
+  const ReportScreen({super.key, required this.userId});
 
   @override
   State<ReportScreen> createState() => _ReportScreenState();
@@ -221,7 +221,7 @@ class _ReportScreenState extends State<ReportScreen> {
     try {
       Query query = FirebaseFirestore.instance
           .collection('users')
-          .doc(widget.user.uid)
+          .doc(widget.userId.uid)
           .collection(collection);
 
       if (selectedType == 'despesas' &&
