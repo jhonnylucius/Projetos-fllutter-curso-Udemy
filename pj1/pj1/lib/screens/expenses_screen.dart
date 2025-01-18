@@ -375,7 +375,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   Future<void> refresh([dynamic snapshot]) async {
     try {
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await firestore.collection('${widget.user.uid}_expenses').get();
+          await firestore.collection('users/${widget.user.uid}/expenses').get();
 
       setState(() {
         listExpenses = querySnapshot.docs
@@ -389,7 +389,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
   Future<void> remove(Expenses expenses) async {
     await firestore
-        .collection('${widget.user.uid}_expenses')
+        .collection('users/${widget.user.uid}/expenses')
         .doc(expenses.id)
         .delete();
     refresh();
