@@ -157,28 +157,60 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                     ),
                     _buildPieChart(listExpenses, 'Receitas Anuais'),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Despesas Totais e por Tipo de despesa',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                          Expanded(
+                            child: Text(
+                              'Despesas Totais e por Tipo de despesa',
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
                           ),
-                          DropdownButton<int>(
-                            value: selectedMonth,
-                            onChanged: (int? newValue) {
-                              setState(() {
-                                selectedMonth = newValue!;
-                              });
-                            },
-                            items: monthList.asMap().entries.map((entry) {
-                              return DropdownMenuItem<int>(
-                                value: entry.key + 1,
-                                child: Text(entry.value),
-                              );
-                            }).toList(),
+                          Container(
+                            margin: EdgeInsets.only(left: 8.0),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 1,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: DropdownButton<int>(
+                              value: selectedMonth,
+                              underline: Container(),
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              onChanged: (int? newValue) {
+                                setState(() {
+                                  selectedMonth = newValue!;
+                                });
+                              },
+                              items: monthList.asMap().entries.map((entry) {
+                                return DropdownMenuItem<int>(
+                                  value: entry.key + 1,
+                                  child: Text(entry.value),
+                                );
+                              }).toList(),
+                            ),
                           ),
                         ],
                       ),
