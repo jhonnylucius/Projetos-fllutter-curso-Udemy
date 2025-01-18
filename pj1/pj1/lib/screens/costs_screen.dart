@@ -8,10 +8,10 @@ import 'package:pj1/models/costs.dart';
 import 'package:uuid/uuid.dart';
 
 class CostsScreen extends StatefulWidget {
-  final User user;
+  final User userId;
   const CostsScreen({
     super.key,
-    required this.user,
+    required this.userId,
   });
 
   @override
@@ -41,7 +41,7 @@ class _CostsScreenState extends State<CostsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Menu(user: widget.user), // Menu lateral
+      drawer: Menu(user: widget.userId), // Menu lateral
       appBar: AppBar(
         title: Text('GestorFinanceiro'),
         elevation: 2,
@@ -342,7 +342,7 @@ class _CostsScreenState extends State<CostsScreen> {
                           }
 
                           await firestore
-                              .collection('users/${widget.user.uid}/costs')
+                              .collection('users/${widget.userId}/costs')
                               .doc(costs.id)
                               .set(costs.toMap());
 
@@ -391,7 +391,7 @@ class _CostsScreenState extends State<CostsScreen> {
   Future<void> refresh([dynamic snapshot]) async {
     try {
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await firestore.collection('${widget.user.uid}_costs').get();
+          await firestore.collection('${widget.userId}_costs').get();
 
       setState(() {
         listCosts =
@@ -403,10 +403,7 @@ class _CostsScreenState extends State<CostsScreen> {
   }
 
   Future<void> remove(Costs costs) async {
-    await firestore
-        .collection('${widget.user.uid}_costs')
-        .doc(costs.id)
-        .delete();
+    await firestore.collection('${widget.userId}_costs').doc(costs.id).delete();
     refresh();
   }
 }
