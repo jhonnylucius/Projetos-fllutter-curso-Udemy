@@ -109,7 +109,7 @@ class Menu extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ReportScreen(user: user),
+                  builder: (context) => ReportScreen(userId: user),
                 ),
               );
             },
