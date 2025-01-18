@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:pj1/components/menu.dart';
-import 'package:pj1/models/expenses.dart'; // Importar modelo Expenses
+import 'package:pj1/models/expenses.dart';
 import 'package:uuid/uuid.dart';
 
 class ExpensesScreen extends StatefulWidget {
@@ -76,58 +76,54 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: Stack(
         children: [
-          SingleChildScrollView(
-            // Adicionado para permitir rolagem
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    const Color.fromARGB(255, 255, 255, 255)
-                        .withAlpha((0.1 * 255).toInt()),
-                    Colors.white,
-                  ],
-                ),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  const Color.fromARGB(255, 255, 255, 255)
+                      .withAlpha((0.1 * 255).toInt()),
+                  Colors.white,
+                ],
               ),
-              // Adicionar padding inferior para não sobrepor os botões
-              padding: EdgeInsets.only(bottom: 80),
-              child: listExpenses.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            'assets/Icon-192.png',
-                            width: 100,
-                            height: 100,
+            ),
+            padding: EdgeInsets.only(bottom: 80),
+            child: listExpenses.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/Icon-192.png',
+                          width: 100,
+                          height: 100,
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Vamos começar?',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: const Color.fromARGB(255, 251, 251, 252),
                           ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Vamos começar?',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: const Color.fromARGB(255, 251, 251, 252),
-                            ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Registre suas Receitas',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: const Color.fromARGB(255, 129, 18, 151),
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Registre suas Receitas',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: const Color.fromARGB(255, 129, 18, 151),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView(
-                      padding: EdgeInsets.only(left: 4, right: 4),
-                      children: List.generate(
-                        listExpenses
-                            .length, // Cria uma lista de widgets baseada em receitas
-                        (index) {
+                        ),
+                      ],
+                    ),
+                  )
+                : CustomScrollView(
+                    slivers: [
+                      SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
                           Expenses model = listExpenses[index];
                           return Dismissible(
                             key: ValueKey<Expenses>(
@@ -175,10 +171,11 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                             ),
                           );
                         },
-                      ),
-                    ),
-            ),
-          )
+                        childCount: listExpenses.length,
+                      )),
+                    ],
+                  ),
+          ),
         ],
       ),
     );
@@ -207,8 +204,15 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
     TextEditingController dataController = TextEditingController();
     TextEditingController precoController = TextEditingController();
-    final precoMaskFormatter =
-        MaskTextInputFormatter(mask: '', filter: {"#": RegExp(r'[0-9]')});
+    var precoMaskFormatter = MaskTextInputFormatter(
+      mask: '#######.##',
+      filter: {"#": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy,
+    );
+
+    precoController.addListener(() {
+      precoMaskFormatter.updateMask();
+    });
     TextEditingController descricaoDaReceitaController =
         TextEditingController();
     TextEditingController tipoReceitaController = TextEditingController();
@@ -266,7 +270,6 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                     hintText: 'Valor da Receita.(USE PONTO E NÃO VIRGULA!)',
                     labelText: '100.00',
                   ),
-                  inputFormatters: [precoMaskFormatter],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira o preço.';
@@ -348,7 +351,11 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                               .set(expenses.toMap());
 
                           await refresh();
-                          Navigator.pop(context);
+                          if (mounted) {
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
+                          }
                         } else {
                           _showErrorDialog();
                         }
