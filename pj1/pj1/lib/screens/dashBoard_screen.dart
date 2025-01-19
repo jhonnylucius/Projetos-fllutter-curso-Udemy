@@ -150,9 +150,9 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
-                        'Receitas Totais e por Tipo (Anual)',
+                        'Receitas por tipo (Anual)',
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 15, fontWeight: FontWeight.bold),
                       ),
                     ),
                     _buildPieChart(listExpenses, 'Receitas Anuais'),
@@ -163,9 +163,9 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Despesas Totais e por Tipo de despesa',
+                            'Tipo de despesa x Mês',
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
+                                fontSize: 15, fontWeight: FontWeight.bold),
                           ),
                           Container(
                             // Adicionado Container para decoração
