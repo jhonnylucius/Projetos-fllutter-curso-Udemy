@@ -29,7 +29,7 @@
 C:\\src\\flutter\\bin
 ```
 
-### 2. Instalação do Android Studio
+### 2. Instalação do Android Studio e SDK's
 
 ```bash
 # 1. Baixe em <https://developer.android.com/studio>
