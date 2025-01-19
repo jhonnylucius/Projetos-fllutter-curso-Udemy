@@ -295,6 +295,7 @@ flutter run
 
 Este projeto está sob a licença MIT.
 
+[Melhorias Futuras na Estutura - Clique aqui!](https://github.com/jhonnylucius/Projetos-fllutter-curso-Udemy/wiki/melhorias-futuras)
 ---
 
 ⭐ Se este projeto ajudou você, considere dar uma estrela no repositório!# Projeto Login email/senha e gmail com Flutter, Dart e Firebase 🚀
