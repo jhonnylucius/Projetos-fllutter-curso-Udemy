@@ -11,7 +11,7 @@
 
 
 ## 🎥 Demonstração
-[![Demonstração do App](https://img.youtube.com/vi/mF_-gHBVBqQ/0.jpg)](https://www.youtube.com/watch?v=mF_-gHBVBqQ)
+[![Demonstração do App](https://img.youtube.com/vi/a0BarsMlYLo/0.jpg)](https://www.youtube.com/shorts/a0BarsMlYLo)
 
 
 ## 📋 Índice
