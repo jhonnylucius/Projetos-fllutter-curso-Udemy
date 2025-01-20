@@ -152,7 +152,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                       child: Text(
                         'Receitas por tipo (Anual)',
                         style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
+                            fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                     ),
                     _buildPieChart(listExpenses, 'Receitas Anuais'),
@@ -163,9 +163,9 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Tipo de despesa x Mês',
+                            'Tipo despesa x Mês',
                             style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.bold),
+                                fontSize: 12, fontWeight: FontWeight.bold),
                           ),
                           Container(
                             // Adicionado Container para decoração
