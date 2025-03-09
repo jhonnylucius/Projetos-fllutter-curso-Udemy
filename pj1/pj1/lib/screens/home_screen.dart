@@ -124,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(height: 16),
                           FloatingActionButton.extended(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/expenses');
+                              Navigator.pushNamed(context, '/Revenues');
                             },
                             icon: const Icon(Icons.add, color: Colors.white),
                             label: const Text('Receitas',
