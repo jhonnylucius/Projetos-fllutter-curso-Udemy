@@ -72,7 +72,7 @@ class BudgetItem {
   void convertToUnit(String newUnit, {double? density}) {
     if (newUnit == unit) return;
 
-    // Converte cada preço para a nova unidade
+    // Converter preços
     final newPrices = <String, double>{};
     prices.forEach((location, price) {
       final convertedPrice = BudgetUtils.convertUnit(
@@ -84,7 +84,7 @@ class BudgetItem {
       newPrices[location] = convertedPrice;
     });
 
-    // Atualiza os preços e a unidade
+    // Atualizar preços e unidade
     prices = newPrices;
     unit = newUnit;
     updateBestPrice();
