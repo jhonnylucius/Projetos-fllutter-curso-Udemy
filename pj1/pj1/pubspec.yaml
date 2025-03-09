@@ -53,6 +53,7 @@ dependencies:
   foundation: ^0.0.5
   share_plus: ^10.1.4
   flutter_local_notifications: ^18.0.1
+  synchronized: ^3.3.0+3
 
 dev_dependencies:
   flutter_test:
