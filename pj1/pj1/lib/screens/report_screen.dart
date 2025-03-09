@@ -14,7 +14,7 @@ class ReportScreen extends StatefulWidget {
 class _ReportScreenState extends State<ReportScreen> {
   String selectedType = 'receitas'; // Alterado para 'receitas'
   String selectedMonth = '01/2025';
-  String? selectedExpenseType;
+  String? selectedRevenuesType;
   String? selectedIncomeType;
   List<dynamic> reportData = [];
   double totalValue = 0.0;
@@ -97,7 +97,7 @@ class _ReportScreenState extends State<ReportScreen> {
                       onChanged: (value) {
                         setState(() {
                           selectedType = value!;
-                          selectedExpenseType = null;
+                          selectedRevenuesType = null;
                           selectedIncomeType = null;
                         });
                       },
@@ -105,7 +105,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     SizedBox(height: 16),
                     if (selectedType == 'despesas')
                       DropdownButtonFormField<String>(
-                        value: selectedExpenseType ?? tiposDespesa[0],
+                        value: selectedRevenuesType ?? tiposDespesa[0],
                         decoration: InputDecoration(
                           labelText: 'Tipo de Despesa',
                           border: OutlineInputBorder(),
@@ -119,7 +119,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           );
                         }).toList(),
                         onChanged: (value) =>
-                            setState(() => selectedExpenseType = value),
+                            setState(() => selectedRevenuesType = value),
                       ),
                     if (selectedType == 'receitas')
                       DropdownButtonFormField<String>(
@@ -172,7 +172,7 @@ class _ReportScreenState extends State<ReportScreen> {
                       padding: EdgeInsets.all(16),
                       child: Text(
                         'Relatório de ${selectedType == "receitas" ? "Receitas" : "Despesas"}\n'
-                        '${selectedType == "despesas" ? "Tipo: ${selectedExpenseType ?? 'Todas'}" : "Tipo: ${selectedIncomeType ?? 'Todas'}"}\n'
+                        '${selectedType == "despesas" ? "Tipo: ${selectedRevenuesType ?? 'Todas'}" : "Tipo: ${selectedIncomeType ?? 'Todas'}"}\n'
                         'Período: $selectedMonth',
                         style: Theme.of(context).textTheme.titleLarge,
                         textAlign: TextAlign.center,
@@ -215,8 +215,8 @@ class _ReportScreenState extends State<ReportScreen> {
 
   void generateReport() async {
     final collection = selectedType == 'receitas'
-        ? 'expenses'
-        : 'costs'; // Corrigido para 'expenses' e 'costs'
+        ? 'revenues'
+        : 'costs'; // Corrigido para 'revenues' e 'costs'
 
     try {
       Query query = FirebaseFirestore.instance
@@ -225,9 +225,9 @@ class _ReportScreenState extends State<ReportScreen> {
           .collection(collection);
 
       if (selectedType == 'despesas' &&
-          selectedExpenseType != null &&
-          selectedExpenseType != 'Todas') {
-        query = query.where('tipoDespesa', isEqualTo: selectedExpenseType);
+          selectedRevenuesType != null &&
+          selectedRevenuesType != 'Todas') {
+        query = query.where('tipoDespesa', isEqualTo: selectedRevenuesType);
       }
 
       if (selectedType == 'receitas' &&
