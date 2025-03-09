@@ -103,6 +103,16 @@ class Menu extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: Icon(Icons.calculate),
+            title: const Text('Orçamentos'),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/budget/list',
+              );
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.description),
             title: const Text('Relatórios'),
             onTap: () {
