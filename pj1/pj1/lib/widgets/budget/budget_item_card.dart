@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pj1/models/budget/budget_item.dart';
@@ -138,17 +140,10 @@ class BudgetItemCard extends StatelessWidget {
                           Expanded(child: Text(entry.value)),
                           SizedBox(
                             width: 100,
-                            child: TextFormField(
-                              initialValue: item.prices[entry.key]?.toString(),
-                              keyboardType: TextInputType.number,
-                              decoration: const InputDecoration(
-                                prefix: Text('R\$ '),
-                                isDense: true,
-                              ),
-                              onChanged: (value) {
-                                final price = double.tryParse(value) ?? 0;
-                                onPriceUpdate!(entry.key, price);
-                              },
+                            // Substituir o TextFormField pelo _buildPriceInput
+                            child: _buildPriceInput(
+                              entry.key,
+                              item.prices[entry.key],
                             ),
                           ),
                         ],
@@ -161,6 +156,32 @@ class BudgetItemCard extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+
+  Widget _buildPriceInput(String locationId, double? currentPrice) {
+    final debouncer = Debouncer(milliseconds: 500);
+
+    return TextFormField(
+      initialValue: currentPrice?.toString(),
+      keyboardType: TextInputType.number,
+      decoration: const InputDecoration(
+        prefix: Text('R\$ '),
+        isDense: true,
+      ),
+      onChanged: (value) {
+        debouncer.run(() {
+          final newPrice = double.tryParse(value) ?? 0;
+          // Só atualiza se o preço realmente mudou e para o local específico
+          if (newPrice != currentPrice) {
+            print('Atualizando preço:');
+            print('- Local: $locationId');
+            print('- Preço atual: $currentPrice');
+            print('- Novo preço: $newPrice');
+            onPriceUpdate?.call(locationId, newPrice);
+          }
+        });
+      },
     );
   }
 
@@ -179,5 +200,23 @@ class BudgetItemCard extends StatelessWidget {
         ),
       );
     }
+  }
+
+  // Classe auxiliar para debounce
+}
+
+class Debouncer {
+  final int milliseconds;
+  Timer? _timer;
+
+  Debouncer({required this.milliseconds});
+
+  void run(VoidCallback action) {
+    _timer?.cancel();
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
+  }
+
+  void dispose() {
+    _timer?.cancel();
   }
 }
