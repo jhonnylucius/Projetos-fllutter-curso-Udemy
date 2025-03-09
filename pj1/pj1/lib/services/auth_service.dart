@@ -125,48 +125,54 @@ class AuthService {
   Future<UserCredential?> signInWithGoogle() async {
     try {
       if (kIsWeb) {
-        // Configuração específica para Web
         GoogleAuthProvider googleProvider = GoogleAuthProvider();
-        // Removendo escopo de contatos, mantendo apenas autenticação básica
         googleProvider.setCustomParameters({'prompt': 'select_account'});
         return await _firebaseAuth.signInWithPopup(googleProvider);
       } else {
-        // Código para Android
-        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-        final GoogleSignInAuthentication? googleAuth =
-            await googleUser?.authentication;
+        // Inicializar o Google Sign In
+        final GoogleSignIn googleSignIn = GoogleSignIn(
+          scopes: [
+            'email',
+            'profile',
+          ],
+        );
 
-        if (googleAuth?.accessToken != null && googleAuth?.idToken != null) {
-          final credential = GoogleAuthProvider.credential(
-            accessToken: googleAuth?.accessToken,
-            idToken: googleAuth?.idToken,
-          );
-          final UserCredential userCredential =
-              await _firebaseAuth.signInWithCredential(credential);
+        // Limpar qualquer login anterior
+        await googleSignIn.signOut();
 
-          final User? user = userCredential.user;
+        // Tentar fazer login
+        final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
-          if (user != null) {
-            // Salvar nome e email no Firestore
-            await FirebaseFirestore.instance
-                .collection('users')
-                .doc(user.uid)
-                .set({
-              'displayName':
-                  user.displayName, // Alterado de 'name' para 'displayName'
-              'email': user.email,
-            });
-
-            // Comentário: Correção feita aqui para salvar nome e email no Firestore
-            Logger().i('Usuário logado: ${user.displayName}, ${user.email}');
-          }
-
-          return userCredential;
+        if (googleUser == null) {
+          throw Exception('Seleção de conta Google cancelada');
         }
+
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        final UserCredential userCredential =
+            await _firebaseAuth.signInWithCredential(credential);
+
+        if (userCredential.user != null) {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userCredential.user?.uid)
+              .set({
+            'displayName': userCredential.user?.displayName,
+            'email': userCredential.user?.email,
+          }, SetOptions(merge: true));
+        }
+
+        return userCredential;
       }
     } catch (e) {
-      Logger().e('Erro no login com Google: $e');
+      Logger().e('Erro detalhado no login com Google: $e');
+      rethrow;
     }
-    return null;
   }
 }
