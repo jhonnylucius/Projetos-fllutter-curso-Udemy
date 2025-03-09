@@ -173,6 +173,7 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'add_budget', // Adicione esta linha
         onPressed: () => _showCreateBudgetDialog(context),
         label: const Text('Novo Orçamento'),
         icon: const Icon(Icons.add),
@@ -209,11 +210,30 @@ class _BudgetListScreenState extends State<BudgetListScreen> {
           FilledButton(
             onPressed: () async {
               if (titleController.text.isNotEmpty) {
-                final budget = await _budgetService.createBudget(
-                  titleController.text.trim(),
-                );
-                Navigator.pop(context);
-                _navigateToBudgetDetail(budget);
+                try {
+                  final budget = await _budgetService.createBudget(
+                    titleController.text.trim(),
+                  );
+                  if (context.mounted) {
+                    Navigator.pop(context); // Fecha o diálogo
+                    _navigateToBudgetDetail(budget); // Navega para detalhes
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Orçamento criado com sucesso!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Erro ao criar orçamento: $e'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
               }
             },
             child: const Text('Criar'),
