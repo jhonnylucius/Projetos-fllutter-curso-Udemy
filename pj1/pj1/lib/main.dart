@@ -7,9 +7,9 @@ import 'package:logger/logger.dart';
 import 'package:pj1/firebase_options.dart';
 import 'package:pj1/screens/costs_screen.dart';
 import 'package:pj1/screens/dashboard_screen.dart';
-import 'package:pj1/screens/expenses_screen.dart';
 import 'package:pj1/screens/home_screen.dart';
 import 'package:pj1/screens/login_screen.dart';
+import 'package:pj1/screens/revenues_screen.dart';
 import 'package:pj1/screens/verifyemail_screen.dart';
 import 'package:pj1/widgets/terms_of_service_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,8 +47,8 @@ class MyApp extends StatelessWidget {
             DashBoardScreen(user: FirebaseAuth.instance.currentUser?.uid ?? ''),
         '/costs': (context) =>
             CostsScreen(user: FirebaseAuth.instance.currentUser!),
-        '/expenses': (context) =>
-            ExpensesScreen(user: FirebaseAuth.instance.currentUser!),
+        '/Revenues': (context) =>
+            RevenuesScreen(user: FirebaseAuth.instance.currentUser!),
         '/home': (context) => HomeScreen(
             user: FirebaseAuth
                 .instance.currentUser!), // Ajustar para passar o usuário atual
