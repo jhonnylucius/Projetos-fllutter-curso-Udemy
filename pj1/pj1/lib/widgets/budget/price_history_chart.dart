@@ -9,11 +9,11 @@ class PriceHistoryChart extends StatelessWidget {
   final String locationName;
 
   const PriceHistoryChart({
-    Key? key,
+    super.key,
     required this.history,
     required this.itemName,
     required this.locationName,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -7,10 +7,10 @@ class BudgetSummaryCard extends StatelessWidget {
   final String title;
 
   const BudgetSummaryCard({
-    Key? key,
+    super.key,
     required this.summary,
     this.title = 'Resumo',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -48,7 +48,7 @@ class BudgetService {
       return budget;
     } catch (e) {
       print('Erro ao criar orçamento: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -200,7 +200,7 @@ class BudgetService {
     }
   }
 
-  Future<void> updateItemPrice(
+  Future<double> updateItemPrice(
     String budgetId,
     String itemId,
     String locationId,
@@ -208,35 +208,53 @@ class BudgetService {
   ) async {
     try {
       final lock = Lock();
+      double variation = 0;
+
       await lock.synchronized(() async {
-        // 1. Buscar orçamento
+        print('Iniciando atualização de preço:');
+        print('Budget: $budgetId');
+        print('Item: $itemId');
+        print('Local: $locationId');
+        print('Novo preço: $price');
+
         final budget = await getBudget(budgetId);
-        if (budget == null) return;
+        if (budget == null) {
+          print('Orçamento não encontrado!');
+          return 0;
+        }
 
-        // 2. Encontrar o item
         final item = budget.items.firstWhere((i) => i.id == itemId);
+        final oldPrice = item.prices[locationId];
+        print('Preço atual: $oldPrice');
 
-        // 3. Verificar se o preço realmente mudou
-        if (item.prices[locationId] == price) return;
+        // Verificar se o preço realmente mudou
+        if (oldPrice == price) {
+          print('Preço não mudou, ignorando atualização');
+          return 0;
+        }
 
-        // 4. Fazer todas as operações em uma única transação
-        final batch = _firestore.batch();
-        final budgetRef = _budgets.doc(budgetId);
+        // Calcular variação
+        variation = await _calculateVariation(
+            budgetId, itemId, locationId, price, oldPrice ?? 0);
 
-        // 5. Atualizar APENAS o preço do local específico
+        // Atualizar preço no item
         item.prices[locationId] = price;
-
-        // 6. Atualizar melhor preço após a modificação
         item.updateBestPrice();
         budget.updateSummary();
 
-        // 7. Registrar no histórico APENAS UMA VEZ
-        final historyRef = budgetRef.collection('price_history').doc();
-        final variation =
-            await _calculateVariation(budgetId, itemId, locationId, price);
+        print('Preço atualizado no objeto:');
+        print('Novo melhor preço: ${item.bestPrice}');
+        print('Variação calculada: $variation%');
 
-        // 8. Preparar as operações do batch
+        // Preparar batch
+        final batch = _firestore.batch();
+        final budgetRef = _budgets.doc(budgetId);
+
+        // Atualizar documento principal
         batch.update(budgetRef, budget.toMap());
+
+        // Registrar histórico
+        final historyRef = budgetRef.collection('price_history').doc();
         batch.set(
           historyRef,
           PriceHistory(
@@ -248,45 +266,40 @@ class BudgetService {
           ).toMap(),
         );
 
-        // 9. Executar todas as operações de uma vez
+        // Executar operações
         await batch.commit();
+        print('Alterações salvas no Firestore');
 
-        print('Preço atualizado com sucesso:');
-        print('- Item: ${item.name}');
-        print('- Local: $locationId');
-        print('- Preço: $price');
-        print('- Variação: $variation%');
+        return variation;
       });
+
+      return variation;
     } catch (e) {
       print('Erro ao atualizar preço: $e');
       rethrow;
     }
   }
 
-  // Método auxiliar para calcular variação
+  // No BudgetService, antes do último } da classe
   Future<double> _calculateVariation(
     String budgetId,
     String itemId,
     String locationId,
     double newPrice,
+    double oldPrice,
   ) async {
+    if (oldPrice == 0) return 0;
+
     try {
-      // Buscar apenas o histórico do item/local específico
-      final snapshot = await _budgets
-          .doc(budgetId)
-          .collection('price_history')
-          .where('itemId', isEqualTo: itemId)
-          .where('locationId', isEqualTo: locationId)
-          .orderBy('date', descending: true)
-          .limit(1)
-          .get();
+      // Calcular variação percentual
+      final variation = ((newPrice - oldPrice) / oldPrice) * 100;
 
-      if (snapshot.docs.isEmpty) return 0;
+      print('DEBUG - Cálculo de variação:');
+      print('Preço anterior: $oldPrice');
+      print('Novo preço: $newPrice');
+      print('Variação: $variation%');
 
-      final lastPrice = snapshot.docs.first.data()['price']?.toDouble() ?? 0;
-      if (lastPrice == 0) return 0;
-
-      return ((newPrice - lastPrice) / lastPrice) * 100;
+      return variation;
     } catch (e) {
       print('Erro ao calcular variação: $e');
       return 0;

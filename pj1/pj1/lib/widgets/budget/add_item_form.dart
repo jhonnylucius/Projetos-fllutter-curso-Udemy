@@ -7,9 +7,9 @@ class AddItemForm extends StatefulWidget {
   final Function(BudgetItem) onItemAdded;
 
   const AddItemForm({
-    Key? key,
+    super.key,
     required this.onItemAdded,
-  }) : super(key: key);
+  });
 
   @override
   State<AddItemForm> createState() => _AddItemFormState();

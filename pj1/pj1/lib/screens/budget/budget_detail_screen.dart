@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pj1/models/budget/budget.dart';
 import 'package:pj1/models/budget/budget_item.dart';
 import 'package:pj1/models/budget/budget_location.dart';
-import 'package:pj1/models/budget/price_history.dart';
 import 'package:pj1/services/budget_service.dart';
 import 'package:pj1/services/price_alert_service.dart';
 import 'package:pj1/services/price_history_service.dart';
@@ -129,6 +128,7 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
           locationNames: locationNames,
           budgetId: widget.budget.id,
           historyService: _historyService,
+          budget: widget.budget, // Adicionar esta linha
           onDelete: () => _removeItem(item.id),
           onPriceUpdate: (locationId, price) =>
               _updateItemPrice(item.id, locationId, price),
@@ -234,40 +234,20 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
   }
 
   Future<void> _updateItemPrice(
-    String itemId,
-    String locationId,
-    double price,
-  ) async {
+      String itemId, String locationId, double price) async {
     try {
-      // Atualizar preço no Firebase
-      await _budgetService.updateItemPrice(
+      print('Tentando atualizar preço:');
+      print('Item: $itemId');
+      print('Local: $locationId');
+      print('Preço: $price');
+
+      final variation = await _budgetService.updateItemPrice(
         widget.budget.id,
         itemId,
         locationId,
         price,
       );
 
-      // Calcular variação
-      final variation = await _historyService.calculatePriceVariation(
-        widget.budget.id,
-        itemId,
-        locationId,
-        price,
-      );
-
-      // Registrar no histórico
-      await _historyService.addPriceRecord(
-        widget.budget.id,
-        PriceHistory(
-          itemId: itemId,
-          locationId: locationId,
-          price: price,
-          date: DateTime.now(),
-          variation: variation,
-        ),
-      );
-
-      // Atualizar estado local
       setState(() {
         final item =
             widget.budget.items.firstWhere((item) => item.id == itemId);
@@ -276,21 +256,17 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
         widget.budget.updateSummary();
       });
 
-      // Se houver variação significativa, mostrar alerta
-      if (variation.abs() >= 5.0) {
-        final item = widget.budget.items.firstWhere((i) => i.id == itemId);
-        final location =
-            widget.budget.locations.firstWhere((l) => l.id == locationId);
-
-        if (context.mounted) {
-          await _alertService.showPriceAlert(
-            item.name,
-            location.name,
-            variation,
-          );
-        }
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Preço atualizado com sucesso! Variação: ${variation.toStringAsFixed(2)}%'),
+            backgroundColor: Colors.green,
+          ),
+        );
       }
     } catch (e) {
+      print('Erro ao atualizar preço: $e');
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -300,11 +276,5 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
         );
       }
     }
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
   }
 }

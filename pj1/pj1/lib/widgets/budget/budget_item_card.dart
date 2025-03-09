@@ -1,12 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pj1/models/budget/budget.dart';
 import 'package:pj1/models/budget/budget_item.dart';
 import 'package:pj1/models/budget/price_history.dart';
 import 'package:pj1/services/price_history_service.dart';
 import 'package:pj1/utils/budget_utils.dart';
-import 'package:pj1/utils/price_history_dialog.dart';
 import 'package:pj1/widgets/budget/unit_selector.dart';
 
 class BudgetItemCard extends StatelessWidget {
@@ -17,6 +15,7 @@ class BudgetItemCard extends StatelessWidget {
   final currencyFormat = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
   final String budgetId;
   final PriceHistoryService historyService;
+  final Budget budget; //
 
   BudgetItemCard({
     super.key,
@@ -26,6 +25,7 @@ class BudgetItemCard extends StatelessWidget {
     this.onPriceUpdate,
     required this.budgetId,
     required this.historyService,
+    required this.budget,
   });
 
   @override
@@ -132,24 +132,26 @@ class BudgetItemCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   // Lista de preços por localização
-                  ...locationNames.entries.map((entry) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Row(
-                        children: [
-                          Expanded(child: Text(entry.value)),
-                          SizedBox(
-                            width: 100,
-                            // Substituir o TextFormField pelo _buildPriceInput
-                            child: _buildPriceInput(
-                              entry.key,
-                              item.prices[entry.key],
+                  ...locationNames.entries.map(
+                    (entry) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          children: [
+                            Expanded(child: Text(entry.value)),
+                            SizedBox(
+                              width: 100,
+                              // Substituir o TextFormField pelo _buildPriceInput
+                              child: _buildPriceInput(
+                                entry.key,
+                                item.prices[entry.key],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
@@ -161,23 +163,25 @@ class BudgetItemCard extends StatelessWidget {
 
   Widget _buildPriceInput(String locationId, double? currentPrice) {
     final debouncer = Debouncer(milliseconds: 500);
+    final controller = TextEditingController(
+      text: currentPrice?.toString() ?? '',
+    );
 
     return TextFormField(
-      initialValue: currentPrice?.toString(),
-      keyboardType: TextInputType.number,
+      controller: controller,
+      keyboardType: const TextInputType.numberWithOptions(decimal: true),
       decoration: const InputDecoration(
         prefix: Text('R\$ '),
         isDense: true,
       ),
       onChanged: (value) {
         debouncer.run(() {
-          final newPrice = double.tryParse(value) ?? 0;
-          // Só atualiza se o preço realmente mudou e para o local específico
-          if (newPrice != currentPrice) {
+          final newPrice = double.tryParse(value);
+          if (newPrice != null && newPrice != currentPrice) {
             print('Atualizando preço:');
-            print('- Local: $locationId');
-            print('- Preço atual: $currentPrice');
-            print('- Novo preço: $newPrice');
+            print('Local: $locationId');
+            print('De: $currentPrice');
+            print('Para: $newPrice');
             onPriceUpdate?.call(locationId, newPrice);
           }
         });
@@ -185,38 +189,115 @@ class BudgetItemCard extends StatelessWidget {
     );
   }
 
-  Future<void> _showHistory(BuildContext context) async {
-    // Carregar histórico
-    final history =
-        await historyService.getItemPriceHistory(budgetId, item.id).first;
-
-    if (context.mounted) {
-      showDialog(
-        context: context,
-        builder: (context) => PriceHistoryDialog(
-          history: history,
-          itemName: item.name,
-          locationName: locationNames[item.bestPriceLocation] ?? 'Desconhecido',
+  // No BudgetItemCard, após o método _buildPriceInput
+  void _showHistory(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.95,
+          height:
+              MediaQuery.of(context).size.height * 0.8, // Aumentado para 80%
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              const Text(
+                'Comparativo de Preços',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Table(
+                      border: TableBorder.all(
+                        color: Colors.grey.shade300,
+                        width: 1,
+                      ),
+                      columnWidths: {
+                        0: const FixedColumnWidth(100), // Item
+                        for (var i = 0; i < locationNames.length; i++)
+                          i + 1: const FixedColumnWidth(85), // Locais
+                        locationNames.length + 1:
+                            const FixedColumnWidth(85), // Melhor Local
+                        locationNames.length + 2:
+                            const FixedColumnWidth(85), // Melhor Preço
+                      },
+                      children: [
+                        // Cabeçalho
+                        TableRow(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest,
+                          ),
+                          children: [
+                            _buildTableCell('Item', isHeader: true),
+                            ...locationNames.entries.map((entry) =>
+                                _buildTableCell(entry.value, isHeader: true)),
+                            _buildTableCell('Melhor Local',
+                                isHeader: true, isGreen: true),
+                            _buildTableCell('Melhor Preço',
+                                isHeader: true, isGreen: true),
+                          ],
+                        ),
+                        // Linhas para todos os itens do orçamento
+                        ...budget.items.map((budgetItem) => TableRow(
+                              children: [
+                                _buildTableCell(budgetItem.name),
+                                ...locationNames.entries.map((entry) {
+                                  final price =
+                                      budgetItem.prices[entry.key] ?? 0;
+                                  return _buildTableCell(
+                                    currencyFormat.format(price),
+                                    isGreen: price == budgetItem.bestPrice,
+                                  );
+                                }),
+                                _buildTableCell(
+                                  locationNames[budgetItem.bestPriceLocation] ??
+                                      'N/A',
+                                  isGreen: true,
+                                ),
+                                _buildTableCell(
+                                  currencyFormat.format(budgetItem.bestPrice),
+                                  isGreen: true,
+                                ),
+                              ],
+                            )),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Fechar'),
+              ),
+            ],
+          ),
         ),
-      );
-    }
+      ),
+    );
   }
 
-  // Classe auxiliar para debounce
-}
-
-class Debouncer {
-  final int milliseconds;
-  Timer? _timer;
-
-  Debouncer({required this.milliseconds});
-
-  void run(VoidCallback action) {
-    _timer?.cancel();
-    _timer = Timer(Duration(milliseconds: milliseconds), action);
-  }
-
-  void dispose() {
-    _timer?.cancel();
+  Widget _buildTableCell(String text,
+      {bool isHeader = false, bool isGreen = false}) {
+    return Container(
+      padding: const EdgeInsets.all(8),
+      alignment: Alignment.center,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontWeight: isHeader ? FontWeight.bold : null,
+          color: isGreen ? Colors.green : null,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 }

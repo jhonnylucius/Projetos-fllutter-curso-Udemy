@@ -10,9 +10,9 @@ class BudgetListScreen extends StatefulWidget {
   final User user;
 
   const BudgetListScreen({
-    Key? key,
+    super.key,
     required this.user,
-  }) : super(key: key);
+  });
 
   @override
   State<BudgetListScreen> createState() => _BudgetListScreenState();

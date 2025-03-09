@@ -96,8 +96,34 @@ class BudgetCompareScreen extends StatelessWidget {
   }
 
   Widget _buildSavingsChart() {
-    // TODO: Implementar gráfico de economia
-    return const SizedBox(height: 200);
+    final savings = budget.items.map((item) {
+      final saving = item.calculateSavings();
+      return MapEntry(item.name, saving);
+    }).toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    return SizedBox(
+      height: 200,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: savings.map((entry) {
+          return Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              children: [
+                Container(
+                  width: 50,
+                  height: entry.value / 2,
+                  color: Colors.green,
+                ),
+                const SizedBox(height: 8),
+                Text(entry.key),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
+    );
   }
 
   Widget _buildSavingsDetails() {
@@ -141,7 +167,7 @@ class BudgetCompareScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ...budget.items.map((item) {
-              final comparison = item.compareUnitPrices();
+              item.compareUnitPrices();
               return ListTile(
                 title: Text(item.name),
                 subtitle: Column(
