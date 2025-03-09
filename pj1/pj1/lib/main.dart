@@ -5,12 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:pj1/firebase_options.dart';
+import 'package:pj1/models/budget/budget.dart';
+import 'package:pj1/screens/budget/budget_compare_screen.dart';
+import 'package:pj1/screens/budget/budget_detail_screen.dart';
+import 'package:pj1/screens/budget/budget_list_screen.dart';
 import 'package:pj1/screens/costs_screen.dart';
 import 'package:pj1/screens/dashboard_screen.dart';
 import 'package:pj1/screens/home_screen.dart';
 import 'package:pj1/screens/login_screen.dart';
 import 'package:pj1/screens/revenues_screen.dart';
 import 'package:pj1/screens/verifyemail_screen.dart';
+import 'package:pj1/services/budget_service.dart';
 import 'package:pj1/widgets/terms_of_service_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +26,9 @@ Future<void> main() async {
   );
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  final budgetService =
+      BudgetService(userId: FirebaseAuth.instance.currentUser!.uid);
 
   runApp(MyApp());
 }
@@ -57,6 +65,17 @@ class MyApp extends StatelessWidget {
                 .currentUser!), // Adicionar rota para verificação de email
         '/login': (context) =>
             LoginScreen(), // Adicionar rota para verificação de email
+        '/budget/list': (context) => BudgetListScreen(
+              user: FirebaseAuth.instance.currentUser!,
+            ),
+        '/budget/detail': (context) => BudgetDetailScreen(
+              budget: ModalRoute.of(context)!.settings.arguments as Budget,
+            ),
+        '/budget/compare': (context) => BudgetCompareScreen(
+              budget: ModalRoute.of(context)!.settings.arguments as Budget,
+              budgetService:
+                  BudgetService(userId: FirebaseAuth.instance.currentUser!.uid),
+            ),
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
