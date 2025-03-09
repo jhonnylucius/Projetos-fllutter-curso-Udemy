@@ -132,6 +132,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary,
                           ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/budget/list');
+                            },
+                            icon: const Icon(Icons.calculate),
+                            label: const Text('Orçamentos'),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(20),
+                            ),
+                          ),
                         ],
                       ),
                     ),
