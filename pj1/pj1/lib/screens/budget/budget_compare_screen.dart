@@ -56,6 +56,7 @@ class BudgetCompareScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'share_report', // Adicione esta linha
         onPressed: () => _shareReport(context),
         label: const Text('Compartilhar'),
         icon: const Icon(Icons.share),
