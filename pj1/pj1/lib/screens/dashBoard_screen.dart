@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:pj1/models/costs.dart';
-import 'package:pj1/models/expenses.dart';
+import 'package:pj1/models/revenues.dart';
+import 'package:pj1/models/revenuesdart';
 
 class DashBoardScreen extends StatefulWidget {
   final String user;
@@ -17,11 +18,11 @@ class DashBoardScreen extends StatefulWidget {
 
 class DashBoardScreenState extends State<DashBoardScreen> {
   List<Costs> listCosts = [];
-  List<Expenses> listExpenses = [];
+  List<Revenues> listRevenues = [];
   double totalCosts = 0.0;
-  double totalExpenses = 0.0;
+  double totalRevenues = 0.0;
   double averageCosts = 0.0;
-  double averageExpenses = 0.0;
+  double averageRevenues = 0.0;
   double saldo = 0.0;
   int selectedMonth = DateTime.now().month; // Mês atual como padrão
   List<String> monthList = [
@@ -53,33 +54,33 @@ class DashBoardScreenState extends State<DashBoardScreen> {
               .doc(widget.user)
               .collection('costs')
               .get();
-      QuerySnapshot<Map<String, dynamic>> expensesSnapshot =
+      QuerySnapshot<Map<String, dynamic>> revenuesSnapshot =
           await FirebaseFirestore.instance
               .collection('users')
               .doc(widget.user)
-              .collection('expenses')
+              .collection('Revenues')
               .get();
 
       setState(() {
         listCosts =
             costsSnapshot.docs.map((doc) => Costs.fromMap(doc.data())).toList();
-        listExpenses = expensesSnapshot.docs
-            .map((doc) => Expenses.fromMap(doc.data()))
+        listRevenues = revenuesSnapshot.docs
+            .map((doc) => Revenues.fromMap(doc.data()))
             .toList();
 
         totalCosts = listCosts.fold(0.0, (sum, item) => sum + item.preco);
-        totalExpenses = listExpenses.fold(0.0, (sum, item) => sum + item.preco);
+        totalRevenues = listRevenues.fold(0.0, (sum, item) => sum + item.preco);
 
         averageCosts =
             listCosts.isNotEmpty ? totalCosts / listCosts.length : 0.0;
-        averageExpenses =
-            listExpenses.isNotEmpty ? totalExpenses / listExpenses.length : 0.0;
+        averageRevenues =
+            listRevenues.isNotEmpty ? totalRevenues / listRevenues.length : 0.0;
 
-        saldo = totalExpenses - totalCosts;
+        saldo = totalRevenues - totalCosts;
 
         Logger().i('Dados carregados com sucesso');
         Logger().i('Total de Despesas: $totalCosts');
-        Logger().i('Total de Receitas: $totalExpenses');
+        Logger().i('Total de Receitas: $totalRevenues');
         Logger().i('Saldo: $saldo');
       });
     } catch (e) {
@@ -88,11 +89,11 @@ class DashBoardScreenState extends State<DashBoardScreen> {
   }
 
   // Função para filtrar receitas por mês
-  List<Expenses> filterExpensesByMonth(int month) {
-    return listExpenses.where((expense) {
-      DateTime expenseDate = DateFormat('dd/MM/yyyy')
-          .parse(expense.data); // Adapte o formato se necessário
-      return expenseDate.month == month;
+  List<Revenues> filterRevenuesByMonth(int month) {
+    return listRevenues.where((revenues) {
+      DateTime revenuesDate = DateFormat('dd/MM/yyyy')
+          .parse(Revenues.data); // Adapte o formato se necessário
+      return RevenuesDate.month == month;
     }).toList();
   }
 
@@ -106,13 +107,13 @@ class DashBoardScreenState extends State<DashBoardScreen> {
   }
 
   // Função para calcular o total de receitas por tipo
-  Map<String, double> _calculateExpensesByType(List<Expenses> expenses) {
-    Map<String, double> expensesByType = {};
-    for (var expense in expenses) {
-      expensesByType[expense.tipoReceita] =
-          (expensesByType[expense.tipoReceita] ?? 0) + expense.preco;
+  Map<String, double> _calculateRevenuesByType(List<Revenues> revenues) {
+    Map<String, double> revenuesByType = {};
+    for (var revenues in revenues) {
+      revenuesByType[revenues.tipoReceita] =
+          (revenuesByType[revenues.tipoReceita] ?? 0) + revenues.preco;
     }
-    return expensesByType;
+    return revenuesByType;
   }
 
   // Função para calcular o total de despesas por tipo
@@ -155,7 +156,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                             fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    _buildPieChart(listExpenses, 'Receitas Anuais'),
+                    _buildPieChart(listRevenues, 'Receitas Anuais'),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0), // Ajustado padding
@@ -223,9 +224,9 @@ class DashBoardScreenState extends State<DashBoardScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Total de Despesas: \$${totalCosts.toStringAsFixed(2)}'),
-            Text('Total de Receitas: \$${totalExpenses.toStringAsFixed(2)}'),
+            Text('Total de Receitas: \$${totalRevenues.toStringAsFixed(2)}'),
             Text('Média de Despesas: \$${averageCosts.toStringAsFixed(2)}'),
-            Text('Média de Receitas: \$${averageExpenses.toStringAsFixed(2)}'),
+            Text('Média de Receitas: \$${averageRevenues.toStringAsFixed(2)}'),
             Text('Saldo: \$${saldo.toStringAsFixed(2)}'),
           ],
         ),
@@ -236,7 +237,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
   Widget _buildPieChart(List<dynamic> items, String title) {
     Map<String, double> dataByType;
     if (title.contains('Receitas')) {
-      dataByType = _calculateExpensesByType(items.cast<Expenses>());
+      dataByType = _calculateRevenuesByType(items.cast<Revenues>());
     } else {
       dataByType = _calculateCostsByType(items.cast<Costs>());
     }
