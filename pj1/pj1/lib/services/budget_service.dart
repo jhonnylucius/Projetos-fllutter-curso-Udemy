@@ -5,8 +5,7 @@ import 'package:pj1/models/budget/budget_item.dart';
 import 'package:pj1/models/budget/budget_location.dart';
 import 'package:pj1/models/budget/budget_summary.dart';
 import 'package:pj1/models/budget/price_history.dart';
-import 'package:pj1/services/price_alert_service.dart';
-import 'package:pj1/services/price_history_service.dart';
+import 'package:synchronized/synchronized.dart';
 import 'package:uuid/uuid.dart';
 
 class BudgetService {
@@ -139,15 +138,66 @@ class BudgetService {
     };
   }
 
-  Future<void> updateAllPrices(Budget budget) async {
-    final batch = _firestore.batch();
-    final docRef = _budgets.doc(budget.id);
+  Future<void> updateMultiplePrices(
+    String budgetId,
+    Map<String, Map<String, double>> updates, // {itemId: {locationId: price}}
+  ) async {
+    try {
+      final lock = Lock();
+      await lock.synchronized(() async {
+        final budget = await getBudget(budgetId);
+        if (budget == null) return;
 
-    // Atualizar documento inteiro com novos preços
-    batch.update(docRef, budget.toMap());
+        final batch = _firestore.batch();
+        final budgetRef = _budgets.doc(budgetId);
+        final historyRef = budgetRef.collection('price_history');
 
-    // Commit das alterações
-    await batch.commit();
+        // Processar todas as atualizações
+        bool hasChanges = false;
+        for (var itemId in updates.keys) {
+          final item = budget.items.firstWhere((i) => i.id == itemId);
+          final priceUpdates = updates[itemId]!;
+
+          for (var locationId in priceUpdates.keys) {
+            final newPrice = priceUpdates[locationId]!;
+            final currentPrice = item.prices[locationId];
+
+            // Só atualiza se o preço realmente mudou
+            if (currentPrice != newPrice) {
+              hasChanges = true;
+              item.prices[locationId] = newPrice;
+
+              // Registrar no histórico
+              batch.set(
+                historyRef.doc(),
+                PriceHistory(
+                  itemId: itemId,
+                  locationId: locationId,
+                  price: newPrice,
+                  date: DateTime.now(),
+                  variation: currentPrice != null
+                      ? ((newPrice - currentPrice) / currentPrice) * 100
+                      : 0,
+                ).toMap(),
+              );
+            }
+          }
+
+          // Atualizar melhor preço do item
+          item.updateBestPrice();
+        }
+
+        // Só commit se houver mudanças reais
+        if (hasChanges) {
+          budget.updateSummary();
+          batch.update(budgetRef, budget.toMap());
+          await batch.commit();
+        }
+      });
+    } catch (e) {
+      print('Erro ao atualizar múltiplos preços: $e');
+      rethrow;
+    }
   }
 
   Future<void> updateItemPrice(
@@ -157,38 +207,37 @@ class BudgetService {
     double price,
   ) async {
     try {
-      // Prevenir atualizações desnecessárias
-      final budget = await getBudget(budgetId);
-      if (budget == null) return;
+      final lock = Lock();
+      await lock.synchronized(() async {
+        // 1. Buscar orçamento
+        final budget = await getBudget(budgetId);
+        if (budget == null) return;
 
-      final item = budget.items.firstWhere((i) => i.id == itemId);
-      if (item.prices[locationId] == price)
-        return; // Se o preço não mudou, retorna
+        // 2. Encontrar o item
+        final item = budget.items.firstWhere((i) => i.id == itemId);
 
-      // Registrar histórico apenas se houver mudança real
-      final priceHistoryService = PriceHistoryService(userId: userId);
-      final variation = await priceHistoryService.calculatePriceVariation(
-        budgetId,
-        itemId,
-        locationId,
-        price,
-      );
+        // 3. Verificar se o preço realmente mudou
+        if (item.prices[locationId] == price) return;
 
-      // Atualizar o preço
-      item.prices[locationId] = price;
-      item.updateBestPrice();
-      budget.updateSummary();
+        // 4. Fazer todas as operações em uma única transação
+        final batch = _firestore.batch();
+        final budgetRef = _budgets.doc(budgetId);
 
-      // Fazer uma única atualização no Firestore
-      final batch = _firestore.batch();
-      final docRef = _budgets.doc(budgetId);
+        // 5. Atualizar APENAS o preço do local específico
+        item.prices[locationId] = price;
 
-      // Atualizar o documento do orçamento
-      batch.update(docRef, budget.toMap());
+        // 6. Atualizar melhor preço após a modificação
+        item.updateBestPrice();
+        budget.updateSummary();
 
-      // Registrar histórico de preço
-      final historyRef = docRef.collection('price_history').doc();
-      batch.set(
+        // 7. Registrar no histórico APENAS UMA VEZ
+        final historyRef = budgetRef.collection('price_history').doc();
+        final variation =
+            await _calculateVariation(budgetId, itemId, locationId, price);
+
+        // 8. Preparar as operações do batch
+        batch.update(budgetRef, budget.toMap());
+        batch.set(
           historyRef,
           PriceHistory(
             itemId: itemId,
@@ -196,25 +245,51 @@ class BudgetService {
             price: price,
             date: DateTime.now(),
             variation: variation,
-          ).toMap());
-
-      // Commit das alterações em uma única transação
-      await batch.commit();
-
-      // Notificar apenas se a variação for significativa
-      if (variation.abs() >= 5.0) {
-        final location = budget.locations.firstWhere((l) => l.id == locationId);
-        final alertService = PriceAlertService();
-        await alertService.initialize();
-        await alertService.showPriceAlert(
-          item.name,
-          location.name,
-          variation,
+          ).toMap(),
         );
-      }
+
+        // 9. Executar todas as operações de uma vez
+        await batch.commit();
+
+        print('Preço atualizado com sucesso:');
+        print('- Item: ${item.name}');
+        print('- Local: $locationId');
+        print('- Preço: $price');
+        print('- Variação: $variation%');
+      });
     } catch (e) {
       print('Erro ao atualizar preço: $e');
       rethrow;
+    }
+  }
+
+  // Método auxiliar para calcular variação
+  Future<double> _calculateVariation(
+    String budgetId,
+    String itemId,
+    String locationId,
+    double newPrice,
+  ) async {
+    try {
+      // Buscar apenas o histórico do item/local específico
+      final snapshot = await _budgets
+          .doc(budgetId)
+          .collection('price_history')
+          .where('itemId', isEqualTo: itemId)
+          .where('locationId', isEqualTo: locationId)
+          .orderBy('date', descending: true)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isEmpty) return 0;
+
+      final lastPrice = snapshot.docs.first.data()['price']?.toDouble() ?? 0;
+      if (lastPrice == 0) return 0;
+
+      return ((newPrice - lastPrice) / lastPrice) * 100;
+    } catch (e) {
+      print('Erro ao calcular variação: $e');
+      return 0;
     }
   }
 }
