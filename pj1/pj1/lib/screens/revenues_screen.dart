@@ -59,6 +59,7 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             FloatingActionButton.extended(
+              heroTag: 'add_revenue', // Adicione esta linha
               onPressed: () => showFormModal(),
               icon: const Icon(Icons.add),
               label: const Text(
@@ -68,6 +69,7 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
               backgroundColor: Theme.of(context).colorScheme.primary,
             ),
             FloatingActionButton.extended(
+              heroTag: 'goto_costs', // Adicione esta linha
               onPressed: () {
                 Navigator.pushNamed(context, '/costs');
               },
