@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pj1/models/budget/budget.dart';
 import 'package:pj1/models/budget/budget_item.dart';
 import 'package:pj1/models/budget/budget_location.dart';
@@ -14,29 +15,42 @@ class BudgetService {
 
   BudgetService({required this.userId});
 
-  // Referência da coleção de orçamentos do usuário
-  CollectionReference<Map<String, dynamic>> get _budgets =>
-      _firestore.collection('users/$userId/budgets');
-
   // Criar novo orçamento
-  Future<Budget> createBudget(String title) async {
-    final budget = Budget(
-      id: const Uuid().v4(),
-      title: title,
-      date: DateTime.now(),
-      locations: [],
-      items: [],
-      summary: BudgetSummary(
-        totalOriginal: 0,
-        totalOptimized: 0,
-        savings: 0,
-        totalByLocation: {},
-      ),
-      userId: userId,
-    );
 
-    await _budgets.doc(budget.id).set(budget.toMap());
-    return budget;
+  CollectionReference<Map<String, dynamic>> get _budgets =>
+      _firestore.collection('users').doc(userId).collection('budgets');
+
+  Future<Budget> createBudget(String title) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw Exception('Usuário não autenticado');
+      }
+
+      final budget = Budget(
+        id: const Uuid().v4(),
+        title: title,
+        date: DateTime.now(),
+        locations: [],
+        items: [],
+        summary: BudgetSummary(
+          totalOriginal: 0,
+          totalOptimized: 0,
+          savings: 0,
+          totalByLocation: {},
+        ),
+        userId: userId,
+      );
+
+      print('Tentando criar orçamento: ${budget.toMap()}');
+      await _budgets.doc(budget.id).set(budget.toMap());
+      print('Orçamento criado com sucesso!');
+
+      return budget;
+    } catch (e) {
+      print('Erro ao criar orçamento: $e');
+      throw e;
+    }
   }
 
   // Buscar todos os orçamentos do usuário
