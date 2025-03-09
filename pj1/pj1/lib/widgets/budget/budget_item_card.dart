@@ -100,19 +100,25 @@ class BudgetItemCard extends StatelessWidget {
                     initialUnit: item.unit,
                     initialQuantity: item.quantity,
                     onUnitChanged: (unit, quantity) {
-                      // Atualiza os preços com a nova unidade
-                      for (var entry in item.prices.entries) {
-                        final convertedPrice = BudgetUtils.convertUnit(
-                          item.prices[entry.key]!,
-                          item.unit,
-                          unit,
-                        );
-                        onPriceUpdate!(entry.key, convertedPrice);
-                      }
+                      // Prevenir múltiplas chamadas
+                      if (unit != item.unit || quantity != item.quantity) {
+                        // Atualizar preços para a nova unidade
+                        final oldUnit = item.unit;
+                        for (var entry in item.prices.entries) {
+                          final convertedPrice = BudgetUtils.convertUnit(
+                            item.prices[entry.key]!,
+                            oldUnit,
+                            unit,
+                          );
+                          if (onPriceUpdate != null) {
+                            onPriceUpdate!(entry.key, convertedPrice);
+                          }
+                        }
 
-                      // Atualiza a unidade do item
-                      item.unit = unit;
-                      item.quantity = quantity;
+                        // Atualizar a unidade e quantidade do item
+                        item.unit = unit;
+                        item.quantity = quantity;
+                      }
                     },
                   ),
                   const SizedBox(height: 16),
