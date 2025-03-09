@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:pj1/models/costs.dart';
 import 'package:pj1/models/revenues.dart';
-import 'package:pj1/models/revenuesdart';
 
 class DashBoardScreen extends StatefulWidget {
   final String user;
@@ -92,8 +91,8 @@ class DashBoardScreenState extends State<DashBoardScreen> {
   List<Revenues> filterRevenuesByMonth(int month) {
     return listRevenues.where((revenues) {
       DateTime revenuesDate = DateFormat('dd/MM/yyyy')
-          .parse(Revenues.data); // Adapte o formato se necessário
-      return RevenuesDate.month == month;
+          .parse(revenues.data); // Adapte o formato se necessário
+      return revenuesDate.month == month;
     }).toList();
   }
 
