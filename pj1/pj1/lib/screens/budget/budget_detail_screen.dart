@@ -81,6 +81,7 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'add_budget_item', // Adicione esta linha
         onPressed: () {
           if (_tabController.index == 0) {
             _showAddLocationDialog();
