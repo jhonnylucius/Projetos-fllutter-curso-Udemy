@@ -156,48 +156,65 @@ class BudgetService {
     String locationId,
     double price,
   ) async {
-    final budget = await getBudget(budgetId);
-    if (budget == null) return;
+    try {
+      // Prevenir atualizações desnecessárias
+      final budget = await getBudget(budgetId);
+      if (budget == null) return;
 
-    final priceHistoryService = PriceHistoryService(userId: userId);
-    final variation = await priceHistoryService.calculatePriceVariation(
-      budgetId,
-      itemId,
-      locationId,
-      price,
-    );
-
-    // Registrar histórico
-    await priceHistoryService.addPriceRecord(
-      budgetId,
-      PriceHistory(
-        itemId: itemId,
-        locationId: locationId,
-        price: price,
-        date: DateTime.now(),
-        variation: variation,
-      ),
-    );
-
-    // Se a variação for significativa, notificar
-    if (variation.abs() >= 5.0) {
       final item = budget.items.firstWhere((i) => i.id == itemId);
-      final location = budget.locations.firstWhere((l) => l.id == locationId);
+      if (item.prices[locationId] == price)
+        return; // Se o preço não mudou, retorna
 
-      final alertService = PriceAlertService();
-      await alertService.showPriceAlert(
-        item.name,
-        location.name,
-        variation,
+      // Registrar histórico apenas se houver mudança real
+      final priceHistoryService = PriceHistoryService(userId: userId);
+      final variation = await priceHistoryService.calculatePriceVariation(
+        budgetId,
+        itemId,
+        locationId,
+        price,
       );
+
+      // Atualizar o preço
+      item.prices[locationId] = price;
+      item.updateBestPrice();
+      budget.updateSummary();
+
+      // Fazer uma única atualização no Firestore
+      final batch = _firestore.batch();
+      final docRef = _budgets.doc(budgetId);
+
+      // Atualizar o documento do orçamento
+      batch.update(docRef, budget.toMap());
+
+      // Registrar histórico de preço
+      final historyRef = docRef.collection('price_history').doc();
+      batch.set(
+          historyRef,
+          PriceHistory(
+            itemId: itemId,
+            locationId: locationId,
+            price: price,
+            date: DateTime.now(),
+            variation: variation,
+          ).toMap());
+
+      // Commit das alterações em uma única transação
+      await batch.commit();
+
+      // Notificar apenas se a variação for significativa
+      if (variation.abs() >= 5.0) {
+        final location = budget.locations.firstWhere((l) => l.id == locationId);
+        final alertService = PriceAlertService();
+        await alertService.initialize();
+        await alertService.showPriceAlert(
+          item.name,
+          location.name,
+          variation,
+        );
+      }
+    } catch (e) {
+      print('Erro ao atualizar preço: $e');
+      rethrow;
     }
-
-    // Atualizar preço
-    final item = budget.items.firstWhere((item) => item.id == itemId);
-    item.prices[locationId] = price;
-    item.updateBestPrice();
-    budget.updateSummary();
-
-    await _budgets.doc(budgetId).update(budget.toMap());
   }
 }
