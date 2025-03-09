@@ -16,6 +16,7 @@ import 'package:pj1/screens/login_screen.dart';
 import 'package:pj1/screens/revenues_screen.dart';
 import 'package:pj1/screens/verifyemail_screen.dart';
 import 'package:pj1/services/budget_service.dart';
+import 'package:pj1/services/price_alert_service.dart';
 import 'package:pj1/widgets/terms_of_service_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,10 +26,11 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // Inicializar serviço de notificações
+  final alertService = PriceAlertService();
+  await alertService.initialize();
 
-  final budgetService =
-      BudgetService(userId: FirebaseAuth.instance.currentUser!.uid);
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   runApp(MyApp());
 }
@@ -51,31 +53,51 @@ class MyApp extends StatelessWidget {
       title: 'GestorFinanceiro',
       routes: {
         '/': (context) => const RoteadorTelas(),
-        '/dashboard': (context) =>
-            DashBoardScreen(user: FirebaseAuth.instance.currentUser?.uid ?? ''),
-        '/costs': (context) =>
-            CostsScreen(user: FirebaseAuth.instance.currentUser!),
-        '/Revenues': (context) =>
-            RevenuesScreen(user: FirebaseAuth.instance.currentUser!),
-        '/home': (context) => HomeScreen(
-            user: FirebaseAuth
-                .instance.currentUser!), // Ajustar para passar o usuário atual
-        '/verify-email': (context) => VerifyEmailScreen(
-            user: FirebaseAuth.instance
-                .currentUser!), // Adicionar rota para verificação de email
-        '/login': (context) =>
-            LoginScreen(), // Adicionar rota para verificação de email
-        '/budget/list': (context) => BudgetListScreen(
-              user: FirebaseAuth.instance.currentUser!,
-            ),
-        '/budget/detail': (context) => BudgetDetailScreen(
-              budget: ModalRoute.of(context)!.settings.arguments as Budget,
-            ),
-        '/budget/compare': (context) => BudgetCompareScreen(
-              budget: ModalRoute.of(context)!.settings.arguments as Budget,
-              budgetService:
-                  BudgetService(userId: FirebaseAuth.instance.currentUser!.uid),
-            ),
+        '/dashboard': (context) {
+          final user = FirebaseAuth.instance.currentUser;
+          return DashBoardScreen(user: user?.uid ?? '');
+        },
+        '/costs': (context) {
+          final user = FirebaseAuth.instance.currentUser;
+          if (user == null) return LoginScreen();
+          return CostsScreen(user: user);
+        },
+        '/Revenues': (context) {
+          final user = FirebaseAuth.instance.currentUser;
+          if (user == null) return LoginScreen();
+          return RevenuesScreen(user: user);
+        },
+        '/home': (context) {
+          final user = FirebaseAuth.instance.currentUser;
+          if (user == null) return LoginScreen();
+          return HomeScreen(user: user);
+        },
+        '/verify-email': (context) {
+          final user = FirebaseAuth.instance.currentUser;
+          if (user == null) return LoginScreen();
+          return VerifyEmailScreen(user: user);
+        },
+        '/login': (context) => LoginScreen(),
+        // Rotas do orçamento
+        '/budget/list': (context) {
+          final user = FirebaseAuth.instance.currentUser;
+          if (user == null) return LoginScreen();
+          return BudgetListScreen(user: user);
+        },
+        '/budget/detail': (context) {
+          final budget = ModalRoute.of(context)?.settings.arguments as Budget?;
+          if (budget == null) return LoginScreen();
+          return BudgetDetailScreen(budget: budget);
+        },
+        '/budget/compare': (context) {
+          final user = FirebaseAuth.instance.currentUser;
+          final budget = ModalRoute.of(context)?.settings.arguments as Budget?;
+          if (user == null || budget == null) return LoginScreen();
+          return BudgetCompareScreen(
+            budget: budget,
+            budgetService: BudgetService(userId: user.uid),
+          );
+        },
       },
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -97,10 +119,16 @@ class MyApp extends StatelessWidget {
         ),
         cardTheme: CardTheme(
           elevation: 4,
-          margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
+        ),
+        // Estilo dos botões de ação flutuante
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.deepPurple,
+          foregroundColor: Colors.white,
+          elevation: 4,
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
