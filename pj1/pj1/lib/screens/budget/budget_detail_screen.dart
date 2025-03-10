@@ -193,13 +193,29 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
   Future<void> _showAddItemDialog() async {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Adicionar Item'),
-        content: AddItemForm(
-          onItemAdded: (item) async {
-            await _addItem(item);
-            if (mounted) Navigator.pop(context);
-          },
+      builder: (context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: AddItemForm(
+              onItemsAdded: (items) async {
+                for (final item in items) {
+                  await _addItem(item);
+                }
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          '${items.length} itens adicionados com sucesso!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
         ),
       ),
     );
