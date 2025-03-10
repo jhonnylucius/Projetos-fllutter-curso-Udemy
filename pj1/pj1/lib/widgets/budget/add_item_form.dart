@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:pj1/data/default_items.dart'; // Adicione este import
 import 'package:pj1/models/budget/budget_item.dart';
+import 'package:pj1/models/budget/item_template.dart';
+import 'package:pj1/services/item_template_service.dart';
 import 'package:uuid/uuid.dart';
 
 class AddItemForm extends StatefulWidget {
-  final Function(BudgetItem) onItemAdded;
+  final Function(List<BudgetItem>) onItemsAdded;
 
   const AddItemForm({
     super.key,
-    required this.onItemAdded,
+    required this.onItemsAdded,
   });
 
   @override
@@ -16,144 +17,160 @@ class AddItemForm extends StatefulWidget {
 }
 
 class _AddItemFormState extends State<AddItemForm> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _quantityController =
-      TextEditingController(text: '1.0'); // Adicionar controller
-  String _selectedCategory = 'Alimentos';
-  String _selectedUnit = 'un'; // Adicionar unidade padrão
+  final TextEditingController _searchController = TextEditingController();
+  String _selectedCategory = '';
+  final List<ItemTemplate> _selectedItems = [];
+  List<ItemTemplate> _filteredItems = [];
 
-  final _categories = [
-    'Alimentos',
-    'Limpeza',
-    'Higiene',
-    'Bebidas',
-    'Outros',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _selectedCategory = ItemTemplateService.getCategories().first;
+    _updateFilteredItems();
+  }
+
+  void _updateFilteredItems() {
+    if (_searchController.text.isEmpty) {
+      _filteredItems =
+          ItemTemplateService.getTemplatesByCategory(_selectedCategory);
+    } else {
+      _filteredItems = ItemTemplateService.searchTemplates(
+        _searchController.text,
+        category: _selectedCategory,
+      );
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextFormField(
-            controller: _nameController,
-            decoration: const InputDecoration(
-              labelText: 'Nome do Item',
-              hintText: 'Ex: Arroz',
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Por favor, insira o nome do item';
-              }
-              return null;
-            },
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Dropdown de categorias
+        DropdownButtonFormField<String>(
+          value: _selectedCategory,
+          decoration: const InputDecoration(
+            labelText: 'Categoria',
+            border: OutlineInputBorder(),
           ),
-          const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            value: _selectedCategory,
-            decoration: const InputDecoration(
-              labelText: 'Categoria',
-            ),
-            items: _categories.map((category) {
-              return DropdownMenuItem(
-                value: category,
-                child: Text(category),
-              );
-            }).toList(),
-            onChanged: (value) {
+          items: ItemTemplateService.getCategories().map((category) {
+            return DropdownMenuItem(
+              value: category,
+              child: Text(category),
+            );
+          }).toList(),
+          onChanged: (value) {
+            if (value != null) {
               setState(() {
-                _selectedCategory = value!;
+                _selectedCategory = value;
+                _updateFilteredItems();
               });
-            },
+            }
+          },
+        ),
+        const SizedBox(height: 16),
+
+        // Campo de pesquisa
+        TextField(
+          controller: _searchController,
+          decoration: InputDecoration(
+            labelText: 'Pesquisar itens',
+            hintText: 'Digite o nome, categoria ou subcategoria...',
+            prefixIcon: const Icon(Icons.search),
+            border: const OutlineInputBorder(),
+            suffixIcon: _searchController.text.isNotEmpty
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      _searchController.clear();
+                      _updateFilteredItems();
+                    },
+                  )
+                : null,
           ),
-          const SizedBox(height: 16),
-          // Adicionar campos de quantidade e unidade
-          Row(
+          onChanged: (value) => _updateFilteredItems(),
+        ),
+        const SizedBox(height: 16),
+
+        // Lista de itens com checkbox
+        // Mostrar resultados com mais detalhes
+        Expanded(
+          child: _filteredItems.isEmpty
+              ? const Center(
+                  child: Text('Nenhum item encontrado'),
+                )
+              : ListView.builder(
+                  itemCount: _filteredItems.length,
+                  itemBuilder: (context, index) {
+                    final item = _filteredItems[index];
+                    final isSelected = _selectedItems.contains(item);
+
+                    return CheckboxListTile(
+                      value: isSelected,
+                      title: Text(item.name),
+                      subtitle: Text(
+                        '${item.subcategory ?? item.category} • ${item.defaultQuantity} ${item.defaultUnit}',
+                      ),
+                      secondary: isSelected
+                          ? const Icon(Icons.check_circle, color: Colors.green)
+                          : null,
+                      onChanged: (checked) {
+                        setState(() {
+                          if (checked!) {
+                            _selectedItems.add(item);
+                          } else {
+                            _selectedItems.remove(item);
+                          }
+                        });
+                      },
+                    );
+                  },
+                ),
+        ),
+
+        // Botões de ação
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                flex: 2,
-                child: TextFormField(
-                  controller: _quantityController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Quantidade',
-                    hintText: 'Ex: 1.5',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Informe a quantidade';
-                    }
-                    if (double.tryParse(value) == null) {
-                      return 'Quantidade inválida';
-                    }
-                    return null;
-                  },
-                ),
+              Text(
+                'Selecionados: ${_selectedItems.length}',
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: DropdownButtonFormField<String>(
-                  value: _selectedUnit,
-                  decoration: const InputDecoration(
-                    labelText: 'Unidade',
-                  ),
-                  items: [
-                    ...defaultUnits['Peso']!.map((unit) => DropdownMenuItem(
-                          value: unit,
-                          child: Text(unit),
-                        )),
-                    ...defaultUnits['Volume']!.map((unit) => DropdownMenuItem(
-                          value: unit,
-                          child: Text(unit),
-                        )),
-                    const DropdownMenuItem(value: 'un', child: Text('un')),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedUnit = value;
-                      });
-                    }
-                  },
-                ),
+              FilledButton(
+                onPressed: _selectedItems.isEmpty ? null : _addItems,
+                child: const Text('Adicionar Selecionados'),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: _submitForm,
-            child: const Text('Adicionar Item'),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      final item = BudgetItem(
-        id: const Uuid().v4(),
-        name: _nameController.text.trim(),
-        category: _selectedCategory,
-        unit: _selectedUnit,
-        quantity: double.tryParse(_quantityController.text) ?? 1.0,
-        prices: {},
-        bestPrice: 0,
-        bestPriceLocation: '',
-      );
+  void _addItems() {
+    final items = _selectedItems
+        .map((template) => BudgetItem(
+              id: const Uuid().v4(),
+              name: template.name,
+              category: template.category,
+              unit: template.defaultUnit,
+              quantity: template.defaultQuantity,
+              prices: {},
+              bestPrice: 0,
+              bestPriceLocation: '',
+            ))
+        .toList();
 
-      widget.onItemAdded(item);
-      Navigator.of(context).pop(); // Fecha o diálogo após adicionar
-    }
+    widget.onItemsAdded(items);
+    Navigator.of(context).pop();
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _quantityController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 }
