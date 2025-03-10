@@ -60,6 +60,7 @@ class _PriceComparisonTableState extends State<PriceComparisonTable> {
         key: _screenShotKey,
         child: SingleChildScrollView(
           controller: _verticalController,
+          scrollDirection: Axis.vertical,
           child: SingleChildScrollView(
             controller: _horizontalController,
             scrollDirection: Axis.horizontal,
@@ -194,8 +195,9 @@ class _PriceComparisonTableState extends State<PriceComparisonTable> {
         curve: Curves.linear,
       );
 
-      // 2. Aguardar renderização
-      await Future.delayed(const Duration(milliseconds: 100));
+      // 2. Aguardar renderização completa
+      await Future.delayed(
+          const Duration(milliseconds: 500)); // Aumente o delay se necessário
 
       // 3. Capturar imagem
       final boundary = _screenShotKey.currentContext?.findRenderObject()
