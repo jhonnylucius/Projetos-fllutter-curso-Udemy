@@ -2,19 +2,21 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pj1/controller/screen_shot_controller.dart'; // Adicione esta linha
 import 'package:pj1/models/budget/budget.dart';
 import 'package:pj1/models/budget/budget_location.dart';
 import 'package:pj1/services/budget_service.dart';
 import 'package:pj1/utils/budget_utils.dart';
 import 'package:pj1/widgets/budget/budget_summary_card.dart';
 import 'package:pj1/widgets/budget/price_comparison_table.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:screenshot/screenshot.dart';
 
 class BudgetCompareScreen extends StatelessWidget {
   final Budget budget;
   final currencyFormat = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
-
   final BudgetService budgetService;
+  final CustomScreenshotController screenshotController =
+      CustomScreenshotController(); // Adicione esta linha
 
   BudgetCompareScreen({
     super.key,
@@ -23,43 +25,41 @@ class BudgetCompareScreen extends StatelessWidget {
   });
 
   @override
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Comparação - ${budget.title}'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => _refreshPrices(context),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildOverallSummary(context),
-              const SizedBox(height: 16),
-              _buildSavingsAnalysis(),
-              const SizedBox(height: 16),
-              _buildBestPricesComparison(),
-              const SizedBox(height: 16),
-              _buildLocationComparison(),
-              const SizedBox(height: 16),
-              _buildDetailedPriceTable(),
-            ],
+    return Screenshot(
+      controller: screenshotController.screenshotController,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Comparação - ${budget.title}'),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Colors.white,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () => _refreshPrices(context),
+            ),
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildOverallSummary(context),
+                const SizedBox(height: 16),
+                _buildSavingsAnalysis(),
+                const SizedBox(height: 16),
+                _buildBestPricesComparison(),
+                const SizedBox(height: 16),
+                _buildLocationComparison(),
+                const SizedBox(height: 16),
+                _buildDetailedPriceTable(),
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'share_report', // Adicione esta linha
-        onPressed: () => _shareReport(context),
-        label: const Text('Compartilhar'),
-        icon: const Icon(Icons.share),
       ),
     );
   }
@@ -331,58 +331,6 @@ class BudgetCompareScreen extends StatelessWidget {
           ),
         );
       }
-    }
-  }
-
-  Future<void> _shareReport(BuildContext context) async {
-    try {
-      final report = StringBuffer();
-
-      // Cabeçalho
-      report.writeln('📊 Relatório de Comparação - ${budget.title}');
-      report.writeln(
-          'Data: ${DateFormat('dd/MM/yyyy').format(DateTime.now())}\n');
-
-      // Resumo
-      report.writeln('💰 Resumo Geral:');
-      report.writeln(
-          'Total Original: ${currencyFormat.format(budget.summary.totalOriginal)}');
-      report.writeln(
-          'Melhor Cenário: ${currencyFormat.format(budget.summary.totalOptimized)}');
-      report.writeln(
-          'Economia Total: ${currencyFormat.format(budget.summary.savings)}');
-
-      // Detalhes por item
-      report.writeln('\n📝 Detalhes por Item:');
-      for (var item in budget.items) {
-        report.writeln('\n${item.name}:');
-        report.writeln(
-            '  Melhor preço: ${currencyFormat.format(item.bestPrice)}');
-        report.writeln(
-            '  Economia: ${currencyFormat.format(item.calculateSavings())}');
-        report.writeln('  Local: ${budget.locations.firstWhere(
-              (loc) => loc.id == item.bestPriceLocation,
-              orElse: () => BudgetLocation(
-                id: '',
-                name: 'N/A',
-                address: '',
-                priceDate: DateTime.now(),
-              ),
-            ).name}');
-      }
-
-      // Compartilhar
-      await Share.share(
-        report.toString(),
-        subject: 'Relatório de Economia - ${budget.title}',
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao compartilhar: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
     }
   }
 }
