@@ -7,7 +7,6 @@ import 'package:pj1/services/price_alert_service.dart';
 import 'package:pj1/services/price_history_service.dart';
 import 'package:pj1/widgets/budget/add_item_form.dart';
 import 'package:pj1/widgets/budget/budget_item_card.dart';
-import 'package:pj1/widgets/budget/budget_summary_card.dart';
 import 'package:uuid/uuid.dart';
 
 class BudgetDetailScreen extends StatefulWidget {
@@ -25,11 +24,12 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
   late BudgetService _budgetService;
   late PriceHistoryService _historyService;
   late PriceAlertService _alertService;
+  bool _isEditingCard = false; // Novo estado
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _budgetService = BudgetService(userId: widget.budget.userId);
     _historyService = PriceHistoryService(userId: widget.budget.userId);
     _alertService = PriceAlertService();
@@ -43,11 +43,10 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
         title: Text(widget.budget.title),
         actions: [
           IconButton(
-            icon: const Icon(Icons.compare_arrows),
-            onPressed: () => Navigator.pushNamed(
-              context,
-              '/budget/compare',
-              arguments: widget.budget,
+            icon: const Icon(Icons.home),
+            onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
+              '/home',
+              (route) => false,
             ),
           ),
         ],
@@ -56,16 +55,13 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
           tabs: const [
             Tab(text: 'Locais'),
             Tab(text: 'Itens'),
+            Tab(text: 'Visão Geral'),
           ],
         ),
       ),
       body: Column(
         children: [
           // Resumo no topo
-          BudgetSummaryCard(
-            summary: widget.budget.summary,
-            title: 'Resumo do Orçamento',
-          ),
 
           // Conteúdo das tabs
           Expanded(
@@ -74,28 +70,42 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
               children: [
                 _buildLocationsTab(),
                 _buildItemsTab(),
+                Center(
+                  // Nova tab
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.compare_arrows),
+                    label: const Text('Ver Comparativo Completo'),
+                    onPressed: () => Navigator.pushNamed(
+                      context,
+                      '/budget/compare',
+                      arguments: widget.budget,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'add_budget_item', // Adicione esta linha
-        onPressed: () {
-          if (_tabController.index == 0) {
-            _showAddLocationDialog();
-          } else {
-            _showAddItemDialog();
-          }
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: _isEditingCard
+          ? null
+          : FloatingActionButton(
+              heroTag: 'add_budget_item',
+              onPressed: () {
+                if (_tabController.index == 0) {
+                  _showAddLocationDialog();
+                } else {
+                  _showAddItemDialog();
+                }
+              },
+              child: const Icon(Icons.add),
+            ),
     );
   }
 
   Widget _buildLocationsTab() {
     return ListView.builder(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 80),
       itemCount: widget.budget.locations.length,
       itemBuilder: (context, index) {
         final location = widget.budget.locations[index];
@@ -119,7 +129,7 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
     };
 
     return ListView.builder(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 80),
       itemCount: widget.budget.items.length,
       itemBuilder: (context, index) {
         final item = widget.budget.items[index];
@@ -132,6 +142,11 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
           onDelete: () => _removeItem(item.id),
           onPriceUpdate: (locationId, price) =>
               _updateItemPrice(item.id, locationId, price),
+          onEditingStateChange: (isEditing) {
+            setState(() {
+              _isEditingCard = isEditing;
+            });
+          },
         );
       },
     );

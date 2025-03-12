@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:logger/logger.dart';
 import 'package:pj1/firebase_options.dart';
 import 'package:pj1/models/budget/budget.dart';
 import 'package:pj1/screens/budget/budget_compare_screen.dart';
@@ -30,17 +28,7 @@ Future<void> main() async {
   final alertService = PriceAlertService();
   await alertService.initialize();
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
   runApp(MyApp());
-}
-
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  Logger().e('### Mensagem recebida em segundo plano: ${message.messageId}');
 }
 
 class MyApp extends StatelessWidget {

@@ -112,12 +112,16 @@ class _PriceComparisonTableState extends State<PriceComparisonTable> {
                         width: 1,
                       ),
                       columnWidths: {
-                        0: const FixedColumnWidth(120),
+                        0: const FixedColumnWidth(
+                            50), // Nova coluna para número de ordem
+                        1: const FixedColumnWidth(
+                            120), // Coluna do item (ajustada do índice 0 para 1)
                         for (var i = 0; i < widget.budget.locations.length; i++)
-                          i + 1: const FixedColumnWidth(100),
-                        widget.budget.locations.length + 1:
-                            const FixedColumnWidth(120),
+                          i + 2: const FixedColumnWidth(
+                              100), // Ajustado do índice i + 1 para i + 2
                         widget.budget.locations.length + 2:
+                            const FixedColumnWidth(120),
+                        widget.budget.locations.length + 3:
                             const FixedColumnWidth(120),
                       },
                       children: [
@@ -128,6 +132,8 @@ class _PriceComparisonTableState extends State<PriceComparisonTable> {
                                 .surfaceContainerHighest,
                           ),
                           children: [
+                            _buildHeaderCell(
+                                'Nº'), // Nova coluna de número de ordem
                             _buildHeaderCell('Item'),
                             ...widget.budget.locations
                                 .map((loc) => _buildHeaderCell(loc.name)),
@@ -135,13 +141,19 @@ class _PriceComparisonTableState extends State<PriceComparisonTable> {
                             _buildHeaderCell('Melhor Preço', isGreen: true),
                           ],
                         ),
-                        ...sortedItems.map((item) {
+                        // Na construção da TableRow dos itens, modifique a chamada do número de ordem
+                        ...sortedItems.asMap().entries.map((entry) {
+                          final index = entry.key + 1;
+                          final item = entry.value;
                           final bestLocation = widget.budget.locations
                               .firstWhere(
                                   (loc) => loc.id == item.bestPriceLocation);
 
                           return TableRow(
                             children: [
+                              _buildCell('$index',
+                                  isOrderNumber:
+                                      true), // Número de ordem centralizado
                               _buildCell(item.name),
                               ...widget.budget.locations
                                   .map((loc) => _buildCell(
@@ -158,7 +170,7 @@ class _PriceComparisonTableState extends State<PriceComparisonTable> {
                             ],
                           );
                         }),
-                        // Adicionar linha de totais
+                        // Na linha de totais
                         TableRow(
                           decoration: BoxDecoration(
                             color: Theme.of(context)
@@ -166,6 +178,8 @@ class _PriceComparisonTableState extends State<PriceComparisonTable> {
                                 .surfaceContainerHighest,
                           ),
                           children: [
+                            _buildHeaderCell(
+                                '-'), // Célula vazia para a coluna de número de ordem
                             _buildHeaderCell('Totais'),
                             ...widget.budget.locations.map(
                               (loc) => _buildHeaderCell(
@@ -194,7 +208,8 @@ class _PriceComparisonTableState extends State<PriceComparisonTable> {
 
   Widget _buildHeaderCell(String text, {bool isGreen = false}) {
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      alignment: Alignment.center,
       child: Text(
         text,
         style: TextStyle(
@@ -207,16 +222,22 @@ class _PriceComparisonTableState extends State<PriceComparisonTable> {
   }
 
   Widget _buildCell(String text,
-      {bool isHighlighted = false, bool isGreen = false}) {
+      {bool isHighlighted = false,
+      bool isGreen = false,
+      bool isOrderNumber = false}) {
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      alignment: isOrderNumber ? Alignment.center : Alignment.centerLeft,
+      constraints: const BoxConstraints(),
       child: Text(
         text,
         style: TextStyle(
           color: isHighlighted || isGreen ? Colors.green : null,
-          fontWeight: isHighlighted || isGreen ? FontWeight.bold : null,
+          fontWeight: isOrderNumber || isHighlighted || isGreen
+              ? FontWeight.bold
+              : null,
         ),
-        textAlign: TextAlign.center,
+        textAlign: isOrderNumber ? TextAlign.center : TextAlign.left,
       ),
     );
   }

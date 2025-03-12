@@ -132,16 +132,18 @@ class _AddItemFormState extends State<AddItemForm> {
         // Botões de ação
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: [
               Text(
                 'Selecionados: ${_selectedItems.length}',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              FilledButton(
-                onPressed: _selectedItems.isEmpty ? null : _addItems,
-                child: const Text('Adicionar Selecionados'),
+              const SizedBox(height: 8),
+              Center(
+                child: FilledButton(
+                  onPressed: _selectedItems.isEmpty ? null : _addItems,
+                  child: const Text('Adicionar Selecionados'),
+                ),
               ),
             ],
           ),

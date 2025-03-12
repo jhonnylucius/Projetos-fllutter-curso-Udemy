@@ -21,6 +21,28 @@ class BudgetItem {
     required this.bestPrice,
   });
 
+  BudgetItem copyWith({
+    String? id,
+    String? name,
+    String? category,
+    String? unit,
+    double? quantity,
+    Map<String, double>? prices,
+    String? bestPriceLocation,
+    double? bestPrice,
+  }) {
+    return BudgetItem(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      category: category ?? this.category,
+      unit: unit ?? this.unit,
+      quantity: quantity ?? this.quantity,
+      prices: prices ?? Map<String, double>.from(this.prices),
+      bestPriceLocation: bestPriceLocation ?? this.bestPriceLocation,
+      bestPrice: bestPrice ?? this.bestPrice,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'id': id,

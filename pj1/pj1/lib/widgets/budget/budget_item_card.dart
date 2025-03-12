@@ -5,9 +5,8 @@ import 'package:pj1/models/budget/budget_item.dart';
 import 'package:pj1/models/budget/price_history.dart';
 import 'package:pj1/services/price_history_service.dart';
 import 'package:pj1/utils/budget_utils.dart';
-import 'package:pj1/widgets/budget/unit_selector.dart';
 
-class BudgetItemCard extends StatelessWidget {
+class BudgetItemCard extends StatefulWidget {
   final BudgetItem item;
   final Map<String, String> locationNames;
   final VoidCallback? onDelete;
@@ -15,7 +14,8 @@ class BudgetItemCard extends StatelessWidget {
   final currencyFormat = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
   final String budgetId;
   final PriceHistoryService historyService;
-  final Budget budget; //
+  final Budget budget;
+  final Function(bool)? onEditingStateChange;
 
   BudgetItemCard({
     super.key,
@@ -26,170 +26,165 @@ class BudgetItemCard extends StatelessWidget {
     required this.budgetId,
     required this.historyService,
     required this.budget,
+    this.onEditingStateChange,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ExpansionTile(
-        title: Text(item.name),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  State<BudgetItemCard> createState() => _BudgetItemCardState();
+}
+
+class _BudgetItemCardState extends State<BudgetItemCard> {
+  bool _isEditing = false;
+  final Map<String, TextEditingController> _priceControllers = {};
+  bool _hasChanges = false;
+  late TextEditingController _quantityController;
+  late String _selectedUnit;
+  final currencyFormat = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
+  bool _isExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    for (var entry in widget.locationNames.entries) {
+      _priceControllers[entry.key] = TextEditingController(
+        text: widget.item.prices[entry.key]?.toString() ?? '',
+      );
+    }
+    _quantityController = TextEditingController(
+      text: widget.item.quantity.toString(),
+    );
+    _selectedUnit = widget.item.unit;
+  }
+
+  @override
+  void dispose() {
+    _priceControllers.values.forEach((controller) => controller.dispose());
+    _quantityController.dispose();
+    super.dispose();
+  }
+
+  void _toggleEdit() {
+    setState(() {
+      _isEditing = !_isEditing;
+      widget.onEditingStateChange?.call(_isEditing); // Notifica mudança
+      if (!_isEditing) {
+        for (var entry in widget.locationNames.entries) {
+          _priceControllers[entry.key]?.text =
+              widget.item.prices[entry.key]?.toString() ?? '';
+        }
+        _quantityController.text = widget.item.quantity.toString();
+        _selectedUnit = widget.item.unit;
+      }
+      _hasChanges = false;
+    });
+  }
+
+  void _saveChanges() {
+    if (!_hasChanges) return;
+
+    final newQuantity =
+        double.tryParse(_quantityController.text) ?? widget.item.quantity;
+    final oldUnit = widget.item.unit;
+    final newUnit = _selectedUnit;
+
+    if (oldUnit != newUnit) {
+      for (var entry in _priceControllers.entries) {
+        final currentPrice =
+            double.tryParse(_priceControllers[entry.key]!.text) ??
+                widget.item.prices[entry.key]!;
+        if (currentPrice != null) {
+          final convertedPrice = BudgetUtils.convertUnit(
+            currentPrice,
+            oldUnit,
+            newUnit,
+          );
+          widget.onPriceUpdate?.call(entry.key, convertedPrice);
+        }
+      }
+    } else {
+      for (var entry in _priceControllers.entries) {
+        final newPrice = double.tryParse(_priceControllers[entry.key]!.text);
+        if (newPrice != null && newPrice != widget.item.prices[entry.key]) {
+          widget.onPriceUpdate?.call(entry.key, newPrice);
+        }
+      }
+    }
+
+    setState(() {
+      widget.item.unit = newUnit;
+      widget.item.quantity = newQuantity;
+      _isEditing = false;
+      _hasChanges = false;
+    });
+  }
+
+  Widget _buildUnitSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-            Text(
-              'Melhor preço: ${currencyFormat.format(item.bestPrice)}',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            if (item.unit !=
-                'un') // Só mostra preço por unidade para itens mensuráveis
-              Text(
-                'Preço por unidade: ${currencyFormat.format(BudgetUtils.calculatePricePerUnit(
-                  item.bestPrice,
-                  item.quantity,
-                  item.unit,
-                ))} / ${item.unit}',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 12,
+            Expanded(
+              child: TextFormField(
+                controller: _quantityController,
+                enabled: _isEditing,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
+                  labelText: 'Quantidade',
+                  isDense: true,
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    _hasChanges = true;
+                  });
+                },
               ),
-            StreamBuilder<List<PriceHistory>>(
-              stream: historyService.getSignificantVariations(budgetId),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) return const SizedBox.shrink();
-
-                final variations =
-                    snapshot.data!.where((h) => h.itemId == item.id).toList();
-
-                if (variations.isEmpty) return const SizedBox.shrink();
-
-                return Text(
-                  'Variação significativa detectada!',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                    fontSize: 12,
-                  ),
-                );
-              },
             ),
-          ],
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.history),
-              onPressed: () => _showHistory(context),
-            ),
-            if (onDelete != null)
-              IconButton(
-                icon: const Icon(Icons.delete_outline),
-                onPressed: onDelete,
-              ),
-          ],
-        ),
-        children: [
-          if (onPriceUpdate != null) ...[
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Seletor de unidades
-                  UnitSelector(
-                    initialUnit: item.unit,
-                    initialQuantity: item.quantity,
-                    onUnitChanged: (unit, quantity) {
-                      // Prevenir múltiplas chamadas
-                      if (unit != item.unit || quantity != item.quantity) {
-                        // Atualizar preços para a nova unidade
-                        final oldUnit = item.unit;
-                        for (var entry in item.prices.entries) {
-                          final convertedPrice = BudgetUtils.convertUnit(
-                            item.prices[entry.key]!,
-                            oldUnit,
-                            unit,
-                          );
-                          if (onPriceUpdate != null) {
-                            onPriceUpdate!(entry.key, convertedPrice);
-                          }
-                        }
-
-                        // Atualizar a unidade e quantidade do item
-                        item.unit = unit;
-                        item.quantity = quantity;
+            const SizedBox(width: 16),
+            DropdownButton<String>(
+              value: _selectedUnit,
+              onChanged: _isEditing
+                  ? (String? newValue) {
+                      if (newValue != null) {
+                        setState(() {
+                          _selectedUnit = newValue;
+                          _hasChanges = true;
+                        });
                       }
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Preços por Local:',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Lista de preços por localização
-                  ...locationNames.entries.map(
-                    (entry) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
-                        child: Row(
-                          children: [
-                            Expanded(child: Text(entry.value)),
-                            SizedBox(
-                              width: 100,
-                              // Substituir o TextFormField pelo _buildPriceInput
-                              child: _buildPriceInput(
-                                entry.key,
-                                item.prices[entry.key],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                    }
+                  : null,
+              items: const [
+                DropdownMenuItem(value: 'un', child: Text('Unidade')),
+                DropdownMenuItem(value: 'kg', child: Text('Quilograma')),
+                DropdownMenuItem(value: 'g', child: Text('Grama')),
+                DropdownMenuItem(value: 'L', child: Text('Litro')),
+                DropdownMenuItem(value: 'ml', child: Text('Mililitro')),
+              ],
             ),
           ],
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildPriceInput(String locationId, double? currentPrice) {
-    final debouncer = Debouncer(milliseconds: 500);
-    final controller = TextEditingController(
-      text: currentPrice?.toString() ?? '',
-    );
-
     return TextFormField(
-      controller: controller,
+      controller: _priceControllers[locationId],
+      enabled: _isEditing,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       decoration: const InputDecoration(
         prefix: Text('R\$ '),
         isDense: true,
       ),
       onChanged: (value) {
-        debouncer.run(() {
-          final newPrice = double.tryParse(value);
-          if (newPrice != null && newPrice != currentPrice) {
-            print('Atualizando preço:');
-            print('Local: $locationId');
-            print('De: $currentPrice');
-            print('Para: $newPrice');
-            onPriceUpdate?.call(locationId, newPrice);
-          }
+        setState(() {
+          _hasChanges = true;
         });
       },
     );
   }
 
-  // No BudgetItemCard, após o método _buildPriceInput
   void _showHistory(BuildContext context) {
     showDialog(
       context: context,
@@ -220,11 +215,11 @@ class BudgetItemCard extends StatelessWidget {
                       ),
                       columnWidths: {
                         0: const FixedColumnWidth(100), // Item
-                        for (var i = 0; i < locationNames.length; i++)
+                        for (var i = 0; i < widget.locationNames.length; i++)
                           i + 1: const FixedColumnWidth(85), // Locais
-                        locationNames.length + 1:
+                        widget.locationNames.length + 1:
                             const FixedColumnWidth(85), // Melhor Local
-                        locationNames.length + 2:
+                        widget.locationNames.length + 2:
                             const FixedColumnWidth(85), // Melhor Preço
                       },
                       children: [
@@ -237,7 +232,7 @@ class BudgetItemCard extends StatelessWidget {
                           ),
                           children: [
                             _buildTableCell('Item', isHeader: true),
-                            ...locationNames.entries.map((entry) =>
+                            ...widget.locationNames.entries.map((entry) =>
                                 _buildTableCell(entry.value, isHeader: true)),
                             _buildTableCell('Melhor Local',
                                 isHeader: true, isGreen: true),
@@ -246,10 +241,10 @@ class BudgetItemCard extends StatelessWidget {
                           ],
                         ),
                         // Linhas para todos os itens do orçamento
-                        ...budget.items.map((budgetItem) => TableRow(
+                        ...widget.budget.items.map((budgetItem) => TableRow(
                               children: [
                                 _buildTableCell(budgetItem.name),
-                                ...locationNames.entries.map((entry) {
+                                ...widget.locationNames.entries.map((entry) {
                                   final price =
                                       budgetItem.prices[entry.key] ?? 0;
                                   return _buildTableCell(
@@ -258,7 +253,8 @@ class BudgetItemCard extends StatelessWidget {
                                   );
                                 }),
                                 _buildTableCell(
-                                  locationNames[budgetItem.bestPriceLocation] ??
+                                  widget.locationNames[
+                                          budgetItem.bestPriceLocation] ??
                                       'N/A',
                                   isGreen: true,
                                 ),
@@ -297,6 +293,150 @@ class BudgetItemCard extends StatelessWidget {
           color: isGreen ? Colors.green : null,
         ),
         textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ExpansionPanelList(
+        elevation: 0,
+        expandedHeaderPadding: EdgeInsets.zero,
+        expansionCallback: (int index, bool isExpanded) {
+          setState(() {
+            _isExpanded = isExpanded;
+          });
+        },
+        children: [
+          ExpansionPanel(
+            isExpanded: _isExpanded,
+            canTapOnHeader: true,
+            headerBuilder: (BuildContext context, bool isExpanded) {
+              return ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(widget.item.name),
+                        ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.history),
+                              onPressed: () => _showHistory(context),
+                            ),
+                            if (widget.onDelete != null)
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline),
+                                onPressed: widget.onDelete,
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Text(
+                      'Melhor preço: ${currencyFormat.format(widget.item.bestPrice)}',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                    if (widget.item.unit != 'un')
+                      Text(
+                        'Preço por unidade: ${currencyFormat.format(BudgetUtils.calculatePricePerUnit(
+                          widget.item.bestPrice,
+                          widget.item.quantity,
+                          widget.item.unit,
+                        ))} / ${widget.item.unit}',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12,
+                        ),
+                      ),
+                    StreamBuilder<List<PriceHistory>>(
+                      stream: widget.historyService
+                          .getSignificantVariations(widget.budgetId),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) return const SizedBox.shrink();
+
+                        final variations = snapshot.data!
+                            .where((h) => h.itemId == widget.item.id)
+                            .toList();
+
+                        if (variations.isEmpty) return const SizedBox.shrink();
+
+                        return Text(
+                          'Variação significativa detectada!',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                            fontSize: 12,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildUnitSelector(),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Preços por Local:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ...widget.locationNames.entries.map(
+                    (entry) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          children: [
+                            Expanded(child: Text(entry.value)),
+                            SizedBox(
+                              width: 100,
+                              child: _buildPriceInput(
+                                entry.key,
+                                widget.item.prices[entry.key],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: _toggleEdit,
+                        icon: Icon(_isEditing ? Icons.cancel : Icons.edit),
+                        label: Text(_isEditing ? 'Cancelar' : 'Editar'),
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: _hasChanges ? _saveChanges : null,
+                        icon: const Icon(Icons.save),
+                        label: const Text('Salvar'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

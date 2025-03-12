@@ -1,8 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pj1/controller/screen_shot_controller.dart'; // Adicione esta linha
+import 'package:pj1/controller/screen_shot_controller.dart';
 import 'package:pj1/models/budget/budget.dart';
 import 'package:pj1/models/budget/budget_location.dart';
 import 'package:pj1/services/budget_service.dart';
@@ -16,7 +14,7 @@ class BudgetCompareScreen extends StatelessWidget {
   final currencyFormat = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
   final BudgetService budgetService;
   final CustomScreenshotController screenshotController =
-      CustomScreenshotController(); // Adicione esta linha
+      CustomScreenshotController();
 
   BudgetCompareScreen({
     super.key,
@@ -24,7 +22,6 @@ class BudgetCompareScreen extends StatelessWidget {
     required this.budgetService,
   });
 
-  @override
   @override
   Widget build(BuildContext context) {
     return Screenshot(
@@ -36,8 +33,11 @@ class BudgetCompareScreen extends StatelessWidget {
           foregroundColor: Colors.white,
           actions: [
             IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () => _refreshPrices(context),
+              icon: const Icon(Icons.home),
+              onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
+                '/home',
+                (route) => false,
+              ),
             ),
           ],
         ),
@@ -49,11 +49,11 @@ class BudgetCompareScreen extends StatelessWidget {
               children: [
                 _buildOverallSummary(context),
                 const SizedBox(height: 16),
-                _buildSavingsAnalysis(),
+                _buildSavingsAnalysis(context),
                 const SizedBox(height: 16),
-                _buildBestPricesComparison(),
+                _buildBestPricesComparison(context),
                 const SizedBox(height: 16),
-                _buildLocationComparison(),
+                _buildLocationComparison(context),
                 const SizedBox(height: 16),
                 _buildDetailedPriceTable(),
               ],
@@ -71,24 +71,29 @@ class BudgetCompareScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSavingsAnalysis() {
+  Widget _buildSavingsAnalysis(BuildContext context) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Análise de Economia',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              children: [
+                const SizedBox(width: 8),
+                const Text(
+                  'Análise de Economia',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             _buildSavingsChart(),
             const SizedBox(height: 8),
-            _buildSavingsDetails(),
+            _buildSavingsDetails(context),
           ],
         ),
       ),
@@ -103,7 +108,7 @@ class BudgetCompareScreen extends StatelessWidget {
       ..sort((a, b) => b.value.compareTo(a.value));
 
     return SizedBox(
-      height: 200,
+      height: 100,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: savings.map((entry) {
@@ -126,7 +131,7 @@ class BudgetCompareScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSavingsDetails() {
+  Widget _buildSavingsDetails(BuildContext context) {
     final savings = budget.items.map((item) {
       final saving = item.calculateSavings();
       final percentage = item.calculateSavingsPercentage();
@@ -135,15 +140,29 @@ class BudgetCompareScreen extends StatelessWidget {
       ..sort((a, b) => b.value.$1.compareTo(a.value.$1));
 
     return Column(
-      children: savings.map((entry) {
+      children: savings.asMap().entries.map((entry) {
+        final index = entry.key + 1; // Número de ordem
+        final item = entry.value;
         return ListTile(
-          title: Text(entry.key.name),
+          leading: CircleAvatar(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            radius: 12,
+            child: Text(
+              '$index',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          title: Text(item.key.name),
           subtitle: Text(
-            'Economia: ${currencyFormat.format(entry.value.$1)}',
+            'Economia: ${currencyFormat.format(item.value.$1)}',
             style: const TextStyle(color: Colors.green),
           ),
           trailing: Text(
-            '${entry.value.$2.toStringAsFixed(1)}%',
+            '${item.value.$2.toStringAsFixed(1)}%',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         );
@@ -151,7 +170,7 @@ class BudgetCompareScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBestPricesComparison() {
+  Widget _buildBestPricesComparison(BuildContext context) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -166,9 +185,23 @@ class BudgetCompareScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            ...budget.items.map((item) {
+            ...budget.items.asMap().entries.map((entry) {
+              final index = entry.key + 1;
+              final item = entry.value;
               item.compareUnitPrices();
               return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  radius: 12,
+                  child: Text(
+                    '$index',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 title: Text(item.name),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,7 +239,7 @@ class BudgetCompareScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLocationComparison() {
+  Widget _buildLocationComparison(BuildContext context) {
     final totals = BudgetUtils.calculateTotalsByLocation(budget);
 
     return Card(
@@ -215,17 +248,36 @@ class BudgetCompareScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Comparação por Estabelecimento',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              children: [
+                const SizedBox(width: 8),
+                const Text(
+                  'Comparação p/ Estabelecimento',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            ...budget.locations.map((location) {
+            const SizedBox(height: 18),
+            ...budget.locations.asMap().entries.map((entry) {
+              final index = entry.key + 1;
+              final location = entry.value;
               final total = totals[location.id] ?? 0;
               return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  radius: 12,
+                  child: Text(
+                    '$index',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
                 title: Text(location.name),
                 subtitle: Text(location.address),
                 trailing: Text(
@@ -245,92 +297,5 @@ class BudgetCompareScreen extends StatelessWidget {
 
   Widget _buildDetailedPriceTable() {
     return PriceComparisonTable(budget: budget);
-  }
-
-  Future<void> _refreshPrices(BuildContext context) async {
-    try {
-      // Mostrar diálogo de progresso
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(
-          child: Card(
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text('Atualizando preços...'),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-
-      // Atualizar preços de cada item
-      for (var item in budget.items) {
-        for (var location in budget.locations) {
-          // Simular delay para não sobrecarregar
-          await Future.delayed(const Duration(milliseconds: 100));
-
-          // Calcular novo preço (exemplo: variação de ±5%)
-          final currentPrice = item.prices[location.id] ?? 0;
-          if (currentPrice > 0) {
-            final variation = (currentPrice * 0.05); // 5% de variação
-            final newPrice =
-                currentPrice + (Random().nextBool() ? variation : -variation);
-
-            // Atualizar preço no Firebase
-            await budgetService.updateItemPrice(
-              budget.id,
-              item.id,
-              location.id,
-              newPrice,
-            );
-
-            // Atualizar preço localmente
-            item.prices[location.id] = newPrice;
-          }
-        }
-        // Atualizar melhor preço do item
-        item.updateBestPrice();
-      }
-
-      // Atualizar resumo do orçamento
-      budget.updateSummary();
-
-      // Fechar diálogo de progresso
-      if (context.mounted) {
-        Navigator.of(context).pop();
-      }
-
-      // Mostrar mensagem de sucesso
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Preços atualizados com sucesso!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    } catch (e) {
-      // Fechar diálogo de progresso em caso de erro
-      if (context.mounted) {
-        Navigator.of(context).pop();
-      }
-
-      // Mostrar mensagem de erro
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Erro ao atualizar preços: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
   }
 }
