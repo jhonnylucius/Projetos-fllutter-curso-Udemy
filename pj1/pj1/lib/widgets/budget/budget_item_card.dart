@@ -58,7 +58,9 @@ class _BudgetItemCardState extends State<BudgetItemCard> {
 
   @override
   void dispose() {
-    _priceControllers.values.forEach((controller) => controller.dispose());
+    for (var controller in _priceControllers.values) {
+      controller.dispose();
+    }
     _quantityController.dispose();
     super.dispose();
   }
@@ -92,14 +94,12 @@ class _BudgetItemCardState extends State<BudgetItemCard> {
         final currentPrice =
             double.tryParse(_priceControllers[entry.key]!.text) ??
                 widget.item.prices[entry.key]!;
-        if (currentPrice != null) {
-          final convertedPrice = BudgetUtils.convertUnit(
-            currentPrice,
-            oldUnit,
-            newUnit,
-          );
-          widget.onPriceUpdate?.call(entry.key, convertedPrice);
-        }
+        final convertedPrice = BudgetUtils.convertUnit(
+          currentPrice,
+          oldUnit,
+          newUnit,
+        );
+        widget.onPriceUpdate?.call(entry.key, convertedPrice);
       }
     } else {
       for (var entry in _priceControllers.entries) {
@@ -160,6 +160,10 @@ class _BudgetItemCardState extends State<BudgetItemCard> {
                 DropdownMenuItem(value: 'g', child: Text('Grama')),
                 DropdownMenuItem(value: 'L', child: Text('Litro')),
                 DropdownMenuItem(value: 'ml', child: Text('Mililitro')),
+                DropdownMenuItem(value: 'par', child: Text('Par')),
+                DropdownMenuItem(value: 'cx', child: Text('Caixa')),
+                DropdownMenuItem(value: 'pct', child: Text('Pacote')),
+                DropdownMenuItem(value: 'band', child: Text('Bandeja')),
               ],
             ),
           ],
