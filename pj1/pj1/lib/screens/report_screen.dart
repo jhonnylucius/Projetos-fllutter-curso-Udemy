@@ -63,7 +63,7 @@ class _ReportScreenState extends State<ReportScreen> {
       appBar: AppBar(
         title: Text('Relatórios'),
         backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: const Color.fromARGB(255, 245, 160, 245),
+        foregroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
       body: Container(
         decoration: BoxDecoration(
