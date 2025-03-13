@@ -215,7 +215,7 @@ class _ReportScreenState extends State<ReportScreen> {
 
   void generateReport() async {
     final collection = selectedType == 'receitas'
-        ? 'revenues'
+        ? 'Revenues'
         : 'costs'; // Corrigido para 'revenues' e 'costs'
 
     try {
