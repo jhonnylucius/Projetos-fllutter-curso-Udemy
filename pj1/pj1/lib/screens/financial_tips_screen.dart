@@ -9,7 +9,7 @@ class FinancialTipsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Dicas Importantes'),
         foregroundColor: Color.fromARGB(255, 255, 255, 255),
-        backgroundColor: Color.fromARGB(255, 123, 21, 141),
+        backgroundColor: Colors.deepPurple,
         centerTitle: true,
       ),
       body: ListView(
