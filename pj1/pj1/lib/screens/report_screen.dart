@@ -68,7 +68,7 @@ class _ReportScreenState extends State<ReportScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/background_login.jpg'),
+            image: AssetImage('assets/fundoRelatorio.jpg'),
             fit: BoxFit.cover,
           ),
         ),
