@@ -12,6 +12,7 @@ import 'package:pj1/screens/dashboard_screen.dart';
 import 'package:pj1/screens/home_screen.dart';
 import 'package:pj1/screens/login_screen.dart';
 import 'package:pj1/screens/revenues_screen.dart';
+import 'package:pj1/screens/splash_screen.dart';
 import 'package:pj1/screens/verifyemail_screen.dart';
 import 'package:pj1/services/budget_service.dart';
 import 'package:pj1/services/price_alert_service.dart';
@@ -133,11 +134,7 @@ class RoteadorTelas extends StatelessWidget {
       future: _checkTermsAccepted(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
+          return const SplashScreen(); // Substituir o CircularProgressIndicator pela SplashScreen
         } else if (snapshot.hasError) {
           return const Scaffold(
             body: Center(
@@ -151,20 +148,15 @@ class RoteadorTelas extends StatelessWidget {
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Scaffold(
-                  body: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
+                return const SplashScreen(); // Substituir aqui também
               } else if (snapshot.hasError) {
                 return const Scaffold(
-                    body: Center(
-                  child: Text('Erro ao carregar dados.'),
-                ));
-              } else if (snapshot.hasData) {
-                return HomeScreen(
-                  user: snapshot.data!,
+                  body: Center(
+                    child: Text('Erro ao carregar dados.'),
+                  ),
                 );
+              } else if (snapshot.hasData) {
+                return HomeScreen(user: snapshot.data!);
               } else {
                 return LoginScreen();
               }
