@@ -150,12 +150,12 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
-                        'Receitas por tipo (Anual)',
+                        'Receitas por tipo',
                         style: TextStyle(
                             fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    _buildPieChart(listRevenues, 'Receitas Anuais'),
+                    _buildPieChart(listRevenues, 'Receitas'),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0), // Ajustado padding
