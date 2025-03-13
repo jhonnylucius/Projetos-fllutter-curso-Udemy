@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pj1/screens/dashboard_screen.dart';
+import 'package:pj1/screens/financial_tips_screen.dart';
 import 'package:pj1/screens/home_screen.dart'; // Importar HomeScreen
 import 'package:pj1/screens/report_screen.dart';
 import 'package:pj1/services/auth_service.dart';
@@ -120,6 +121,18 @@ class Menu extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ReportScreen(user: user),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.lightbulb_outline),
+            title: const Text('Dicas Importantes'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FinancialTipsScreen(),
                 ),
               );
             },
