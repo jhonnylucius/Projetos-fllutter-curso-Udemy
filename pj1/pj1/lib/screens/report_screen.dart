@@ -61,12 +61,12 @@ class _ReportScreenState extends State<ReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Relatórios'),
+        title: const Text('Relatórios'),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/fundoRelatorio.jpg'),
             fit: BoxFit.cover,
@@ -75,20 +75,20 @@ class _ReportScreenState extends State<ReportScreen> {
         child: Column(
           children: [
             Card(
-              margin: EdgeInsets.all(8),
+              margin: const EdgeInsets.all(8),
               child: Padding(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
                     DropdownButtonFormField<String>(
                       value: selectedType,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Tipo de Relatório',
                         border: OutlineInputBorder(),
                         filled: true,
                         fillColor: Colors.white,
                       ),
-                      items: [
+                      items: const [
                         DropdownMenuItem(
                             value: 'receitas', child: Text('Receitas')),
                         DropdownMenuItem(
@@ -102,11 +102,11 @@ class _ReportScreenState extends State<ReportScreen> {
                         });
                       },
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     if (selectedType == 'despesas')
                       DropdownButtonFormField<String>(
                         value: selectedRevenuesType ?? tiposDespesa[0],
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Tipo de Despesa',
                           border: OutlineInputBorder(),
                           filled: true,
@@ -124,7 +124,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     if (selectedType == 'receitas')
                       DropdownButtonFormField<String>(
                         value: selectedIncomeType ?? tiposReceita[0],
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Tipo de Receita',
                           border: OutlineInputBorder(),
                           filled: true,
@@ -139,10 +139,10 @@ class _ReportScreenState extends State<ReportScreen> {
                         onChanged: (value) =>
                             setState(() => selectedIncomeType = value),
                       ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
                       value: selectedMonth,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Mês',
                         border: OutlineInputBorder(),
                         filled: true,
@@ -154,10 +154,10 @@ class _ReportScreenState extends State<ReportScreen> {
                       onChanged: (value) =>
                           setState(() => selectedMonth = value!),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () => generateReport(),
-                      child: Text('Gerar Relatório'),
+                      child: const Text('Gerar Relatório'),
                     ),
                   ],
                 ),
@@ -165,11 +165,11 @@ class _ReportScreenState extends State<ReportScreen> {
             ),
             Expanded(
               child: Card(
-                margin: EdgeInsets.all(8),
+                margin: const EdgeInsets.all(8),
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       child: Text(
                         'Relatório de ${selectedType == "receitas" ? "Receitas" : "Despesas"}\n'
                         '${selectedType == "despesas" ? "Tipo: ${selectedRevenuesType ?? 'Todas'}" : "Tipo: ${selectedIncomeType ?? 'Todas'}"}\n'
@@ -197,7 +197,7 @@ class _ReportScreenState extends State<ReportScreen> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       child: Text(
                         'Total: R\$ ${totalValue.toStringAsFixed(2)}',
                         style: Theme.of(context).textTheme.titleLarge,
