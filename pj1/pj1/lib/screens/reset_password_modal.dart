@@ -17,13 +17,13 @@ class _ResetPasswordModalState extends State<ResetPasswordModal> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Redefinir Senha'),
+      title: const Text('Redefinir Senha'),
       content: Form(
         key: _formKey,
         child: TextFormField(
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
-          decoration: InputDecoration(labelText: 'Endereço de E-mail'),
+          decoration: const InputDecoration(labelText: 'Endereço de E-mail'),
           validator: (value) {
             if (value!.isEmpty) {
               return 'Por favor, informe um email válido';
@@ -37,7 +37,7 @@ class _ResetPasswordModalState extends State<ResetPasswordModal> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cancelar'),
+          child: const Text('Cancelar'),
         ),
         ElevatedButton(
           onPressed: () {
@@ -53,7 +53,7 @@ class _ResetPasswordModalState extends State<ResetPasswordModal> {
 
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 } else {
-                  final snackBar = SnackBar(
+                  const snackBar = SnackBar(
                     content: Text('E-mail enviado com sucesso.'),
                     backgroundColor: Colors.green,
                   );
@@ -64,7 +64,7 @@ class _ResetPasswordModalState extends State<ResetPasswordModal> {
               Navigator.of(context).pop();
             }
           },
-          child: Text('Enviar'),
+          child: const Text('Enviar'),
         ),
       ],
     );
