@@ -78,10 +78,10 @@ class BudgetCompareScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
-                const SizedBox(width: 8),
-                const Text(
+                SizedBox(width: 8),
+                Text(
                   'Análise de Economia',
                   style: TextStyle(
                     fontSize: 18,
@@ -248,10 +248,10 @@ class BudgetCompareScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
-                const SizedBox(width: 8),
-                const Text(
+                SizedBox(width: 8),
+                Text(
                   'Comparação p/ Estabelecimento',
                   style: TextStyle(
                     fontSize: 16,
