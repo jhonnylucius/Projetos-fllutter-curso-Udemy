@@ -17,7 +17,7 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
                 "assets/background_login.jpg"), // Caminho da sua imagem
@@ -27,10 +27,10 @@ class LoginScreen extends StatelessWidget {
         child: Center(
           child: SingleChildScrollView(
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 24),
-              padding: EdgeInsets.all(24),
+              margin: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Color.fromRGBO(
+                color: const Color.fromRGBO(
                     255, 255, 255, 1), // Branco com 80% de opacidade
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.black12),
@@ -43,16 +43,16 @@ class LoginScreen extends StatelessWidget {
                     width: 100,
                     height: 100,
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   TextField(
                     controller: _emailController,
-                    decoration: InputDecoration(labelText: 'E-mail'),
+                    decoration: const InputDecoration(labelText: 'E-mail'),
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   TextField(
                     obscureText: true,
                     controller: _senhaController,
-                    decoration: InputDecoration(hintText: 'Senha'),
+                    decoration: const InputDecoration(hintText: 'Senha'),
                   ),
                   const SizedBox(height: 16.0),
                   ElevatedButton(
@@ -75,7 +75,7 @@ class LoginScreen extends StatelessWidget {
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
-                                      child: Text('OK'),
+                                      child: const Text('OK'),
                                     ),
                                   ],
                                 );
@@ -85,9 +85,9 @@ class LoginScreen extends StatelessWidget {
                         },
                       );
                     },
-                    child: Text('Entrar'),
+                    child: const Text('Entrar'),
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   SignInButton(
                     Buttons.Google,
                     text: 'Entrar com Google',
@@ -95,9 +95,9 @@ class LoginScreen extends StatelessWidget {
                       _authService.signInWithGoogle();
                     },
                   ),
-                  SizedBox(height: 12.0),
-                  ColoredBox(
-                    color: const Color.fromARGB(255, 226, 191, 224),
+                  const SizedBox(height: 12.0),
+                  const ColoredBox(
+                    color: Color.fromARGB(255, 226, 191, 224),
                     child: SizedBox(
                       height: 1,
                     ),
@@ -109,18 +109,18 @@ class LoginScreen extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => RegisterScreen()));
                     },
-                    child: Text('Criar uma conta!'),
+                    child: const Text('Criar uma conta!'),
                   ),
-                  SizedBox(height: 12.0),
+                  const SizedBox(height: 12.0),
                   TextButton(
                     onPressed: () {
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return ResetPasswordModal();
+                            return const ResetPasswordModal();
                           });
                     },
-                    child: Text('Esqueci minha senha!'),
+                    child: const Text('Esqueci minha senha!'),
                   ),
                 ],
               ),
