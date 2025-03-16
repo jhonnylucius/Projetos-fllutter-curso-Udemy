@@ -76,13 +76,13 @@ class _HomeScreenState extends State<HomeScreen> {
         return Scaffold(
           drawer: Menu(user: widget.user),
           appBar: AppBar(
-            title: Text('GestorFinanceiro'),
+            title: const Text('GestorFinanceiro'),
             elevation: 2,
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
           ),
           body: Container(
-            constraints: BoxConstraints(maxWidth: 480),
+            constraints: const BoxConstraints(maxWidth: 480),
             child: Container(
               color: Colors.white,
               padding: const EdgeInsets.all(16),
@@ -95,9 +95,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Center(
                       child: Text(
                         'Bem-vindo, $displayName',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 24,
-                            color: const Color.fromARGB(255, 123, 21, 141),
+                            color: Color.fromARGB(255, 123, 21, 141),
                             fontWeight: FontWeight.w700),
                       ),
                     ),
@@ -117,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           backgroundColor:
                               Theme.of(context).colorScheme.primary,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         FloatingActionButton.extended(
                           onPressed: () {
                             Navigator.pushNamed(context, '/costs');
@@ -128,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           backgroundColor:
                               Theme.of(context).colorScheme.secondary,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         FloatingActionButton.extended(
                           onPressed: () {
                             Navigator.pushNamed(context, '/Revenues');
@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           backgroundColor:
                               Theme.of(context).colorScheme.primary,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
