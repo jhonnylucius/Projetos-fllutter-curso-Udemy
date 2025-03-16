@@ -29,7 +29,7 @@ Future<void> main() async {
   final alertService = PriceAlertService();
   await alertService.initialize();
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -114,7 +114,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         // Estilo dos botões de ação flutuante
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: Colors.deepPurple,
           foregroundColor: Colors.white,
           elevation: 4,
@@ -142,7 +142,7 @@ class RoteadorTelas extends StatelessWidget {
             ),
           );
         } else if (snapshot.data == false) {
-          return TermsOfServiceScreen();
+          return const TermsOfServiceScreen();
         } else {
           return StreamBuilder(
             stream: FirebaseAuth.instance.authStateChanges(),
