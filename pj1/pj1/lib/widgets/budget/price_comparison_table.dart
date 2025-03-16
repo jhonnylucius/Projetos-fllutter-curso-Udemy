@@ -395,7 +395,7 @@ class _PriceComparisonTableState extends State<PriceComparisonTable> {
                   children: [
                     // Cabeçalho
                     pw.TableRow(
-                      decoration: pw.BoxDecoration(
+                      decoration: const pw.BoxDecoration(
                         color: PdfColors.grey300,
                       ),
                       children: headers
@@ -418,7 +418,7 @@ class _PriceComparisonTableState extends State<PriceComparisonTable> {
 
                         return pw.TableRow(
                           decoration: isLastRow
-                              ? pw.BoxDecoration(color: PdfColors.grey200)
+                              ? const pw.BoxDecoration(color: PdfColors.grey200)
                               : null,
                           children: rowData.asMap().entries.map(
                             (cell) {
@@ -500,7 +500,7 @@ class _PriceComparisonTableState extends State<PriceComparisonTable> {
       children: [
         pw.Text(
           label,
-          style: pw.TextStyle(
+          style: const pw.TextStyle(
             fontSize: 10,
             color: PdfColors.grey600,
           ),
