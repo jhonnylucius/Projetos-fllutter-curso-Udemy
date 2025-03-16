@@ -18,19 +18,19 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/background_login.jpg"),
             fit: BoxFit.cover,
           ),
         ),
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16.0),
@@ -42,29 +42,30 @@ class RegisterScreen extends StatelessWidget {
                       width: 90,
                       height: 90,
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     TextField(
                       controller: _nomeController,
-                      decoration: InputDecoration(labelText: 'Nome'),
+                      decoration: const InputDecoration(labelText: 'Nome'),
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     TextField(
                       controller: _emailController,
-                      decoration: InputDecoration(labelText: 'E-mail'),
+                      decoration: const InputDecoration(labelText: 'E-mail'),
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     TextField(
                       obscureText: true,
                       controller: _senhaController,
-                      decoration: InputDecoration(labelText: 'Senha'),
+                      decoration: const InputDecoration(labelText: 'Senha'),
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     TextField(
                       obscureText: true,
                       controller: _confirmarSenhaController,
-                      decoration: InputDecoration(labelText: 'Confirmar Senha'),
+                      decoration:
+                          const InputDecoration(labelText: 'Confirmar Senha'),
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     ElevatedButton(
                       onPressed: () async {
                         if (_senhaController.text ==
@@ -85,7 +86,7 @@ class RegisterScreen extends StatelessWidget {
                             );
                           }
                         } else {
-                          final snackBar = SnackBar(
+                          const snackBar = SnackBar(
                             content: Text('Senhas não conferem.'),
                             backgroundColor: Colors.red,
                           );
@@ -93,14 +94,14 @@ class RegisterScreen extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                       },
-                      child: Text('Cadastrar'),
+                      child: const Text('Cadastrar'),
                     ),
-                    SizedBox(height: 8.0),
+                    const SizedBox(height: 8.0),
                     TextButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/login');
                       },
-                      child: Text('Já tenho uma conta!'),
+                      child: const Text('Já tenho uma conta!'),
                     ),
                   ],
                 ),
