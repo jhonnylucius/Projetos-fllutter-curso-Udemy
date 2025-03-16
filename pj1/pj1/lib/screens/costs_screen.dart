@@ -43,7 +43,7 @@ class _CostsScreenState extends State<CostsScreen> {
     return Scaffold(
       drawer: Menu(user: widget.user), // Menu lateral
       appBar: AppBar(
-        title: Text('GestorFinanceiro'),
+        title: const Text('GestorFinanceiro'),
         elevation: 2,
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
@@ -101,7 +101,7 @@ class _CostsScreenState extends State<CostsScreen> {
                 ],
               ),
             ),
-            padding: EdgeInsets.only(bottom: 80),
+            padding: const EdgeInsets.only(bottom: 80),
             child: listCosts.isEmpty
                 ? Center(
                     child: Column(
@@ -113,20 +113,20 @@ class _CostsScreenState extends State<CostsScreen> {
                           height: 100,
                         ),
                         const SizedBox(height: 16),
-                        Text(
+                        const Text(
                           'Vamos começar?',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: const Color.fromARGB(255, 251, 251, 252),
+                            color: Color.fromARGB(255, 251, 251, 252),
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
+                        const Text(
                           'Registre suas Despesas',
                           style: TextStyle(
                             fontSize: 16,
-                            color: const Color.fromARGB(255, 129, 18, 151),
+                            color: Color.fromARGB(255, 129, 18, 151),
                           ),
                         ),
                       ],
@@ -145,7 +145,8 @@ class _CostsScreenState extends State<CostsScreen> {
                               alignment: Alignment.centerRight,
                               padding: const EdgeInsets.only(right: 12),
                               color: Colors.red,
-                              child: Icon(Icons.delete, color: Colors.white),
+                              child:
+                                  const Icon(Icons.delete, color: Colors.white),
                             ),
                             onDismissed: (direction) {
                               remove(model);
@@ -159,8 +160,8 @@ class _CostsScreenState extends State<CostsScreen> {
                                       showFormModal(model: model);
                                     },
                                     onTap: () {},
-                                    leading:
-                                        Icon(Icons.list_alt_rounded, size: 56),
+                                    leading: const Icon(Icons.list_alt_rounded,
+                                        size: 56),
                                     title: Text("Data: ${model.data}"),
                                     subtitle: Column(
                                       crossAxisAlignment:
@@ -240,7 +241,7 @@ class _CostsScreenState extends State<CostsScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
@@ -262,7 +263,7 @@ class _CostsScreenState extends State<CostsScreen> {
                     hintText: '01/01/2025',
                     labelText: 'Data',
                     suffixIcon: IconButton(
-                      icon: Icon(Icons.calendar_today),
+                      icon: const Icon(Icons.calendar_today),
                       onPressed: () => _selectDate(context, dataController),
                     ),
                   ),
@@ -274,11 +275,11 @@ class _CostsScreenState extends State<CostsScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: precoController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Valor da Despesa.(USE PONTO e NÃO ","!)',
                     labelText: '100.00',
                   ),
@@ -289,10 +290,10 @@ class _CostsScreenState extends State<CostsScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: descricaoDaDespesaController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Qual a despesa que você pagou?',
                     labelText: 'Descrição',
                   ),
@@ -303,12 +304,12 @@ class _CostsScreenState extends State<CostsScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: tipoDespesaController.text.isEmpty
                       ? _tiposDespesa[0]
                       : tipoDespesaController.text,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Tipo da Despesa',
                     border: OutlineInputBorder(),
                   ),
@@ -330,7 +331,7 @@ class _CostsScreenState extends State<CostsScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -342,7 +343,7 @@ class _CostsScreenState extends State<CostsScreen> {
                       },
                       child: Text(skipButton),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     TextButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
@@ -391,14 +392,15 @@ class _CostsScreenState extends State<CostsScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Campos Obrigatórios'),
-          content: Text('Por favor, preencha todos os campos obrigatórios.'),
+          title: const Text('Campos Obrigatórios'),
+          content:
+              const Text('Por favor, preencha todos os campos obrigatórios.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
