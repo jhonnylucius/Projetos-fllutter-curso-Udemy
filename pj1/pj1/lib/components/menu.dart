@@ -18,18 +18,18 @@ class Menu extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Confirmar Exclusão'),
+        title: const Text('Confirmar Exclusão'),
         content: TextField(
           controller: senhaController,
           obscureText: true,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Digite sua senha para confirmar',
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar'),
+            child: const Text('Cancelar'),
           ),
           TextButton(
             onPressed: () async {
@@ -46,7 +46,7 @@ class Menu extends StatelessWidget {
                 Navigator.of(context).pushReplacementNamed('/login');
               }
             },
-            child: Text('Excluir'),
+            child: const Text('Excluir'),
           ),
         ],
       ),
@@ -80,7 +80,7 @@ class Menu extends StatelessWidget {
                 Text(user.displayName != null ? user.displayName! : ''),
           ),
           ListTile(
-            leading: Icon(Icons.home),
+            leading: const Icon(Icons.home),
             title: const Text('Home'),
             onTap: () {
               Navigator.push(
@@ -92,7 +92,7 @@ class Menu extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.dashboard),
+            leading: const Icon(Icons.dashboard),
             title: const Text('Dashboard'),
             onTap: () {
               Navigator.push(
@@ -104,7 +104,7 @@ class Menu extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.calculate),
+            leading: const Icon(Icons.calculate),
             title: const Text('Orçamentos'),
             onTap: () {
               Navigator.pushNamed(
@@ -114,7 +114,7 @@ class Menu extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.description),
+            leading: const Icon(Icons.description),
             title: const Text('Relatórios'),
             onTap: () {
               Navigator.push(
@@ -126,19 +126,19 @@ class Menu extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.lightbulb_outline),
+            leading: const Icon(Icons.lightbulb_outline),
             title: const Text('Dicas Importantes'),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => FinancialTipsScreen(),
+                  builder: (context) => const FinancialTipsScreen(),
                 ),
               );
             },
           ),
           ListTile(
-            leading: Icon(Icons.logout),
+            leading: const Icon(Icons.logout),
             title: const Text('Sair'),
             onTap: () async {
               await AuthService().deslogar();
@@ -146,7 +146,7 @@ class Menu extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.delete),
+            leading: const Icon(Icons.delete),
             title: const Text('Excluir Conta'),
             onTap: () => _confirmarExclusao(context),
           ),
