@@ -8,7 +8,7 @@ class FinancialTipsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dicas Importantes'),
-        foregroundColor: Color.fromARGB(255, 255, 255, 255),
+        foregroundColor: const Color.fromARGB(255, 255, 255, 255),
         backgroundColor: Colors.deepPurple,
         centerTitle: true,
       ),
@@ -29,12 +29,12 @@ class FinancialTipsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            const Row(
               children: [
                 Icon(Icons.credit_card,
                     color: Color.fromARGB(255, 123, 21, 141), size: 24),
-                const SizedBox(width: 8),
-                const Text(
+                SizedBox(width: 8),
+                Text(
                   'Uso Inteligente do \n Cartão de Crédito',
                   textAlign: TextAlign.center,
                   style: TextStyle(
