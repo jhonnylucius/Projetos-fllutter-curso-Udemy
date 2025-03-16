@@ -14,17 +14,17 @@ class TermsOfServiceDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Termos de Serviço'),
+      title: const Text('Termos de Serviço'),
       content: SingleChildScrollView(
         child: ListBody(
           children: <Widget>[
-            Text(
+            const Text(
                 'Por favor, leia e aceite os termos de serviço para continuar.'),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             GestureDetector(
               onTap: () => _launchURL(
                   'https://union.dev.br/termosGestorFinanceiro.html'),
-              child: Text(
+              child: const Text(
                 'Leia os Termos de Serviço',
                 style: TextStyle(color: Colors.blue),
               ),
@@ -34,7 +34,7 @@ class TermsOfServiceDialog extends StatelessWidget {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text('Aceitar'),
+          child: const Text('Aceitar'),
           onPressed: () {
             onAccepted();
             Navigator.of(context).pop(); // Fechar o diálogo
@@ -43,7 +43,7 @@ class TermsOfServiceDialog extends StatelessWidget {
           },
         ),
         TextButton(
-          child: Text('Recusar'),
+          child: const Text('Recusar'),
           onPressed: () {
             onDeclined();
             Navigator.of(context).pop(); // Fechar o diálogo
