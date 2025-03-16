@@ -129,7 +129,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard'),
+        title: const Text('Dashboard'),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
@@ -162,14 +162,14 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             'Tipo despesa x Mês',
                             style: TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.bold),
                           ),
                           Container(
                             // Adicionado Container para decoração
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 4),
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -297,7 +297,8 @@ class DashBoardScreenState extends State<DashBoardScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold)),
               SizedBox(
                   height: 200,
                   child: _buildChartContentPie(dataByType, colors)),
@@ -365,7 +366,7 @@ class DashBoardScreenState extends State<DashBoardScreen> {
                       shape: BoxShape.circle,
                       color: colors[index % colors.length])),
               title: Text('$type : ${value.toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 14)),
+                  style: const TextStyle(fontSize: 14)),
             );
           },
         )),
