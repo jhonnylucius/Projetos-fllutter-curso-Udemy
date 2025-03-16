@@ -40,7 +40,7 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
     return Scaffold(
       drawer: Menu(user: widget.user), // Menu lateral
       appBar: AppBar(
-        title: Text('GestorFinanceiro'),
+        title: const Text('GestorFinanceiro'),
         elevation: 2,
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
@@ -98,7 +98,7 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
                 ],
               ),
             ),
-            padding: EdgeInsets.only(bottom: 80),
+            padding: const EdgeInsets.only(bottom: 80),
             child: listRevenues.isEmpty
                 ? Center(
                     child: Column(
@@ -110,20 +110,20 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
                           height: 100,
                         ),
                         const SizedBox(height: 16),
-                        Text(
+                        const Text(
                           'Vamos começar?',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
-                            color: const Color.fromARGB(255, 251, 251, 252),
+                            color: Color.fromARGB(255, 251, 251, 252),
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
+                        const Text(
                           'Registre suas Receitas',
                           style: TextStyle(
                             fontSize: 16,
-                            color: const Color.fromARGB(255, 129, 18, 151),
+                            color: Color.fromARGB(255, 129, 18, 151),
                           ),
                         ),
                       ],
@@ -143,7 +143,8 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
                               alignment: Alignment.centerRight,
                               padding: const EdgeInsets.only(right: 12),
                               color: Colors.red, // Fundo vermelho ao deslizar
-                              child: Icon(Icons.delete, color: Colors.white),
+                              child:
+                                  const Icon(Icons.delete, color: Colors.white),
                             ),
                             onDismissed: (direction) {
                               remove(model); // Remove o item ao deslizar
@@ -158,8 +159,8 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
                                           model: model); // Edita a receita
                                     },
                                     onTap: () {},
-                                    leading:
-                                        Icon(Icons.list_alt_rounded, size: 56),
+                                    leading: const Icon(Icons.list_alt_rounded,
+                                        size: 56),
                                     title: Text("Data: ${model.data}"),
                                     subtitle: Column(
                                       crossAxisAlignment:
@@ -238,7 +239,7 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (context) {
@@ -260,7 +261,7 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
                     hintText: '01/01/2025',
                     labelText: 'Data',
                     suffixIcon: IconButton(
-                      icon: Icon(Icons.calendar_today),
+                      icon: const Icon(Icons.calendar_today),
                       onPressed: () => _selectDate(context, dataController),
                     ),
                   ),
@@ -272,11 +273,11 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: precoController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Valor da Receita.(USE PONTO E NÃO VIRGULA!)',
                     labelText: '100.00',
                   ),
@@ -287,10 +288,10 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: descricaoDaReceitaController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Qual a receita que você recebeu?',
                     labelText: 'Descrição',
                   ),
@@ -301,12 +302,12 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: tipoReceitaController.text.isEmpty
                       ? _tiposReceita[0]
                       : tipoReceitaController.text,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Tipo da Receita',
                     border: OutlineInputBorder(),
                   ),
@@ -328,7 +329,7 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
                     return null;
                   },
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -338,7 +339,7 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
                       },
                       child: Text(skipButton),
                     ),
-                    SizedBox(width: 16),
+                    const SizedBox(width: 16),
                     TextButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
@@ -387,14 +388,15 @@ class _RevenuesScreenState extends State<RevenuesScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Campos Obrigatórios'),
-          content: Text('Por favor, preencha todos os campos obrigatórios.'),
+          title: const Text('Campos Obrigatórios'),
+          content:
+              const Text('Por favor, preencha todos os campos obrigatórios.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
