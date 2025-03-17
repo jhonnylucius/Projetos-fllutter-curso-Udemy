@@ -362,6 +362,38 @@ class _BudgetItemCardState extends State<BudgetItemCard> {
                           fontSize: 12,
                         ),
                       ),
+                    Text(
+                      'Locais orçados: ${widget.item.prices.values.where((price) => price != null && price > 0).length}/${widget.locationNames.length}',
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 12,
+                      ),
+                    ),
+                    if (widget.item.prices.values
+                            .where((price) => price != null && price > 0)
+                            .length ==
+                        widget.locationNames.length) ...[
+                      const SizedBox(height: 2),
+                      const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                            size: 12,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            'Concluído',
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     StreamBuilder<List<PriceHistory>>(
                       stream: widget.historyService
                           .getSignificantVariations(widget.budgetId),
