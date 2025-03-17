@@ -363,14 +363,14 @@ class _BudgetItemCardState extends State<BudgetItemCard> {
                         ),
                       ),
                     Text(
-                      'Locais orçados: ${widget.item.prices.values.where((price) => price != null && price > 0).length}/${widget.locationNames.length}',
+                      'Locais orçados: ${widget.item.prices.values.where((price) => price > 0).length}/${widget.locationNames.length}',
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 12,
                       ),
                     ),
                     if (widget.item.prices.values
-                            .where((price) => price != null && price > 0)
+                            .where((price) => price > 0)
                             .length ==
                         widget.locationNames.length) ...[
                       const SizedBox(height: 2),
