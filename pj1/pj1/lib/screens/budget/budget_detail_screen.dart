@@ -7,6 +7,7 @@ import 'package:pj1/services/price_alert_service.dart';
 import 'package:pj1/services/price_history_service.dart';
 import 'package:pj1/widgets/budget/add_item_form.dart';
 import 'package:pj1/widgets/budget/budget_item_card.dart';
+import 'package:pj1/widgets/search/item_search_bar.dart';
 import 'package:uuid/uuid.dart';
 
 class BudgetDetailScreen extends StatefulWidget {
@@ -123,32 +124,56 @@ class BudgetDetailScreenState extends State<BudgetDetailScreen>
     );
   }
 
+  void _moveItemToTop(BudgetItem item) {
+    setState(() {
+      final index = widget.budget.items.indexOf(item);
+      if (index > 0) {
+        // Se não for o primeiro item
+        widget.budget.items.removeAt(index);
+        widget.budget.items.insert(0, item);
+      }
+    });
+  }
+
   Widget _buildItemsTab() {
     Map<String, String> locationNames = {
       for (var loc in widget.budget.locations) loc.id: loc.name
     };
 
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(8, 8, 8, 80),
-      itemCount: widget.budget.items.length,
-      itemBuilder: (context, index) {
-        final item = widget.budget.items[index];
-        return BudgetItemCard(
-          item: item,
-          locationNames: locationNames,
-          budgetId: widget.budget.id,
-          historyService: _historyService,
-          budget: widget.budget, // Adicionar esta linha
-          onDelete: () => _removeItem(item.id),
-          onPriceUpdate: (locationId, price) =>
-              _updateItemPrice(item.id, locationId, price),
-          onEditingStateChange: (isEditing) {
-            setState(() {
-              _isEditingCard = isEditing;
-            });
+    return Column(
+      children: [
+        ItemSearchBar(
+          items: widget.budget.items,
+          onItemSelected: (selectedItem) {
+            _moveItemToTop(selectedItem);
           },
-        );
-      },
+        ),
+        // Lista de items
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 80),
+            itemCount: widget.budget.items.length,
+            itemBuilder: (context, index) {
+              final item = widget.budget.items[index];
+              return BudgetItemCard(
+                item: item,
+                locationNames: locationNames,
+                budgetId: widget.budget.id,
+                historyService: _historyService,
+                budget: widget.budget,
+                onDelete: () => _removeItem(item.id),
+                onPriceUpdate: (locationId, price) =>
+                    _updateItemPrice(item.id, locationId, price),
+                onEditingStateChange: (isEditing) {
+                  setState(() {
+                    _isEditingCard = isEditing;
+                  });
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
